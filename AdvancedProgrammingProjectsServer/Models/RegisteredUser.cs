@@ -27,6 +27,8 @@ namespace AdvancedProgrammingProjectsServer.Models {
 
         public string nickNum { get; set; }
 
+        public List<Conversation> conversations { get; set; }
+
 
     }
 }
