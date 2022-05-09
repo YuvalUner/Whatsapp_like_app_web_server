@@ -151,5 +151,16 @@ namespace AdvancedProgrammingProjectsServer.Controllers
         {
             return _context.Rating.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> Search(string nameToSearch) {
+
+            if (nameToSearch != null) {
+                var ratings2 = _context.Rating.Where(r => r.Name.Contains(nameToSearch));
+                return PartialView(await ratings2.ToListAsync());
+            }
+            else {
+                return PartialView(await _context.Rating.ToListAsync());
+            }
+        }
     }
 }

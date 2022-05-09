@@ -9,6 +9,20 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Search" id="search">
+            <div class="input-group">
+            <input type="search" class="form-control" placeholder="search..." id="search-box" name="nameToSearch" />
+            <button class="btn btn-primary" type="submit">
+                  <i class="bi bi-search"></i>
+            </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -27,7 +41,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="review-table-body">
         @foreach (var item in Model) {
             <tr>
                 <td>
@@ -51,3 +65,7 @@
         }
     </tbody>
 </table>
+
+@section Scripts{
+    <script src="~/js/search.js" type="text/javascript"></script>
+}
