@@ -3,6 +3,7 @@ using System;
 using AdvancedProgrammingProjectsServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedProgrammingProjectsServer.Migrations
 {
     [DbContext(typeof(AdvancedProgrammingProjectsServerContext))]
-    partial class AdvancedProgrammingProjectsServerContextModelSnapshot : ModelSnapshot
+    [Migration("20220509152238_ratings")]
+    partial class ratings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,29 +133,6 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.HasIndex("secretQuestionsId");
 
                     b.ToTable("PendingUser");
-                });
-
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Rating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Stars")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TimeSubmitted")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rating");
                 });
 
             modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.RegisteredUser", b =>

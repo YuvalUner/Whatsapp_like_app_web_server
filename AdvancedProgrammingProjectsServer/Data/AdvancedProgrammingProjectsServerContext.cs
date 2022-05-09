@@ -25,6 +25,7 @@ namespace AdvancedProgrammingProjectsServer.Data
             modelBuilder.Entity<Conversation>().HasKey(e => e.Id);
             modelBuilder.Entity<SecretQuestion>().HasKey(e => e.Id);
             modelBuilder.Entity<Contact>().HasKey(e => new {e.contactOf, e.name});
+            modelBuilder.Entity<Rating>().HasKey(e => e.Id);
         }
 
         public DbSet<AdvancedProgrammingProjectsServer.Models.Contact> Contact { get; set; }
@@ -38,5 +39,7 @@ namespace AdvancedProgrammingProjectsServer.Data
         public DbSet<AdvancedProgrammingProjectsServer.Models.SecretQuestion> SecretQuestion { get; set; }
 
         public DbSet<AdvancedProgrammingProjectsServer.Models.PendingUser> PendingUser { get; set; }
+
+        public DbSet<AdvancedProgrammingProjectsServer.Models.Rating> Rating { get; set; }
     }
 }
