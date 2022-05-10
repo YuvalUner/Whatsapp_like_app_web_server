@@ -108,16 +108,28 @@ namespace AdvancedProjectWebApi.Controllers
 
         // DELETE: api/RegisteredUsers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRegisteredUser(string id)
+        public async Task<IActionResult> DeleteRegisteredUser(string id, string username)
         {
-            var registeredUser = await _context.RegisteredUser.FindAsync(id);
-            if (registeredUser == null)
+            RegisteredUser firstUser = await _context.RegisteredUser.Where(ru => ru.username == username).Include(ru => ru.contacts).Include(ru => ru.conversations).FirstOrDefaultAsync();
+            if (firstUser == null)
             {
                 return NotFound();
             }
-
-            _context.RegisteredUser.Remove(registeredUser);
-            await _context.SaveChangesAsync();
+            Contact contactFirst = firstUser.contacts.Find(c => c.name == id);
+            if (contactFirst != null) {
+                firstUser.contacts.Remove(contactFirst);
+                Conversation convoOne = firstUser.conversations.Find(c => c.with == id);
+                firstUser.conversations.Remove(convoOne);
+                RegisteredUser secondUser = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.contacts).Include(ru => ru.conversations).FirstOrDefaultAsync();
+                Contact contactSecond = secondUser.contacts.Find(c => c.name == username);
+                secondUser.contacts.Remove(contactSecond);
+                Conversation convoTwo = secondUser.conversations.Find(c => c.with == username);
+                secondUser.conversations.Remove(convoTwo);
+                await _context.SaveChangesAsync();
+            }
+            else {
+                return NotFound();
+            }
 
             return NoContent();
         }
