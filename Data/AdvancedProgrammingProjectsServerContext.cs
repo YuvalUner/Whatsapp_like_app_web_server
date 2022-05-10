@@ -11,7 +11,7 @@ namespace Data
     public class AdvancedProgrammingProjectsServerContext : DbContext
     {
 
-        private const string connectionString = "server=localhost;port=3306;database=Items;user=root;password=5747Israel";
+        private const string connectionString = "server=localhost;port=3306;database=Items;user=root;password=dangit65";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             optionsBuilder.UseMySql(connectionString, MariaDbServerVersion.AutoDetect(connectionString));

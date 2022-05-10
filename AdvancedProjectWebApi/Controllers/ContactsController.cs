@@ -38,16 +38,19 @@ namespace AdvancedProjectWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<RegisteredUser>> GetRegisteredUser(string id, string currentUser)
         {
-            var registeredUser = await _context.RegisteredUser.FindAsync(id);
-            if (await _context.Contact.Where(currentUser => currentUser.contactOf.registeredUser){
-
-            }
+            RegisteredUser registeredUser = await _context.RegisteredUser.Where(ru => ru.username == currentUser).Include(ru => ru.contacts).FirstOrDefaultAsync();
             if (registeredUser == null)
             {
                 return NotFound();
             }
-
-            return registeredUser;
+            if (registeredUser.contacts.Find(c => c.name == id) != null)
+            {
+                return await _context.RegisteredUser.Where(ru => ru.username != currentUser).FirstOrDefaultAsync();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // PUT: api/RegisteredUsers/5
