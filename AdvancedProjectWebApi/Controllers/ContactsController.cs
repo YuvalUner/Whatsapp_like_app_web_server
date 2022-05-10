@@ -22,7 +22,7 @@ namespace AdvancedProjectWebApi.Controllers
             _context = new AdvancedProgrammingProjectsServerContext();
         }
 
-        // GET: api/RegisteredUsers
+        // GET: api/Contacts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RegisteredUser>>> getContacts(string id)
         {
@@ -34,7 +34,7 @@ namespace AdvancedProjectWebApi.Controllers
             return contacts;
         }
 
-        // GET: api/RegisteredUsers/5
+        // GET: api/Contacts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RegisteredUser>> GetRegisteredUser(string id, string currentUser)
         {
@@ -53,7 +53,7 @@ namespace AdvancedProjectWebApi.Controllers
             }
         }
 
-        // PUT: api/RegisteredUsers/5
+        // PUT: api/Contacts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRegisteredUser(string id, RegisteredUser registeredUser)
@@ -84,7 +84,7 @@ namespace AdvancedProjectWebApi.Controllers
             return NoContent();
         }
 
-        // POST: api/RegisteredUsers
+        // POST: api/Contacts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<RegisteredUser>> PostRegisteredUser(string user, string id)
@@ -106,7 +106,7 @@ namespace AdvancedProjectWebApi.Controllers
             return CreatedAtAction("GetRegisteredUser", new { id = userToAdd.username }, userToAdd);
         }
 
-        // DELETE: api/RegisteredUsers/5
+        // DELETE: api/Contacts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRegisteredUser(string id, string username)
         {
@@ -117,14 +117,14 @@ namespace AdvancedProjectWebApi.Controllers
             }
             Contact contactFirst = firstUser.contacts.Find(c => c.name == id);
             if (contactFirst != null) {
-                firstUser.contacts.Remove(contactFirst);
                 Conversation convoOne = firstUser.conversations.Find(c => c.with == id);
-                firstUser.conversations.Remove(convoOne);
                 RegisteredUser secondUser = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.contacts).Include(ru => ru.conversations).FirstOrDefaultAsync();
                 Contact contactSecond = secondUser.contacts.Find(c => c.name == username);
-                secondUser.contacts.Remove(contactSecond);
                 Conversation convoTwo = secondUser.conversations.Find(c => c.with == username);
-                secondUser.conversations.Remove(convoTwo);
+                _context.Conversation.Remove(convoOne);
+                _context.Conversation.Remove(convoTwo);
+                _context.Contact.Remove(contactFirst);
+                _context.Contact.Remove(contactSecond);
                 await _context.SaveChangesAsync();
             }
             else {
