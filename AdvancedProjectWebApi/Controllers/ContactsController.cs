@@ -24,9 +24,14 @@ namespace AdvancedProjectWebApi.Controllers
 
         // GET: api/RegisteredUsers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contact>>> GetRegisteredUser(string id)
+        public async Task<ActionResult<IEnumerable<RegisteredUser>>> getContacts(string id)
         {
-            return await _context.Contact.Where(c => c.contactOf == id).ToListAsync();
+            RegisteredUser user = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.contacts).FirstOrDefaultAsync();
+            List<RegisteredUser> contacts = new List<RegisteredUser>();
+            foreach(Contact contact in user.contacts) {
+                contacts.Add(await _context.RegisteredUser.Where(ru => ru.username == contact.name).FirstOrDefaultAsync());
+            }
+            return contacts;
         }
 
         // GET: api/RegisteredUsers/5
