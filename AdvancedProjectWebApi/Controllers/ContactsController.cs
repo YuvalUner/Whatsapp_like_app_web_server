@@ -34,7 +34,9 @@ namespace AdvancedProjectWebApi.Controllers
         public async Task<ActionResult<RegisteredUser>> GetRegisteredUser(string id, string currentUser)
         {
             var registeredUser = await _context.RegisteredUser.FindAsync(id);
+            if (await _context.Contact.Where(currentUser => currentUser.contactOf.registeredUser){
 
+            }
             if (registeredUser == null)
             {
                 return NotFound();
