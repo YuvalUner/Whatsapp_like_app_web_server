@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AdvancedProgrammingProjectsServer.Models {
+namespace Domain {
 
     public class Message {
 

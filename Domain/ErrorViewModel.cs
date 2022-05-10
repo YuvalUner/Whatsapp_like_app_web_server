@@ -1,4 +1,4 @@
-namespace AdvancedProgrammingProjectsServer.Models {
+namespace Domain {
     public class ErrorViewModel {
         public string? RequestId { get; set; }
 

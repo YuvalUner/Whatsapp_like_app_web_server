@@ -1,4 +1,4 @@
-﻿namespace AdvancedProgrammingProjectsServer.Models {
+﻿namespace Domain {
 
     public class Conversation {
 

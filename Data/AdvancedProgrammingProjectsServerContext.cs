@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using AdvancedProgrammingProjectsServer.Models;
+using Domain;
 
-namespace AdvancedProgrammingProjectsServer.Data
+namespace Data
 {
     public class AdvancedProgrammingProjectsServerContext : DbContext
     {
@@ -28,18 +28,18 @@ namespace AdvancedProgrammingProjectsServer.Data
             modelBuilder.Entity<Rating>().HasKey(e => e.Id);
         }
 
-        public DbSet<AdvancedProgrammingProjectsServer.Models.Contact> Contact { get; set; }
+        public DbSet<Contact> Contact { get; set; }
 
-        public DbSet<AdvancedProgrammingProjectsServer.Models.Conversation> Conversation { get; set; }
+        public DbSet<Conversation> Conversation { get; set; }
 
-        public DbSet<AdvancedProgrammingProjectsServer.Models.Message> Message { get; set; }
+        public DbSet<Message> Message { get; set; }
 
-        public DbSet<AdvancedProgrammingProjectsServer.Models.RegisteredUser> RegisteredUser { get; set; }
+        public DbSet<RegisteredUser> RegisteredUser { get; set; }
 
-        public DbSet<AdvancedProgrammingProjectsServer.Models.SecretQuestion> SecretQuestion { get; set; }
+        public DbSet<SecretQuestion> SecretQuestion { get; set; }
 
-        public DbSet<AdvancedProgrammingProjectsServer.Models.PendingUser> PendingUser { get; set; }
+        public DbSet<PendingUser> PendingUser { get; set; }
 
-        public DbSet<AdvancedProgrammingProjectsServer.Models.Rating> Rating { get; set; }
+        public DbSet<Rating> Rating { get; set; }
     }
 }

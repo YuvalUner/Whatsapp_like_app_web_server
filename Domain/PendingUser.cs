@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain;
+using System.ComponentModel.DataAnnotations;
 
-namespace AdvancedProgrammingProjectsServer.Models {
+namespace Domain {
 
-    public class RegisteredUser {
+    public class PendingUser {
 
         [Key]
         public string username { get; set; }
@@ -22,11 +23,5 @@ namespace AdvancedProgrammingProjectsServer.Models {
         public SecretQuestion secretQuestions { get; set; }
 
         public string verificationcode { get; set; }
-
-        public List<Contact> contacts { get; set; }
-
-        public string nickNum { get; set; }
-
-        public List<Conversation> conversations { get; set; }
     }
 }
