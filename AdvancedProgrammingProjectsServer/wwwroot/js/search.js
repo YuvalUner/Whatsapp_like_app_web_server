@@ -6,6 +6,8 @@
     $("#review-table-body").load("/Ratings/Search?nameToSearch=" + value);
 }
 
-document.getElementById("search").addEventListener("submit", e => search(e));
-document.getElementById("search-box").addEventListener("keyup", e => search(e));
+$(function () {
+    document.getElementById("search").addEventListener("submit", e => search(e));
+    document.getElementById("search-box").addEventListener("keyup", e => search(e));
+});
 
