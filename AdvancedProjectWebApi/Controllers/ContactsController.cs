@@ -135,36 +135,44 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpGet("{id}/messages")]
         public async Task<ActionResult<IEnumerable<Message>>> getMessages(string id, string currentUser) {
 
-            // Checks that the 2 are contacts of each other
-            RegisteredUser current = await _context.RegisteredUser.Where(ru => ru.username == currentUser).Include(ru => ru.conversations).FirstOrDefaultAsync();
-            Conversation cs = current.conversations.Find(c => c.with == id);
-            if (cs == null) {
-                return NotFound();
-            }
-            Conversation convo = await _context.Conversation.Where(c => c.Id == cs.Id).Include(c => c.messages).FirstOrDefaultAsync();
+            // Getting the conversation between both users and the messages in that conversation.
+            Conversation convo = (from conversation in
+                                            (await (from user in _context.RegisteredUser
+                                                    where user.username == currentUser
+                                                    select user.conversations).FirstOrDefaultAsync())
+                                          join message in _context.Message on conversation.Id equals message.ConversationId
+                                          where conversation.with == id
+                                          select conversation).FirstOrDefault();
+
             return convo.messages;
         }
 
         [HttpPost("{id}/messages")]
         public async Task<IActionResult> addMessage(string currentUser, string id, string content) {
 
-            RegisteredUser sender = await _context.RegisteredUser.Where(ru => ru.username == currentUser).Include(ru => ru.conversations).FirstOrDefaultAsync();
-            RegisteredUser receiver = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.conversations).FirstOrDefaultAsync();
+            // Getting the conversations of both users and the messages in those, so they can be added to.
+            Conversation convoSender = (from conversation in
+                                        (await (from user in _context.RegisteredUser
+                                         where user.username == currentUser
+                                        select user.conversations).FirstOrDefaultAsync())
+                                        join message in _context.Message on conversation.Id equals message.ConversationId
+                                        where conversation.with == id
+                                        select conversation).FirstOrDefault();
 
-            Conversation cs = sender.conversations.Find(c => c.with == id);
-            if (cs == null) {
-                return NotFound();
-            }
-            Conversation convoSender = await _context.Conversation.Where(c => c.Id == cs.Id).Include(c => c.messages).FirstOrDefaultAsync();
+            Conversation convoReceiver = (from conversation in
+                                            (await (from user in _context.RegisteredUser
+                                         where user.username == id
+                                         select user.conversations).FirstOrDefaultAsync())
+                                          join message in _context.Message on conversation.Id equals message.ConversationId
+                                          where conversation.with == currentUser
+                                          select conversation).FirstOrDefault();
 
-            Conversation cr = receiver.conversations.Find(c => c.with == currentUser);
-            if (cr == null) {
-                return NotFound();
-            }
-            Conversation convoReceiver = await _context.Conversation.Where(c => c.Id == cr.Id).Include(c => c.messages).FirstOrDefaultAsync();
-
+            // Adding the message and crying over data redundancy
             convoSender.messages.Add(new Message() { content = content, created = DateTime.Now, type = "text", sent = true });
             convoReceiver.messages.Add(new Message() { content = content, created = DateTime.Now, type = "text", sent = false });
+
+            _context.Entry(convoSender).State = EntityState.Modified;
+            _context.Entry(convoReceiver).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
             return CreatedAtAction("addMessage", new { content = content });
