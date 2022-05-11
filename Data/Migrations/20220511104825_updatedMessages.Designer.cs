@@ -3,44 +3,57 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AdvancedProgrammingProjectsServer.Migrations
+namespace Data.Migrations
 {
     [DbContext(typeof(AdvancedProgrammingProjectsServerContext))]
-    partial class AdvancedProgrammingProjectsServerContextModelSnapshot : ModelSnapshot
+    [Migration("20220511104825_updatedMessages")]
+    partial class updatedMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Contact", b =>
+            modelBuilder.Entity("Domain.Contact", b =>
                 {
                     b.Property<string>("contactOf")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("name")
+                    b.Property<string>("id")
                         .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("LastSeen")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("RegisteredUserusername")
                         .HasColumnType("varchar(255)");
 
-                    b.HasKey("contactOf", "name");
+                    b.Property<string>("last")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("lastdate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("server")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("contactOf", "id");
 
                     b.HasIndex("RegisteredUserusername");
 
                     b.ToTable("Contact");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Conversation", b =>
+            modelBuilder.Entity("Domain.Conversation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,9 +73,9 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.ToTable("Conversation");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Message", b =>
+            modelBuilder.Entity("Domain.Message", b =>
                 {
-                    b.Property<int>("key")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -73,24 +86,24 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("sender")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("time")
+                    b.Property<DateTime>("created")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("sent")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("type")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("key");
+                    b.HasKey("id");
 
                     b.HasIndex("ConversationId");
 
                     b.ToTable("Message");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.PendingUser", b =>
+            modelBuilder.Entity("Domain.PendingUser", b =>
                 {
                     b.Property<string>("username")
                         .HasColumnType("varchar(255)");
@@ -133,7 +146,7 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.ToTable("PendingUser");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Rating", b =>
+            modelBuilder.Entity("Domain.Rating", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,7 +172,7 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.ToTable("Rating");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.RegisteredUser", b =>
+            modelBuilder.Entity("Domain.RegisteredUser", b =>
                 {
                     b.Property<string>("username")
                         .HasColumnType("varchar(255)");
@@ -206,7 +219,7 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.ToTable("RegisteredUser");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.SecretQuestion", b =>
+            modelBuilder.Entity("Domain.SecretQuestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -225,30 +238,30 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.ToTable("SecretQuestion");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Contact", b =>
+            modelBuilder.Entity("Domain.Contact", b =>
                 {
-                    b.HasOne("AdvancedProgrammingProjectsServer.Models.RegisteredUser", null)
+                    b.HasOne("Domain.RegisteredUser", null)
                         .WithMany("contacts")
                         .HasForeignKey("RegisteredUserusername");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Conversation", b =>
+            modelBuilder.Entity("Domain.Conversation", b =>
                 {
-                    b.HasOne("AdvancedProgrammingProjectsServer.Models.RegisteredUser", null)
+                    b.HasOne("Domain.RegisteredUser", null)
                         .WithMany("conversations")
                         .HasForeignKey("RegisteredUserusername");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Message", b =>
+            modelBuilder.Entity("Domain.Message", b =>
                 {
-                    b.HasOne("AdvancedProgrammingProjectsServer.Models.Conversation", null)
+                    b.HasOne("Domain.Conversation", null)
                         .WithMany("messages")
                         .HasForeignKey("ConversationId");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.PendingUser", b =>
+            modelBuilder.Entity("Domain.PendingUser", b =>
                 {
-                    b.HasOne("AdvancedProgrammingProjectsServer.Models.SecretQuestion", "secretQuestions")
+                    b.HasOne("Domain.SecretQuestion", "secretQuestions")
                         .WithMany()
                         .HasForeignKey("secretQuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -257,9 +270,9 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.Navigation("secretQuestions");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.RegisteredUser", b =>
+            modelBuilder.Entity("Domain.RegisteredUser", b =>
                 {
-                    b.HasOne("AdvancedProgrammingProjectsServer.Models.SecretQuestion", "secretQuestions")
+                    b.HasOne("Domain.SecretQuestion", "secretQuestions")
                         .WithMany()
                         .HasForeignKey("secretQuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -268,12 +281,12 @@ namespace AdvancedProgrammingProjectsServer.Migrations
                     b.Navigation("secretQuestions");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.Conversation", b =>
+            modelBuilder.Entity("Domain.Conversation", b =>
                 {
                     b.Navigation("messages");
                 });
 
-            modelBuilder.Entity("AdvancedProgrammingProjectsServer.Models.RegisteredUser", b =>
+            modelBuilder.Entity("Domain.RegisteredUser", b =>
                 {
                     b.Navigation("contacts");
 

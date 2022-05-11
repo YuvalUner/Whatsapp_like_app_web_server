@@ -11,7 +11,7 @@ namespace Data
     public class AdvancedProgrammingProjectsServerContext : DbContext
     {
 
-        private const string connectionString = "server=localhost;port=3306;database=Items;user=root;password=dangit65";
+        private const string connectionString = "***REMOVED***";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             optionsBuilder.UseMySql(connectionString, MariaDbServerVersion.AutoDetect(connectionString));
@@ -21,10 +21,10 @@ namespace Data
 
             modelBuilder.Entity<RegisteredUser>().HasKey(e => e.username);
             modelBuilder.Entity<PendingUser>().HasKey(e => e.username);
-            modelBuilder.Entity<Message>().HasKey(e => e.key);
+            modelBuilder.Entity<Message>().HasKey(e => e.id);
             modelBuilder.Entity<Conversation>().HasKey(e => e.Id);
             modelBuilder.Entity<SecretQuestion>().HasKey(e => e.Id);
-            modelBuilder.Entity<Contact>().HasKey(e => new {e.contactOf, e.name});
+            modelBuilder.Entity<Contact>().HasKey(e => new {e.contactOf, e.id});
             modelBuilder.Entity<Rating>().HasKey(e => e.Id);
         }
 

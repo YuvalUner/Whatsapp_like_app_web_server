@@ -9,40 +9,33 @@ using Microsoft.EntityFrameworkCore;
 using Data;
 using Domain;
 
-namespace AdvancedProjectWebApi.Controllers
-{
+namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class ContactsController : ControllerBase {
         private readonly AdvancedProgrammingProjectsServerContext _context;
 
-        public ContactsController() {
-            _context = new AdvancedProgrammingProjectsServerContext();
+        public ContactsController(AdvancedProgrammingProjectsServerContext context) {
+            _context = context;
         }
 
         // GET: api/Contacts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RegisteredUser>>> getContacts(string id) {
-            RegisteredUser user = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.contacts).FirstOrDefaultAsync();
-            List<RegisteredUser> contacts = new List<RegisteredUser>();
-            foreach (Contact contact in user.contacts) {
-                contacts.Add(await _context.RegisteredUser.Where(ru => ru.username == contact.name).FirstOrDefaultAsync());
-            }
+        public async Task<ActionResult<IEnumerable<Contact>>> getContacts(string id) {
+            List<Contact> contacts = await _context.Contact.Where(c => c.contactOf == id).ToListAsync();
             return contacts;
         }
 
         // GET: api/Contacts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RegisteredUser>> GetRegisteredUser(string id, string currentUser) {
-            RegisteredUser registeredUser = await _context.RegisteredUser.Where(ru => ru.username == currentUser).Include(ru => ru.contacts).FirstOrDefaultAsync();
-            if (registeredUser == null) {
+        public async Task<ActionResult<Contact>> getContact(string id, string currentUser) {
+            Contact contact = await _context.Contact.Where(c => c.contactOf == currentUser && c.id == id).FirstOrDefaultAsync();
+            // Contact contact = await _context.Contact.Where(c => c.contactOf == currentUser && c.id == id).FirstOrDefaultAsync();
+            if (contact == null) {
                 return NotFound();
-            }
-            if (registeredUser.contacts.Find(c => c.name == id) != null) {
-                return await _context.RegisteredUser.Where(ru => ru.username != currentUser).FirstOrDefaultAsync();
             }
             else {
-                return NotFound();
+                return contact;
             }
         }
 
@@ -74,36 +67,57 @@ namespace AdvancedProjectWebApi.Controllers
         // POST: api/Contacts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RegisteredUser>> PostRegisteredUser(string user, string id) {
+        public async Task<IActionResult> PostContact(string user, string id, string server) {
+            // Get the contact to be added.
             RegisteredUser userToAdd = await _context.RegisteredUser.Where(ru => ru.username == user).Include(ru => ru.contacts)
                 .Include(ru => ru.conversations).FirstOrDefaultAsync();
+            // Make sure it exists
             if (userToAdd == null) {
                 return NotFound();
             }
+            // Mutually add both users to each other's contacts
             RegisteredUser currentUser = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.contacts)
                 .Include(ru => ru.conversations).FirstOrDefaultAsync();
-            currentUser.contacts.Add(new Contact() { contactOf = id, name = user, LastSeen = DateTime.Now });
+            currentUser.contacts.Add(new Contact() {
+                contactOf = id,
+                id = user,
+                last = null,
+                name = userToAdd.nickname,
+                server = server,
+                lastdate = DateTime.Now
+            });
             currentUser.conversations.Add(new Conversation() { with = user, messages = new List<Message>() });
-            userToAdd.contacts.Add(new Contact() { contactOf = user, name = id, LastSeen = DateTime.Now });
-            userToAdd.conversations.Add(new Conversation() { with = user, messages = new List<Message>() });
+            userToAdd.contacts.Add(new Contact() {
+                contactOf = user,
+                id = id,
+                name = currentUser.nickname,
+                last = null,
+                server = server,
+                lastdate = DateTime.Now
+            });
+            userToAdd.conversations.Add(new Conversation() { with = id, messages = new List<Message>() });
             await _context.SaveChangesAsync();
 
+            Response.StatusCode = 201;
 
-            return CreatedAtAction("GetRegisteredUser", new { id = userToAdd.username }, userToAdd);
+            return CreatedAtAction("PostContact", new { id = id });
         }
 
         // DELETE: api/Contacts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRegisteredUser(string id, string username) {
+            // Check if the user itself exists
             RegisteredUser firstUser = await _context.RegisteredUser.Where(ru => ru.username == username).Include(ru => ru.contacts).Include(ru => ru.conversations).FirstOrDefaultAsync();
             if (firstUser == null) {
                 return NotFound();
             }
-            Contact contactFirst = firstUser.contacts.Find(c => c.name == id);
+            // check if the other user is in the user's contact list
+            Contact contactFirst = firstUser.contacts.Find(c => c.id == id);
             if (contactFirst != null) {
+                // If yes, mutually delete them from each other's contacts and conversations.
                 Conversation convoOne = firstUser.conversations.Find(c => c.with == id);
                 RegisteredUser secondUser = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.contacts).Include(ru => ru.conversations).FirstOrDefaultAsync();
-                Contact contactSecond = secondUser.contacts.Find(c => c.name == username);
+                Contact contactSecond = secondUser.contacts.Find(c => c.id == username);
                 Conversation convoTwo = secondUser.conversations.Find(c => c.with == username);
                 _context.Conversation.Remove(convoOne);
                 _context.Conversation.Remove(convoTwo);
@@ -119,20 +133,44 @@ namespace AdvancedProjectWebApi.Controllers
         }
 
         [HttpGet("{id}/messages")]
-        public async Task<ActionResult<IEnumerable<Message>>> getMessages(string id, string username) {
+        public async Task<ActionResult<IEnumerable<Message>>> getMessages(string id, string currentUser) {
 
-            Contact con = await _context.Contact.Where(c => c.contactOf == username && c.name == id).FirstOrDefaultAsync();
-            if (con != null) {
-                Conversation convo = await _context.Conversation.Where(c => c.with == con.name).Include(c => c.messages).FirstOrDefaultAsync();
-                return convo.messages;
-            }
-            else {
+            // Checks that the 2 are contacts of each other
+            RegisteredUser current = await _context.RegisteredUser.Where(ru => ru.username == currentUser).Include(ru => ru.conversations).FirstOrDefaultAsync();
+            Conversation cs = current.conversations.Find(c => c.with == id);
+            if (cs == null) {
                 return NotFound();
             }
+            Conversation convo = await _context.Conversation.Where(c => c.Id == cs.Id).Include(c => c.messages).FirstOrDefaultAsync();
+            return convo.messages;
         }
 
-        private bool RegisteredUserExists(string id)
-        {
+        [HttpPost("{id}/messages")]
+        public async Task<IActionResult> addMessage(string currentUser, string id, string content) {
+
+            RegisteredUser sender = await _context.RegisteredUser.Where(ru => ru.username == currentUser).Include(ru => ru.conversations).FirstOrDefaultAsync();
+            RegisteredUser receiver = await _context.RegisteredUser.Where(ru => ru.username == id).Include(ru => ru.conversations).FirstOrDefaultAsync();
+
+            Conversation cs = sender.conversations.Find(c => c.with == id);
+            if (cs == null) {
+                return NotFound();
+            }
+            Conversation convoSender = await _context.Conversation.Where(c => c.Id == cs.Id).Include(c => c.messages).FirstOrDefaultAsync();
+
+            Conversation cr = receiver.conversations.Find(c => c.with == currentUser);
+            if (cr == null) {
+                return NotFound();
+            }
+            Conversation convoReceiver = await _context.Conversation.Where(c => c.Id == cr.Id).Include(c => c.messages).FirstOrDefaultAsync();
+
+            convoSender.messages.Add(new Message() { content = content, created = DateTime.Now, type = "text", sent = true });
+            convoReceiver.messages.Add(new Message() { content = content, created = DateTime.Now, type = "text", sent = false });
+
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("addMessage", new { content = content });
+        }
+
+        private bool RegisteredUserExists(string id) {
             return _context.RegisteredUser.Any(e => e.username == id);
         }
     }
