@@ -112,13 +112,26 @@ namespace Services {
             if (username == null || with == null) {
                 return null;
             }
-            Conversation? convo = (from conversation in
-                                    (await (from user in _context.RegisteredUser
-                                            where user.username == username
-                                            select user.conversations).FirstOrDefaultAsync())
-                                  join message in _context.Message on conversation.Id equals message.ConversationId
-                                  where conversation.with == with
-                                  select conversation).FirstOrDefault();
+            // An incredibly convoluted way to get the conversation from the database.
+            // Done because all other ways resulted in exceptions due to multiple accesses to the context.
+            // Therefore, single query was broken up into many inefficient ones with more information than needed.
+            // Basically another example as to why bringing our JSON objects as models and letting 
+            // Entity framework do everything was a terrible idea, but it is what it is.
+            RegisteredUser? user = await this.GetRegisteredUserWithConvoAndContacts(username);
+            if (user == null) {
+                return null;
+            }
+            // If the users are not contacts, they have no conversation.
+            if (user.contacts.Find(c => c.id == with) == null) {
+                return null;
+            }
+
+            Conversation? convo = user.conversations.Find(c => c.with == with);
+
+            convo = await _context.Conversation.Where(c => c.Id == convo.Id).Include(c => c.messages).FirstOrDefaultAsync();
+            if (convo.messages == null) {
+                convo.messages = new List<Message>();
+            }
             return convo;
         }
 

@@ -24,8 +24,13 @@ namespace AdvancedProjectWebApi.Controllers {
 
         // GET: api/Contacts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contact>>> getContacts(string id) {
-            List<Contact>? contacts = await _contactsService.GetContacts(id);
+        public async Task<ActionResult<IEnumerable<Contact>>> getContacts() {
+            string? username = HttpContext.Session.GetString("username");
+            if (username == null) {
+                // Temporary using NotFound until we set up authorization scheme
+                return NotFound();
+            }
+            List<Contact>? contacts = await _contactsService.GetContacts(username);
             if (contacts == null) {
                 return NotFound();
             }
@@ -34,7 +39,11 @@ namespace AdvancedProjectWebApi.Controllers {
 
         // GET: api/Contacts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Contact>> getContact(string id, string currentUser) {
+        public async Task<ActionResult<Contact>> getContact(string id) {
+            string? currentUser = HttpContext.Session.GetString("username");
+            if (currentUser == null) {
+                return NotFound();
+            }
             Contact contact = await _contactsService.GetContact(currentUser, id);
             if (contact == null) {
                 return NotFound();
@@ -72,7 +81,12 @@ namespace AdvancedProjectWebApi.Controllers {
         // POST: api/Contacts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<IActionResult> PostContact(string user, string id, string server) {
+        public async Task<IActionResult> PostContact(string id, string server) {
+
+            string? user = HttpContext.Session.GetString("username");
+            if (user == null) {
+                return NotFound();
+            }
 
             await _contactsService.addContact(user, new Contact() {
                 contactOf = user,
@@ -95,7 +109,12 @@ namespace AdvancedProjectWebApi.Controllers {
 
         // DELETE: api/Contacts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRegisteredUser(string id, string username) {
+        public async Task<IActionResult> DeleteRegisteredUser(string id) {
+
+            string? username = HttpContext.Session.GetString("username");
+            if (username == null) {
+                return NotFound();
+            }
 
             await _contactsService.DeleteContact(username, id);
             await _contactsService.DeleteContact(id, username);
@@ -104,15 +123,29 @@ namespace AdvancedProjectWebApi.Controllers {
         }
 
         [HttpGet("{id}/messages")]
-        public async Task<ActionResult<IEnumerable<Message>>> getMessages(string id, string currentUser) {
+        public async Task<ActionResult<IEnumerable<Message>>> getMessages(string id) {
 
-            Conversation convo = await _contactsService.GetConversation(currentUser, id);
+            string? currentUser = HttpContext.Session.GetString("username");
+            if (currentUser == null) {
+                return NotFound();
+            }
+
+            Conversation? convo = await _contactsService.GetConversation(currentUser, id);
+
+            if (convo == null) {
+                return NotFound();
+            }
 
             return convo.messages;
         }
 
         [HttpPost("{id}/messages")]
-        public async Task<IActionResult> addMessage(string currentUser, string id, string content) {
+        public async Task<IActionResult> addMessage(string id, string content) {
+
+            string? currentUser = HttpContext.Session.GetString("username");
+            if (currentUser == null) {
+                return NotFound();
+            }
 
             await _contactsService.addMessage(currentUser, id, new Message() { content = content, created = DateTime.Now, type = "text", sent = true });
             await _contactsService.addMessage(id, currentUser, new Message() { content = content, created = DateTime.Now, type = "text", sent = false });
