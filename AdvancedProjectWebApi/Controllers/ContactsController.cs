@@ -96,11 +96,12 @@ namespace AdvancedProjectWebApi.Controllers {
                 lastdate = DateTime.Now
             });
 
+
             await _contactsService.addContact(id, new Contact() {
                 contactOf = id,
                 id = user,
                 last = null,
-                server = server,
+                server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}",
                 lastdate = DateTime.Now
             });
 
