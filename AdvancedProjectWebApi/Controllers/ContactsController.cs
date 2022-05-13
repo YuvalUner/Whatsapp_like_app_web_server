@@ -9,10 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Data;
 using Domain;
 using Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ContactsController : ControllerBase {
         private readonly AdvancedProgrammingProjectsServerContext _context;
         private readonly IContactsService _contactsService;
@@ -25,7 +27,8 @@ namespace AdvancedProjectWebApi.Controllers {
         // GET: api/Contacts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> getContacts() {
-            string? username = HttpContext.Session.GetString("username");
+            string? username = User.FindFirst("username")?.Value;
+            //string? username = HttpContext.Session.GetString("username");
             if (username == null) {
                 // Temporary using NotFound until we set up authorization scheme
                 return NotFound();
@@ -40,7 +43,7 @@ namespace AdvancedProjectWebApi.Controllers {
         // GET: api/Contacts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> getContact(string id) {
-            string? currentUser = HttpContext.Session.GetString("username");
+            string? currentUser = User.FindFirst("username")?.Value;
             if (currentUser == null) {
                 return NotFound();
             }
@@ -83,7 +86,7 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpPost]
         public async Task<IActionResult> PostContact(string id, string server) {
 
-            string? user = HttpContext.Session.GetString("username");
+            string? user = User.FindFirst("username")?.Value;
             if (user == null) {
                 return NotFound();
             }
@@ -112,7 +115,7 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRegisteredUser(string id) {
 
-            string? username = HttpContext.Session.GetString("username");
+            string? username = User.FindFirst("username")?.Value;
             if (username == null) {
                 return NotFound();
             }
@@ -126,7 +129,7 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpGet("{id}/messages")]
         public async Task<ActionResult<IEnumerable<Message>>> getMessages(string id) {
 
-            string? currentUser = HttpContext.Session.GetString("username");
+            string? currentUser = User.FindFirst("username")?.Value;
             if (currentUser == null) {
                 return NotFound();
             }
@@ -143,7 +146,7 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpPost("{id}/messages")]
         public async Task<IActionResult> addMessage(string id, string content) {
 
-            string? currentUser = HttpContext.Session.GetString("username");
+            string? currentUser = User.FindFirst("username")?.Value;
             if (currentUser == null) {
                 return NotFound();
             }
