@@ -59,7 +59,15 @@ namespace AdvancedProjectWebApi.Controllers {
         // PUT: api/Contacts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRegisteredUser(string id, RegisteredUser registeredUser) {
+        public async Task<IActionResult> PutRegisteredUser(string id, string server) {
+
+            string? user = User.FindFirst("username")?.Value;
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await _contactsService.
+
             if (id != registeredUser.username) {
                 return BadRequest();
             }
