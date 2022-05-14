@@ -58,6 +58,7 @@ namespace AdvancedProjectWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRegisteredUser(string id, RegisteredUser registeredUser)
         {
+           
             if (id != registeredUser.username)
             {
                 return BadRequest();
