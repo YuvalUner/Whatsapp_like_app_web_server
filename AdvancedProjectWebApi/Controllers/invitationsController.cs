@@ -16,23 +16,24 @@ namespace AdvancedProjectWebApi.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> invite(string from, string to, string server) {
+        public async Task<IActionResult> invite([Bind("to,from,server")] Invite invite) {
 
-            if (from == null || to == null || server == null) {
-                return BadRequest();
-            }
 
-            bool success = await _contactsService.addContact(to, new Contact {
-                contactOf = to,
-                id = from,
-                last = null,
-                lastdate = DateTime.Now,
-                server = server
-            });
-            if (success) {
-                return NoContent();
+            if (ModelState.IsValid) {
+
+                bool success = await _contactsService.addContact(invite.to, new Contact {
+                    contactOf = invite.to,
+                    id = invite.from,
+                    last = null,
+                    lastdate = DateTime.Now,
+                    server = invite.server
+                });
+                if (success) {
+                    return CreatedAtAction("invite", new {});
+                }
+                return NotFound();
             }
-            return NotFound();
+            return BadRequest();
         }
     }
 }
