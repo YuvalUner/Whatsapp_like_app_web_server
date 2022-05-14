@@ -71,27 +71,6 @@ namespace AdvancedProjectWebApi.Controllers {
                 return NoContent();
             }
             return NotFound();
-
-            /*return Create;
-            if (id != registeredUser.username) {
-                return BadRequest();
-            }
-
-            _context.Entry(registeredUser).State = EntityState.Modified;
-
-            try {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) {
-                if (!RegisteredUserExists(id)) {
-                    return NotFound();
-                }
-                else {
-                    throw;
-                }
-            }
-
-            return NoContent();*/
         }
 
         // POST: api/Contacts
