@@ -23,5 +23,7 @@ namespace Domain {
         public SecretQuestion secretQuestions { get; set; }
 
         public string verificationcode { get; set; }
+
+        public DateTime timeCreated { get; set; }
     }
 }
