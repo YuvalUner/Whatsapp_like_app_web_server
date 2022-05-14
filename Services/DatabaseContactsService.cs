@@ -190,5 +190,22 @@ namespace Services {
             }
             return false;
         }
+
+        public async Task<string?> getLastSeen(string? username, string? contact)
+        {
+            if (username == null || contact == null)
+            {
+                return null;
+            }
+            Contact? contactSeeninfo = await this.GetContact(username, contact);
+            if (contactSeeninfo == null)
+            {
+                return null;
+            }
+            return contactSeeninfo.last;
+        }
+
+
     }
 }
+

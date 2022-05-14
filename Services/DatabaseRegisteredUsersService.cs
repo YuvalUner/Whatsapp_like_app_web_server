@@ -51,6 +51,20 @@ namespace Services {
             return true;
         }
 
+        public async Task<string?> getDescription(string? username)
+        {
+            if (username == null)
+            {
+                return null;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null)
+            {
+                return null;
+            }
+            return user.description;
+        }
+
         public string? generateNickNum(){
             string nickNum = string.Empty;
             Random rand = new Random();
@@ -100,5 +114,7 @@ namespace Services {
             await _context.SaveChangesAsync();
             return true;
         }
+
+
     }
 }
