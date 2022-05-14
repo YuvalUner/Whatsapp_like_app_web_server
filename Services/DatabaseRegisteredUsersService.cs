@@ -76,5 +76,29 @@ namespace Services {
             return user.nickname;
         }
 
+        public async Task<string?> getNickname(string? username)
+        {
+            if (username == null)
+            {
+                return null;
+            }
+            string? nickname = await (from user in _context.RegisteredUser
+                                      where user.username == username
+                                      select user.nickname).FirstOrDefaultAsync();
+            return nickname;
+        }
+
+        public async Task<bool> editNickName(string? username, string? newNickName)
+        {
+            if (username == null || newNickName == null)
+            {
+                return false;
+            }
+            RegisteredUser user = await this.GetRegisteredUser(username);
+            user.nickname = newNickName;
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

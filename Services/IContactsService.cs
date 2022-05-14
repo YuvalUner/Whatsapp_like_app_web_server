@@ -65,13 +65,6 @@ namespace Services {
         Task<bool> addContact(string? username, Contact contact);
 
         /// <summary>
-        /// Gets a user's nickname.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        public Task<string?> getNickname(string? username);
-
-        /// <summary>
         /// Gets a specific message from a specific user's conversation.
         /// </summary>
         /// <param name="username"></param>

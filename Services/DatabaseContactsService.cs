@@ -12,20 +12,13 @@ namespace Services {
     public class DatabaseContactsService : IContactsService {
 
         private readonly AdvancedProgrammingProjectsServerContext _context;
+        private readonly IRegisteredUsersService _registeredUsersService;
 
         public DatabaseContactsService(AdvancedProgrammingProjectsServerContext context) {
             this._context = context;
+            this._registeredUsersService = new DatabaseRegisteredUsersService(context);
         }
 
-        public async Task<string?> getNickname(string? username) {
-            if (username == null) {
-                return null;
-            }
-            string? nickname = await (from user in _context.RegisteredUser
-                              where user.username == username
-                              select user.nickname).FirstOrDefaultAsync();
-            return nickname;
-        }
 
         public async Task<bool> addContact(string? username, Contact contact) {
             RegisteredUser? user = await this.GetRegisteredUserWithConvoAndContacts(username);
@@ -33,7 +26,7 @@ namespace Services {
                 return false;
             }
 
-            contact.name = await this.getNickname(contact.id);
+            contact.name = await _registeredUsersService.getNickname(contact.id);
 
             user.contacts.Add(contact);
             user.conversations.Add(new Conversation() { with = contact.id, messages = new List<Message>() });
