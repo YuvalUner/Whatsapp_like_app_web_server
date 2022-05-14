@@ -98,7 +98,7 @@ namespace Services {
             return contact;
         }
 
-        public async Task<List<Contact>?> GetContacts(string username) {
+        public async Task<List<Contact>?> GetContacts(string? username) {
 
             if (username == null) {
                 return null;
@@ -142,6 +142,42 @@ namespace Services {
             RegisteredUser? currentUser = await _context.RegisteredUser.Where(ru => ru.username == username).Include(ru => ru.contacts)
                                         .Include(ru => ru.conversations).FirstOrDefaultAsync();
             return currentUser;
+        }
+
+        public async Task<Message?> GetMessage(string username, string with, int msgId) {
+
+            Conversation? convo = await this.GetConversation(username, with);
+            if (convo == null) {
+                return null;
+            }
+            Message? msg = convo.messages.Where(m => m.id == msgId).FirstOrDefault();
+            if (msg != null) {
+                return msg;
+            }
+            return null;
+        }
+
+        public async Task<bool> editMessage(string username, string with, int msgId, string content) {
+
+            Message? msg = await this.GetMessage(username, with, msgId);
+            if (msg != null) {
+                msg.content = content;
+                _context.Entry(msg).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteMessage(string username, string with, int msgId) {
+
+            Message? msg = await this.GetMessage(username, with, msgId);
+            if (msg != null) {
+                _context.Remove(msg);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }
