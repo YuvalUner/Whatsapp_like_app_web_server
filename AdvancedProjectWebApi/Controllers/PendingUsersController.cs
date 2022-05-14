@@ -11,10 +11,12 @@ namespace AdvancedProjectWebApi.Controllers {
     public class PendingUsersController : ControllerBase {
 
         private readonly IPendingUsersService _pendingUsersService;
+        private readonly IConfiguration config;
 
-        public PendingUsersController(AdvancedProgrammingProjectsServerContext context) {
+        public PendingUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._pendingUsersService = new DatabasePendingUsersService(context);
+            this.config = config;
 
         }
 
@@ -24,7 +26,17 @@ namespace AdvancedProjectWebApi.Controllers {
 
             if (ModelState.IsValid) {
                 if (await _pendingUsersService.doesUserExist(pendingUser.username) == false) {
-                    await _pendingUsersService.addToPending(pendingUser, "SHA256");
+
+                    MailRequest mail = new MailRequest() {
+                        Email = config["MailSettings:Mail"],
+                        Password = config["MailSettings:Password"],
+                        Subject = "Your verification code",
+                        ToEmail = pendingUser.email,
+                        Host = config["MailSettings:Host"],
+                        Port = Int32.Parse(config["MailSettings:Port"])
+                    };
+
+                    await _pendingUsersService.addToPending(pendingUser, "SHA256", mail);
                     return CreatedAtAction("signUp", new { });
                 }
                 else {

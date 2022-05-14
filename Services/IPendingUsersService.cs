@@ -14,7 +14,7 @@ namespace Services {
         /// </summary>
         /// <param name="pendingUser"></param>
         /// <returns></returns>
-        Task<bool> addToPending(PendingUser pendingUser, string encryptionAlgorithm);
+        Task<bool> addToPending(PendingUser pendingUser, string encryptionAlgorithm, MailRequest mail);
 
         /// <summary>
         /// Checks if a pending user exists in the database or not.

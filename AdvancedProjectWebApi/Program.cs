@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Domain;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,10 +42,6 @@ builder.Services.AddSwaggerGen(c => {
 
 builder.Services.AddDistributedMemoryCache();
 
-//builder.Services.AddSession(options => {
-//    options.IdleTimeout = TimeSpan.FromMinutes(20);
-//    options.Cookie.IsEssential = true;
-//});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
 
@@ -82,8 +80,6 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-//app.UseSession();
 
 app.MapControllers();
 
