@@ -10,6 +10,8 @@ using Data;
 using Domain;
 using Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
+using System.Text;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
@@ -84,28 +86,41 @@ namespace AdvancedProjectWebApi.Controllers {
 
             string user = User.FindFirst("username")?.Value;
 
-            bool success = await _contactsService.addContact(user, new Contact() {
-                contactOf = user,
-                id = id,
-                last = null,
-                server = server,
-                lastdate = DateTime.Now
-            });
-            if (!success) {
-                return NotFound();
+            //bool success = await _contactsService.addContact(user, new Contact() {
+            //    contactOf = user,
+            //    id = id,
+            //    last = null,
+            //    server = server,
+            //    lastdate = DateTime.Now
+            //});
+            //if (!success) {
+            //    return NotFound();
+            //}
+
+            var invitiationContent = new {
+                from = user,
+                to = id,
+                server = server
+            };
+
+            var invitiation = new StringContent(JsonSerializer.Serialize(invitiationContent), Encoding.UTF8, "application/json");
+
+            using (var httpClient = new HttpClient()) {
+                var response = await httpClient.PostAsync(server + "/api/invitations", invitiation);
+                response.EnsureSuccessStatusCode();
             }
 
 
-            success = await _contactsService.addContact(id, new Contact() {
-                contactOf = id,
-                id = user,
-                last = null,
-                server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}",
-                lastdate = DateTime.Now
-            });
-            if (!success) {
-                return NotFound();
-            }
+            //success = await _contactsService.addContact(id, new Contact() {
+            //    contactOf = id,
+            //    id = user,
+            //    last = null,
+            //    server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}",
+            //    lastdate = DateTime.Now
+            //});
+            //if (!success) {
+            //    return NotFound();
+            //}
 
             return CreatedAtAction("PostContact", new { id = id });
         }
