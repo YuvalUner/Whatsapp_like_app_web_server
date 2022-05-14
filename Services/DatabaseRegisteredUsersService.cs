@@ -36,5 +36,45 @@ namespace Services {
             RegisteredUser? user = await _context.RegisteredUser.Where(ru => ru.username == username).FirstOrDefaultAsync();
             return user;
         }
+
+        public async Task<bool?> editDescription(string? username, string? newDescription)
+        {
+            if (username == null || newDescription == null)
+            {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            user.description = newDescription;
+
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public string? generateNickNum(){
+            string nickNum = string.Empty;
+            Random rand = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                int number = rand.Next(0, 10);
+                nickNum = nickNum + number;
+            }
+            return nickNum;
+        }
+
+        public async Task<string?> getNickNum(string? username)
+        {
+            if (username == null)
+            {
+                return null;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if(user == null)
+            {
+                return null;
+            }
+            return user.nickname;
+        }
+
     }
 }

@@ -28,7 +28,7 @@ namespace AdvancedProjectWebApi.Controllers {
         public async Task<IActionResult> LogIn(string? username) {
 
             if (await _registeredUsersService.doesUserExists(username) == true) {
-
+                
                 //HttpContext.Session.SetString("username", username);
                 var claims = new[] {
                     new Claim(JwtRegisteredClaimNames.Sub, _configuration["JWTBearerParams:Subject"]),
