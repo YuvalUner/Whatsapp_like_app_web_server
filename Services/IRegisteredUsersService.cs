@@ -22,5 +22,12 @@ namespace Services {
         /// <param name="username"></param>
         /// <returns>Registered user or null if they do not exist</returns>
         Task<RegisteredUser?> GetRegisteredUser(string? username);
+
+        /// <summary>
+        /// gets nickname of user
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        Task<string?> getNickname(string? username);
     }
 }
