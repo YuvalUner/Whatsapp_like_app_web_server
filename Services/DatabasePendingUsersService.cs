@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Domain;
 using Data;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services {
     public class DatabasePendingUsersService : IPendingUsersService {
@@ -27,15 +28,37 @@ namespace Services {
             return salt;
         }
 
+        public async Task<PendingUser?> GetPendingUser(string? username) {
+            if (username == null) {
+                return null;
+            }
+            PendingUser? user = await _context.PendingUser.Where(pu => pu.username == username).FirstOrDefaultAsync();
+            return user;
+        }
+
+        public async Task<bool> doesUserExist(string? username) {
+            if (username == null) {
+                return false;
+            }
+            PendingUser? user = await this.GetPendingUser(username);
+            if (user != null) {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<bool> addToPending(PendingUser pendingUser, string encryptionAlgorithm) {
 
             pendingUser.timeCreated = DateTime.Now;
             pendingUser.salt = this.generateSalt();
             pendingUser.encryptionAlgorithm = encryptionAlgorithm;
             using (SHA256 sha256 = SHA256.Create()) {
-                byte[] vs = sha256.ComputeHash(new UTF8Encoding().GetBytes(pendingUser.password));
+                byte[] result = sha256.ComputeHash(new UTF8Encoding().GetBytes(pendingUser.password + pendingUser.salt));
+                pendingUser.password = System.Text.Encoding.UTF8.GetString(result, 0, result.Length);
             }
             var a = 5;
+            _context.PendingUser.Add(pendingUser);
+            await _context.SaveChangesAsync();
             return true;
         }
     }

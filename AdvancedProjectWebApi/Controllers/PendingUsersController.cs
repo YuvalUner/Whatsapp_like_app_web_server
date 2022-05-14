@@ -23,7 +23,13 @@ namespace AdvancedProjectWebApi.Controllers {
             "nickname,secretQuestion")] PendingUser pendingUser) {
 
             if (ModelState.IsValid) {
-                await _pendingUsersService.addToPending(pendingUser, "SHA256");
+                if (await _pendingUsersService.doesUserExist(pendingUser.username) == false) {
+                    await _pendingUsersService.addToPending(pendingUser, "SHA256");
+                    return CreatedAtAction("signUp", new { });
+                }
+                else {
+                    return BadRequest();
+                }
             }
             return BadRequest();
         }
