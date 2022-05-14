@@ -27,12 +27,8 @@ namespace AdvancedProjectWebApi.Controllers {
         // GET: api/Contacts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> getContacts() {
-            string? username = User.FindFirst("username")?.Value;
-            //string? username = HttpContext.Session.GetString("username");
-            if (username == null) {
-                // Temporary using NotFound until we set up authorization scheme
-                return NotFound();
-            }
+            string username = User.FindFirst("username")?.Value;
+
             List<Contact>? contacts = await _contactsService.GetContacts(username);
             if (contacts == null) {
                 return NotFound();
@@ -43,10 +39,11 @@ namespace AdvancedProjectWebApi.Controllers {
         // GET: api/Contacts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> getContact(string id) {
-            string? currentUser = User.FindFirst("username")?.Value;
-            if (currentUser == null) {
-                return NotFound();
+            if (id == null) {
+                return BadRequest();
             }
+            string currentUser = User.FindFirst("username")?.Value;
+
             Contact contact = await _contactsService.GetContact(currentUser, id);
             if (contact == null) {
                 return NotFound();
@@ -86,27 +83,34 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpPost]
         public async Task<IActionResult> PostContact(string id, string server) {
 
-            string? user = User.FindFirst("username")?.Value;
-            if (user == null) {
-                return NotFound();
+            if (id == null || server == null) {
+                return BadRequest();
             }
 
-            await _contactsService.addContact(user, new Contact() {
+            string user = User.FindFirst("username")?.Value;
+
+            bool success = await _contactsService.addContact(user, new Contact() {
                 contactOf = user,
                 id = id,
                 last = null,
                 server = server,
                 lastdate = DateTime.Now
             });
+            if (!success) {
+                return NotFound();
+            }
 
 
-            await _contactsService.addContact(id, new Contact() {
+            success = await _contactsService.addContact(id, new Contact() {
                 contactOf = id,
                 id = user,
                 last = null,
                 server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}",
                 lastdate = DateTime.Now
             });
+            if (!success) {
+                return NotFound();
+            }
 
             return CreatedAtAction("PostContact", new { id = id });
         }
@@ -115,13 +119,20 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRegisteredUser(string id) {
 
-            string? username = User.FindFirst("username")?.Value;
-            if (username == null) {
-                return NotFound();
+            if (id == null) {
+                return BadRequest();
             }
 
-            await _contactsService.DeleteContact(username, id);
-            await _contactsService.DeleteContact(id, username);
+            string username = User.FindFirst("username")?.Value;
+
+            bool success = await _contactsService.DeleteContact(username, id);
+            if (!success) {
+                return NotFound();
+            }
+            success = await _contactsService.DeleteContact(id, username);
+            if (!success) {
+                return NotFound();
+            }
 
             return NoContent();
         }
@@ -129,10 +140,11 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpGet("{id}/messages")]
         public async Task<ActionResult<IEnumerable<Message>>> getMessages(string id) {
 
-            string? currentUser = User.FindFirst("username")?.Value;
-            if (currentUser == null) {
-                return NotFound();
+            if (id == null) {
+                return BadRequest();
             }
+
+            string currentUser = User.FindFirst("username")?.Value;
 
             Conversation? convo = await _contactsService.GetConversation(currentUser, id);
 
@@ -146,15 +158,95 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpPost("{id}/messages")]
         public async Task<IActionResult> addMessage(string id, string content) {
 
-            string? currentUser = User.FindFirst("username")?.Value;
-            if (currentUser == null) {
-                return NotFound();
+            // Not allowing empty messages
+            if (id == null || content == null) {
+                return BadRequest();
             }
 
-            await _contactsService.addMessage(currentUser, id, new Message() { content = content, created = DateTime.Now, type = "text", sent = true });
-            await _contactsService.addMessage(id, currentUser, new Message() { content = content, created = DateTime.Now, type = "text", sent = false });
+            string currentUser = User.FindFirst("username")?.Value;
 
+            bool success = await _contactsService.addMessage(currentUser, id, new Message() { content = content, created = DateTime.Now, type = "text", sent = true });
+            if (!success) {
+                return NotFound();
+            }
+            success = await _contactsService.addMessage(id, currentUser, new Message() { content = content, created = DateTime.Now, type = "text", sent = false });
+            if (!success) {
+                return NotFound();
+            }
             return CreatedAtAction("addMessage", new { content = content });
+        }
+
+        [HttpGet("{id}/messages/{id2}")]
+        public async Task<ActionResult<Message>> getMessage(string id, string id2) {
+
+            if (id == null || id2 == null) {
+                return BadRequest();
+            }
+
+            int id2AsInt;
+            try {
+                id2AsInt = Int32.Parse(id2);
+            }
+            catch {
+                return BadRequest();
+            }
+
+            string currentUser = User.FindFirst("username")?.Value;
+
+
+            Message msg = await _contactsService.GetMessage(currentUser, id, id2AsInt);
+            if (msg != null) {
+                return msg;
+            }
+            return NotFound();
+        }
+
+        [HttpPut("{id}/messsages/{id2}")]
+        public async Task<IActionResult> EditMessage(string id, string id2, string content) {
+            if (id == null || id2 == null) {
+                return BadRequest();
+            }
+
+            int id2AsInt;
+            try {
+                id2AsInt = Int32.Parse(id2);
+            }
+            catch {
+                return BadRequest();
+            }
+
+
+            string currentUser = User.FindFirst("username")?.Value;
+
+            bool success = await _contactsService.editMessage(currentUser, id, id2AsInt, content);
+            if (success) {
+                return NoContent();
+            }
+            return NotFound();
+
+        }
+
+        [HttpDelete("{id}/messages/{id2}")]
+        public async Task<IActionResult> DeleteMessage(string id, string id2) {
+
+            if (id == null || id2 == null) {
+                return BadRequest();
+            }
+
+            int id2AsInt;
+            try {
+                id2AsInt = Int32.Parse(id2);
+            }
+            catch {
+                return BadRequest();
+            }
+
+            string currentUser = User.FindFirst("username")?.Value;
+            bool success = await _contactsService.DeleteMessage(currentUser, id, id2AsInt);
+            if (success) {
+                return NoContent();
+            }
+            return NotFound();
         }
 
         private bool RegisteredUserExists(string id) {

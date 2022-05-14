@@ -70,5 +70,32 @@ namespace Services {
         /// <param name="username"></param>
         /// <returns></returns>
         public Task<string?> getNickname(string? username);
+
+        /// <summary>
+        /// Gets a specific message from a specific user's conversation.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="with"></param>
+        /// <param name="msgId"></param>
+        /// <returns>The message or null if not found</returns>
+        public Task<Message?> GetMessage(string username, string with, int msgId);
+
+        /// <summary>
+        /// Edits a specific message.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="with"></param>
+        /// <param name="msgId"></param>
+        /// <returns>true on success, false otherwise.</returns>
+        public Task<bool> editMessage(string username, string with, int msgId, string content);
+
+        /// <summary>
+        /// Deletes a specific message
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="with"></param>
+        /// <param name="msgId"></param>
+        /// <returns>true on success, false otherwise</returns>
+        public Task<bool> DeleteMessage(string username, string with, int msgId);
     }
 }
