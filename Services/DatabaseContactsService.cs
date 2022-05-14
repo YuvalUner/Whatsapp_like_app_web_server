@@ -1,0 +1,147 @@
+﻿using Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Services {
+
+    public class DatabaseContactsService : IContactsService {
+
+        private readonly AdvancedProgrammingProjectsServerContext _context;
+
+        public DatabaseContactsService(AdvancedProgrammingProjectsServerContext context) {
+            this._context = context;
+        }
+
+        public async Task<string?> getNickname(string? username) {
+            if (username == null) {
+                return null;
+            }
+            string? nickname = await (from user in _context.RegisteredUser
+                              where user.username == username
+                              select user.nickname).FirstOrDefaultAsync();
+            return nickname;
+        }
+
+        public async Task<bool> addContact(string? username, Contact contact) {
+            RegisteredUser? user = await this.GetRegisteredUserWithConvoAndContacts(username);
+            if (user == null) {
+                return false;
+            }
+
+            contact.name = await this.getNickname(contact.id);
+
+            user.contacts.Add(contact);
+            user.conversations.Add(new Conversation() { with = contact.id, messages = new List<Message>() });
+
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> addMessage(string? username, string? with, Message msg) {
+            Conversation? convo = await this.GetConversation(username, with);
+
+            if (convo == null) {
+                return false;
+            }
+
+            convo.messages.Add(msg);
+
+            _context.Entry(convo).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteContact(string? user, string? contactToDelete) {
+            if (user == null || contactToDelete == null) {
+                return false;
+            }
+
+            RegisteredUser? currentUser = await this.GetRegisteredUserWithConvoAndContacts(user);
+            if (currentUser == null) {
+                return false;
+            }
+
+            // Users are not contacts of one another
+            Contact? contact = currentUser.contacts.Find(c => c.id == contactToDelete);
+            if (contact == null) {
+                return false;
+            }
+
+            Conversation? convo = currentUser.conversations.Find(c => c.with == contactToDelete);
+            if (convo == null) {
+                return false;
+            }
+
+            _context.Conversation.Remove(convo);
+            _context.Contact.Remove(contact);
+
+            _context.Entry(currentUser).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<Contact?> GetContact(string? username, string? contactToGet) {
+            if (username == null || contactToGet == null) {
+                return null;
+            }
+
+            Contact? contact = await _context.Contact.Where(c => c.contactOf == username && c.id == contactToGet).FirstOrDefaultAsync();
+
+            return contact;
+        }
+
+        public async Task<List<Contact>?> GetContacts(string username) {
+
+            if (username == null) {
+                return null;
+            }
+
+            List<Contact>? contacts = await _context.Contact.Where(c => c.contactOf == username).ToListAsync();
+            return contacts;
+        }
+
+        public async Task<Conversation?> GetConversation(string? username, string? with) {
+            if (username == null || with == null) {
+                return null;
+            }
+            // An incredibly convoluted way to get the conversation from the database.
+            // Done because all other ways resulted in exceptions due to multiple accesses to the context.
+            // Therefore, single query was broken up into many inefficient ones with more information than needed.
+            // Basically another example as to why bringing our JSON objects as models and letting 
+            // Entity framework do everything was a terrible idea, but it is what it is.
+            RegisteredUser? user = await this.GetRegisteredUserWithConvoAndContacts(username);
+            if (user == null) {
+                return null;
+            }
+            // If the users are not contacts, they have no conversation.
+            if (user.contacts.Find(c => c.id == with) == null) {
+                return null;
+            }
+
+            Conversation? convo = user.conversations.Find(c => c.with == with);
+
+            convo = await _context.Conversation.Where(c => c.Id == convo.Id).Include(c => c.messages).FirstOrDefaultAsync();
+            if (convo.messages == null) {
+                convo.messages = new List<Message>();
+            }
+            return convo;
+        }
+
+        public async Task<RegisteredUser?> GetRegisteredUserWithConvoAndContacts(string? username) {
+            if (username == null) {
+                return null;
+            }
+            RegisteredUser? currentUser = await _context.RegisteredUser.Where(ru => ru.username == username).Include(ru => ru.contacts)
+                                        .Include(ru => ru.conversations).FirstOrDefaultAsync();
+            return currentUser;
+        }
+    }
+}
