@@ -12,11 +12,13 @@ using Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [RequireHttps]
     public class ContactsController : ControllerBase {
         private readonly AdvancedProgrammingProjectsServerContext _context;
         private readonly IContactsService _contactsService;
@@ -86,43 +88,34 @@ namespace AdvancedProjectWebApi.Controllers {
 
             string user = User.FindFirst("username")?.Value;
 
-            //bool success = await _contactsService.addContact(user, new Contact() {
-            //    contactOf = user,
-            //    id = id,
-            //    last = null,
-            //    server = server,
-            //    lastdate = DateTime.Now
-            //});
-            //if (!success) {
-            //    return NotFound();
-            //}
+            bool success = await _contactsService.addContact(user, new Contact() {
+                contactOf = user,
+                id = id,
+                last = null,
+                server = server,
+                lastdate = DateTime.Now
+            });
+            if (!success) {
+                return NotFound();
+            }
 
             var invitiationContent = new {
                 from = user,
                 to = id,
-                server = server
+                server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}"
             };
 
-            var invitiation = new StringContent(JsonSerializer.Serialize(invitiationContent), Encoding.UTF8, "application/json");
+            var invitation = JsonSerializer.Serialize(invitiationContent);
+
+            var url = server + "/api/invitations";
 
             using (var httpClient = new HttpClient()) {
-                var response = await httpClient.PostAsync(server + "/api/invitations", invitiation);
-                response.EnsureSuccessStatusCode();
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await httpClient.PostAsync(url, new StringContent(invitation, Encoding.UTF8, "application/json"));
             }
 
-
-            //success = await _contactsService.addContact(id, new Contact() {
-            //    contactOf = id,
-            //    id = user,
-            //    last = null,
-            //    server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}",
-            //    lastdate = DateTime.Now
-            //});
-            //if (!success) {
-            //    return NotFound();
-            //}
-
-            return CreatedAtAction("PostContact", new { id = id });
+            return CreatedAtAction("PostContact", new {});
         }
 
         // DELETE: api/Contacts/5
@@ -179,11 +172,27 @@ namespace AdvancedProjectWebApi.Controllers {
             if (!success) {
                 return NotFound();
             }
-            success = await _contactsService.addMessage(id, currentUser, new Message() { content = content, created = DateTime.Now, type = "text", sent = false });
-            if (!success) {
-                return NotFound();
+
+            // No risk of this being null if the previous function succeeded
+            Contact? contact = await _contactsService.GetContact(currentUser, id);
+
+            var transferContent = new {
+                from = currentUser,
+                to = id,
+                content = content
+            };
+
+            var transfer = JsonSerializer.Serialize(transferContent);
+
+            var url = contact.server + "/api/transfer";
+
+            using (var httpClient = new HttpClient()) {
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var response = httpClient.PostAsync(url, new StringContent(transfer, Encoding.UTF8, "application/json")).Result;
             }
-            return CreatedAtAction("addMessage", new { content = content });
+
+            return CreatedAtAction("addMessage", new {});
         }
 
         [HttpGet("{id}/messages/{id2}")]
