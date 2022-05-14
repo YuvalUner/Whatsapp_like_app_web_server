@@ -97,5 +97,15 @@ namespace Services {
         /// <param name="msgId"></param>
         /// <returns>true on success, false otherwise</returns>
         public Task<bool> DeleteMessage(string username, string with, int msgId);
+
+        /// <summary>
+        /// Edits a contact's info
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="server"></param>
+        /// <param name="newName"></param>
+        /// <param name="contactToGet"></param>
+        /// <returns>true on success, false otherwise</returns>
+        public Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet);
     }
 }

@@ -169,6 +169,24 @@ namespace Services {
             return false;
         }
 
+        public async Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet)
+        {
+            Contact? contact = await this.GetContact(username, contactToGet);
+            if (contact == null)
+            {
+                return false;
+            }
+
+            contact.name = newName;
+            contact.server = server;
+
+            _context.Entry(contact).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
         public async Task<bool> DeleteMessage(string username, string with, int msgId) {
 
             Message? msg = await this.GetMessage(username, with, msgId);
