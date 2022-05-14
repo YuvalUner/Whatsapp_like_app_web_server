@@ -27,6 +27,8 @@ namespace Domain {
 
         public string nickNum { get; set; }
 
+        public string? description { get; set; }
+
         public List<Conversation> conversations { get; set; }
     }
 }

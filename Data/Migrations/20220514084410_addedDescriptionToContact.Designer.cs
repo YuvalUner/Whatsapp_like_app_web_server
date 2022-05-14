@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AdvancedProgrammingProjectsServerContext))]
-    partial class AdvancedProgrammingProjectsServerContextModelSnapshot : ModelSnapshot
+    [Migration("20220514084410_addedDescriptionToContact")]
+    partial class addedDescriptionToContact
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,9 @@ namespace Data.Migrations
 
                     b.Property<string>("RegisteredUserusername")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("description")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("last")
                         .HasColumnType("longtext");
@@ -174,9 +179,6 @@ namespace Data.Migrations
                 {
                     b.Property<string>("username")
                         .HasColumnType("varchar(255)");
-
-                    b.Property<string>("description")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("email")
                         .IsRequired()
