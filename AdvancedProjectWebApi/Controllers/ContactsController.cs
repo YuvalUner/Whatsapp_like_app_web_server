@@ -58,12 +58,12 @@ namespace AdvancedProjectWebApi.Controllers {
         // PUT: api/Contacts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRegisteredUser(string id, string server, string name) {
+        public async Task<IActionResult> PutContact(string id, string server, string name) {
 
             string? user = User.FindFirst("username")?.Value;
             if (user == null || id == null || name == null || server == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             bool success = await _contactsService.editContact(user, server, name, id);
