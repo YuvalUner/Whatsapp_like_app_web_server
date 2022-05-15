@@ -64,10 +64,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
 
             pendingUser.hashingAlgorithm = hasingAlgorithm;
             if (hasingAlgorithm == "SHA256") {
-                using (SHA256 sha256 = SHA256.Create()) {
-                    byte[] result = sha256.ComputeHash(new UTF8Encoding().GetBytes(pendingUser.password + pendingUser.salt));
-                    pendingUser.password = Encoding.UTF8.GetString(result, 0, result.Length);
-                }
+                pendingUser.password = Utils.Utils.hashWithSHA256(pendingUser.password + pendingUser.salt);
             }
             pendingUser.verificationCode = Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, codeLengths);
             mail.Body = ($"<p>Your verification code is:</p><h3>{pendingUser.verificationCode}</h3>" +

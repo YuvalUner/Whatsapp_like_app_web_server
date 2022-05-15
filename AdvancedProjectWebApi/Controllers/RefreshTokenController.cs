@@ -5,6 +5,8 @@ using Domain.DatabaseEntryModels;
 using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Services.TokenServices.Interfaces;
+using Services.TokenServices.Implementations;
 
 namespace AdvancedProjectWebApi.Controllers {
 
@@ -14,9 +16,13 @@ namespace AdvancedProjectWebApi.Controllers {
     public class RefreshTokenController : ControllerBase {
 
         private readonly IRefreshTokenService refreshTokenService;
+        private readonly IAuthTokenGenerator _authTokenGenerator;
+        private readonly IConfiguration _configuration;
 
-        public RefreshTokenController(AdvancedProgrammingProjectsServerContext context) {
+        public RefreshTokenController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
             this.refreshTokenService = new RefreshTokenService(context);
+            this._authTokenGenerator = new AuthTokenGenerator();
+            this._configuration = config;
         }
 
         [HttpPost]
@@ -29,10 +35,16 @@ namespace AdvancedProjectWebApi.Controllers {
                 string? username = User.FindFirst("username")?.Value;
                 if (rToken.RegisteredUserusername == username) {
                     if (await refreshTokenService.validateTokenExpiry(rToken) == true) {
-                        rToken = await refreshTokenService.renewRefreshToken(rToken);
-                        return Ok(rToken.Token);
-                    }
-                    return NotFound();
+
+                        return Ok(_authTokenGenerator.GenerateAuthToken(username,
+                        _configuration["JWTBearerParams:Subject"],
+                        _configuration["JWTBearerParams:Key"],
+                        _configuration["JWTBearerParams:Issuer"],
+                        _configuration["JWTBearerParams:Audience"],
+                        20));
+                        }
+                        return NotFound();
+
                 }
                 return Forbid();
             }

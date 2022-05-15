@@ -27,7 +27,12 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
         }
 
         public async Task<bool> storeRefreshToken(RefreshToken token) {
-            _context.RefreshToken.Add(token);
+            RefreshToken hashedToken = new RefreshToken() {
+                Token = Utils.Utils.hashWithSHA256(token.Token),
+                RegisteredUserusername = token.RegisteredUserusername,
+                ExpiryDate = token.ExpiryDate
+            };
+            _context.RefreshToken.Add(hashedToken);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -37,8 +42,8 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             if (token == null) {
                 return null;
             }
-
-            RefreshToken? rToken = await _context.RefreshToken.Where(r => r.Token == token).FirstOrDefaultAsync();
+            string hashedToken = Utils.Utils.hashWithSHA256(token);
+            RefreshToken? rToken = await _context.RefreshToken.Where(r => r.Token == hashedToken).FirstOrDefaultAsync();
             return rToken;
         }
 

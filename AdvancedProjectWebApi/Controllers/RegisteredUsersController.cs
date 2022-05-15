@@ -38,17 +38,31 @@ namespace AdvancedProjectWebApi.Controllers {
 
         }
 
+        private async Task<RefreshToken> storeRefreshToken(string username, string token) {
+            RefreshToken refreshToken = new RefreshToken() {
+                Token = token,
+                RegisteredUserusername = username,
+                ExpiryDate = DateTime.UtcNow.AddDays(30)
+            };
+            await _refreshTokenService.storeRefreshToken(refreshToken);
+            return refreshToken;
+        }
+
         [HttpPost]
         public async Task<IActionResult> LogIn(string? username) {
 
             if (await _registeredUsersService.doesUserExists(username) == true) {
 
-                return Ok(_authTokenGenerator.GenerateAuthToken(username,
+                AuthToken token = _authTokenGenerator.GenerateAuthToken(username,
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
                     _configuration["JWTBearerParams:Audience"],
-                    20));
+                    20);
+
+                await this.storeRefreshToken(username, token.RefreshToken);
+
+                return Ok(token);
             }
             return BadRequest();
         }
@@ -73,12 +87,7 @@ namespace AdvancedProjectWebApi.Controllers {
             if (await _registeredUsersService.doesUserExists(username) == false) {
                 await _registeredUsersService.addNewRegisteredUser(userToSignUp);
                 await _pendingUsersService.RemovePendingUser(userToSignUp);
-                RefreshToken rToken = new RefreshToken() {
-                    Token = _refreshTokenGenerator.GenerateRefreshToken(),
-                    ExpiryDate = DateTime.UtcNow.AddDays(30),
-                    RegisteredUserusername = username
-                };
-                await _refreshTokenService.storeRefreshToken(rToken);
+                RefreshToken rToken = await this.storeRefreshToken(username, _refreshTokenGenerator.GenerateRefreshToken());
                 return Ok(rToken.Token);
             }
             return BadRequest();

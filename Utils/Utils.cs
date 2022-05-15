@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Domain.CodeOnlyModels;
+using System.Security.Cryptography;
 
 namespace Utils {
 
@@ -46,24 +47,11 @@ namespace Utils {
 
         }
 
-        public static JwtSecurityToken generateJwtToken(string username, string subject, string key, string issuer, string audience, int expiry) {
-
-            var claims = new[] {
-                    new Claim(JwtRegisteredClaimNames.Sub, subject),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                    new Claim("username", username)
-                };
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            var mac = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                issuer,
-                audience,
-                claims,
-                expires: DateTime.UtcNow.AddMinutes(expiry),
-                signingCredentials: mac
-                );
-            return token;
+        public static string hashWithSHA256(string stringToHash) {
+            using (SHA256 sha256 = SHA256.Create()) {
+                byte[] result = sha256.ComputeHash(new UTF8Encoding().GetBytes(stringToHash));
+                return Encoding.UTF8.GetString(result, 0, result.Length);
+            }
         }
     }
 }
