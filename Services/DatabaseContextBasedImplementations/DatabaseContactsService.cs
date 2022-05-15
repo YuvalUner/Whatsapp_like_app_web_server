@@ -162,11 +162,9 @@ namespace Services {
             return false;
         }
 
-        public async Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet)
-        {
+        public async Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet) {
             Contact? contact = await this.GetContact(username, contactToGet);
-            if (contact == null)
-            {
+            if (contact == null) {
                 return false;
             }
 
@@ -191,15 +189,12 @@ namespace Services {
             return false;
         }
 
-        public async Task<string?> getLastSeen(string? username, string? contact)
-        {
-            if (username == null || contact == null)
-            {
+        public async Task<string?> getLastSeen(string? username, string? contact) {
+            if (username == null || contact == null) {
                 return null;
             }
             Contact? contactSeeninfo = await this.GetContact(username, contact);
-            if (contactSeeninfo == null)
-            {
+            if (contactSeeninfo == null) {
                 return null;
             }
             return contactSeeninfo.last;

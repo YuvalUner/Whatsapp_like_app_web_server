@@ -12,7 +12,6 @@ namespace Services {
     public class DatabaseRegisteredUsersService : IRegisteredUsersService {
 
         private readonly AdvancedProgrammingProjectsServerContext _context;
-        private static readonly string nickNumString = "0123456789";
 
         public DatabaseRegisteredUsersService(AdvancedProgrammingProjectsServerContext context) {
 
@@ -38,10 +37,8 @@ namespace Services {
             return user;
         }
 
-        public async Task<bool?> editDescription(string? username, string? newDescription)
-        {
-            if (username == null || newDescription == null)
-            {
+        public async Task<bool?> editDescription(string? username, string? newDescription) {
+            if (username == null || newDescription == null) {
                 return false;
             }
             RegisteredUser? user = await this.GetRegisteredUser(username);
@@ -52,15 +49,12 @@ namespace Services {
             return true;
         }
 
-        public async Task<string?> getDescription(string? username)
-        {
-            if (username == null)
-            {
+        public async Task<string?> getDescription(string? username) {
+            if (username == null) {
                 return null;
             }
             RegisteredUser? user = await this.GetRegisteredUser(username);
-            if (user == null)
-            {
+            if (user == null) {
                 return null;
             }
             return user.description;
@@ -77,24 +71,19 @@ namespace Services {
         //    return nickNum;
         //}
 
-        public async Task<string?> getNickNum(string? username)
-        {
-            if (username == null)
-            {
+        public async Task<string?> getNickNum(string? username) {
+            if (username == null) {
                 return null;
             }
             RegisteredUser? user = await this.GetRegisteredUser(username);
-            if(user == null)
-            {
+            if (user == null) {
                 return null;
             }
             return user.nickname;
         }
 
-        public async Task<string?> getNickname(string? username)
-        {
-            if (username == null)
-            {
+        public async Task<string?> getNickname(string? username) {
+            if (username == null) {
                 return null;
             }
             string? nickname = await (from user in _context.RegisteredUser
@@ -103,19 +92,45 @@ namespace Services {
             return nickname;
         }
 
-        public async Task<bool> editNickName(string? username, string? newNickName)
-        {
-            if (username == null || newNickName == null)
-            {
+        public async Task<bool> editNickName(string? username, string? newNickName) {
+            if (username == null || newNickName == null) {
                 return false;
             }
-            RegisteredUser user = await this.GetRegisteredUser(username);
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null) {
+                return false;
+            }
             user.nickname = newNickName;
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return true;
         }
 
+        public async Task<bool> addNewRegisteredUser(PendingUser? pendingUser) {
 
+            if (pendingUser != null) {
+                RegisteredUser user = new RegisteredUser();
+                user.username = pendingUser.username;
+                user.password = pendingUser.password;
+                user.phone = pendingUser.phone;
+                user.email = pendingUser.email;
+                user.hashingAlgorithm = pendingUser.hashingAlgorithm;
+                user.salt = pendingUser.salt;
+                user.nickname = pendingUser.nickname;
+                user.verificationcode = null;
+                user.secretQuestions = new SecretQuestion() {
+                    Answer = pendingUser.secretQuestions.Answer,
+                    Question = pendingUser.secretQuestions.Question
+                };
+                user.contacts = new List<Contact>();
+                user.conversations = new List<Conversation>();
+                user.nickNum = Utils.Utils.generateRandString(Utils.Utils.numeric, 4);
+                user.verificationCodeCreationTime = new DateTime();
+                _context.RegisteredUser.Add(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

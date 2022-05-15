@@ -11,14 +11,14 @@ namespace Services {
     /// limitations imposed in the instructions.
     /// TODO: Add them when no longer limited.
     /// </summary>
-    public interface ICleanerService{
+    public interface ICleanerService {
 
         /// <summary>
         /// Begins all the tasks the service provides, instead of 1 by one by the user.
         /// </summary>
         /// <param name="sleepTimeUsers"></param>
         /// <param name="sleepTimeCodes"></param>
-        public void beginTasks(int sleepTimeUsers = 10 * 60 * 1000, int sleepTimeCodes = 60 * 1000);
+        public Task beginTasks(int sleepTimeUsers = 10 * 60 * 1000, int sleepTimeCodes = 60 * 1000);
 
         /// <summary>
         /// Cleans the database of old verification codes (over 30 minutes old).

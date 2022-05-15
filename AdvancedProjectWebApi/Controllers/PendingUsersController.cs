@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain;
 using Data;
 using Services;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
@@ -11,28 +12,27 @@ namespace AdvancedProjectWebApi.Controllers {
     public class PendingUsersController : ControllerBase {
 
         private readonly IPendingUsersService _pendingUsersService;
-        private readonly IConfiguration config;
+        private readonly IConfiguration _configuration;
 
         public PendingUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._pendingUsersService = new DatabasePendingUsersService(context);
-            this.config = config;
-
+            this._configuration = config;
         }
 
         private MailRequest createEmail(string emailTo) {
             MailRequest mail = new MailRequest() {
-                Email = config["MailSettings:Mail"],
-                Password = config["MailSettings:Password"],
+                Email = _configuration["MailSettings:Mail"],
+                Password = _configuration["MailSettings:Password"],
                 Subject = "Your verification code",
                 ToEmail = emailTo,
-                Host = config["MailSettings:Host"],
-                Port = Int32.Parse(config["MailSettings:Port"])
+                Host = _configuration["MailSettings:Host"],
+                Port = Int32.Parse(_configuration["MailSettings:Port"])
             };
             return mail;
         }
 
-        [HttpPost("{username}")]
+        [HttpPut("{username}")]
         public async Task<IActionResult> renewEmail(string? username) {
             if (username == null) {
                 return BadRequest();
@@ -62,6 +62,26 @@ namespace AdvancedProjectWebApi.Controllers {
                     return BadRequest();
                 }
             }
+            return BadRequest();
+        }
+
+        [HttpGet("{username}")]
+        public async Task<IActionResult> verifyCode(string? username, string? verificationCode) {
+            if (username == null || verificationCode == null) {
+                return BadRequest();
+            }
+            PendingUser? user = await _pendingUsersService.GetPendingUser(username);
+            // On success, give the user the Json token they need for logging in (they will be auto logged in).
+            if (await _pendingUsersService.canVerify(user, verificationCode)) {
+
+                JwtSecurityToken token = Utils.Utils.generateJwtToken(username,
+                    _configuration["JWTBearerParams:Subject"],
+                    _configuration["JWTBearerParams:Key"],
+                    _configuration["JWTBearerParams:Issuer"],
+                    _configuration["JWTBearerParams:Audience"]);
+
+                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+            };
             return BadRequest();
         }
     }

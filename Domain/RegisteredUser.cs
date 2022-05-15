@@ -21,7 +21,9 @@ namespace Domain {
 
         public SecretQuestion secretQuestions { get; set; }
 
-        public string verificationcode { get; set; }
+        public string? verificationcode { get; set; }
+
+        public DateTime verificationCodeCreationTime { get; set; }
 
         public List<Contact> contacts { get; set; }
 

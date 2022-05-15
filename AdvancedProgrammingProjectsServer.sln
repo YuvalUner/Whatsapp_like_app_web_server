@@ -5,13 +5,15 @@ VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedProgrammingProjectsServer", "AdvancedProgrammingProjectsServer\AdvancedProgrammingProjectsServer.csproj", "{CEAB0E2A-C61A-4FC4-9295-EA5DFFDDCC81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedProjectWebApi", "AdvancedProjectWebApi\AdvancedProjectWebApi.csproj", "{401D98C6-AE26-458D-B535-22749BBC3B0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedProjectWebApi", "AdvancedProjectWebApi\AdvancedProjectWebApi.csproj", "{401D98C6-AE26-458D-B535-22749BBC3B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{C8AD0636-667E-4E04-BED0-2E7776962664}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{C8AD0636-667E-4E04-BED0-2E7776962664}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{EDAE1223-0BB0-4372-8300-74BF47492ED5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{EDAE1223-0BB0-4372-8300-74BF47492ED5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{5BE63884-B2D5-4EE2-B1A5-163A1914EEF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{5BE63884-B2D5-4EE2-B1A5-163A1914EEF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{DF61BE8D-BD8D-49DE-8A98-0FBF6C4F649C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5BE63884-B2D5-4EE2-B1A5-163A1914EEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BE63884-B2D5-4EE2-B1A5-163A1914EEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BE63884-B2D5-4EE2-B1A5-163A1914EEF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF61BE8D-BD8D-49DE-8A98-0FBF6C4F649C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF61BE8D-BD8D-49DE-8A98-0FBF6C4F649C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF61BE8D-BD8D-49DE-8A98-0FBF6C4F649C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF61BE8D-BD8D-49DE-8A98-0FBF6C4F649C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

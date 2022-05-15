@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AdvancedProgrammingProjectsServerContext))]
-    partial class AdvancedProgrammingProjectsServerContextModelSnapshot : ModelSnapshot
+    [Migration("20220515121233_addedNullability")]
+    partial class addedNullability
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,9 +215,6 @@ namespace Data.Migrations
 
                     b.Property<int>("secretQuestionsId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("verificationCodeCreationTime")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("verificationcode")
                         .HasColumnType("longtext");

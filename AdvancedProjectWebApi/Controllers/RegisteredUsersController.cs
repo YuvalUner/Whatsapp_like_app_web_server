@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
@@ -16,10 +17,12 @@ namespace AdvancedProjectWebApi.Controllers {
         public IConfiguration _configuration;
 
         private readonly IRegisteredUsersService _registeredUsersService;
+        private readonly IPendingUsersService _pendingUsersService;
 
         public RegisteredUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._registeredUsersService = new DatabaseRegisteredUsersService(context);
+            this._pendingUsersService = new DatabasePendingUsersService(context);
             this._configuration = config;
 
         }
@@ -28,26 +31,41 @@ namespace AdvancedProjectWebApi.Controllers {
         public async Task<IActionResult> LogIn(string? username) {
 
             if (await _registeredUsersService.doesUserExists(username) == true) {
-                
-                //HttpContext.Session.SetString("username", username);
-                var claims = new[] {
-                    new Claim(JwtRegisteredClaimNames.Sub, _configuration["JWTBearerParams:Subject"]),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                    new Claim("username", username)
-                };
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTBearerParams:Key"]));
-                var mac = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
+
+                JwtSecurityToken token = Utils.Utils.generateJwtToken(username,
+                    _configuration["JWTBearerParams:Subject"],
+                    _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"],
-                    claims,
-                    expires: DateTime.UtcNow.AddMinutes(20),
-                    signingCredentials: mac
-                    );
+                    _configuration["JWTBearerParams:Audience"]);
+
                 return Ok(new JwtSecurityTokenHandler().WriteToken(token));
             }
-            return NotFound();
+            return BadRequest();
+        }
+
+        [HttpPost("signUp")]
+        [Authorize]
+        public async Task<IActionResult> FinishSignUp() {
+
+            string? username = User.FindFirst("username")?.Value;
+            // Really should absolutely never happen, short of an attack.
+            if (username == null) {
+                return BadRequest();
+            }
+
+            PendingUser? userToSignUp = await _pendingUsersService.GetPendingUserWithSecretQuestion(username);
+            // Also should absolutely never happen short of an attack.
+            if (userToSignUp == null) {
+                return BadRequest();
+            }
+
+            // Also should always be false, short of an attack.
+            if (await _registeredUsersService.doesUserExists(username) == false) {
+                await _registeredUsersService.addNewRegisteredUser(userToSignUp);
+                await _pendingUsersService.RemovePendingUser(userToSignUp);
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }

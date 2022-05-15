@@ -17,7 +17,7 @@ namespace AdvancedProjectWebApi.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> transfer([Bind("from,to,content")] Transfer transfer) {
-            
+
             if (ModelState.IsValid) {
                 bool result = await _contactsService.addMessage(transfer.to, transfer.from, new Message {
                     content = transfer.content,

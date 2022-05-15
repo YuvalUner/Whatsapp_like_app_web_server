@@ -36,5 +36,27 @@ namespace Services {
         /// <param name="username"></param>
         /// <returns></returns>
         public Task<bool> RenewCode(PendingUser? user, MailRequest mail);
+
+        /// <summary>
+        /// Checks whether the code the user input in the sign up process matches their code.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="code"></param>
+        /// <returns>True if they match, false otherwise</returns>
+        public Task<bool> canVerify(PendingUser? user, string? code);
+
+        /// <summary>
+        /// Removes a pending user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>true on success, false otherwise.</returns>
+        public Task<bool> RemovePendingUser(PendingUser? user);
+
+        /// <summary>
+        /// Gets the pending user with their secret question.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public Task<PendingUser?> GetPendingUserWithSecretQuestion(string? username);
     }
 }

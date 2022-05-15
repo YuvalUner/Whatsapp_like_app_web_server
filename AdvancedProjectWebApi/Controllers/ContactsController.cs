@@ -20,11 +20,9 @@ namespace AdvancedProjectWebApi.Controllers {
     [Authorize]
     [RequireHttps]
     public class ContactsController : ControllerBase {
-        private readonly AdvancedProgrammingProjectsServerContext _context;
         private readonly IContactsService _contactsService;
 
         public ContactsController(AdvancedProgrammingProjectsServerContext context) {
-            _context = context;
             _contactsService = new DatabaseContactsService(context);
         }
 
@@ -63,15 +61,13 @@ namespace AdvancedProjectWebApi.Controllers {
         public async Task<IActionResult> PutContact(string id, string server, string name) {
 
             string? user = User.FindFirst("username")?.Value;
-            if (user == null || id == null || name == null || server == null)
-            {
+            if (user == null || id == null || name == null || server == null) {
                 return BadRequest();
             }
 
             bool success = await _contactsService.editContact(user, server, name, id);
 
-            if (success)
-            {
+            if (success) {
                 return NoContent();
             }
             return NotFound();
@@ -115,7 +111,7 @@ namespace AdvancedProjectWebApi.Controllers {
                 var response = await httpClient.PostAsync(url, new StringContent(invitation, Encoding.UTF8, "application/json"));
             }
 
-            return CreatedAtAction("PostContact", new {});
+            return CreatedAtAction("PostContact", new { });
         }
 
         // DELETE: api/Contacts/5
@@ -192,7 +188,7 @@ namespace AdvancedProjectWebApi.Controllers {
                 var response = httpClient.PostAsync(url, new StringContent(transfer, Encoding.UTF8, "application/json")).Result;
             }
 
-            return CreatedAtAction("addMessage", new {});
+            return CreatedAtAction("addMessage", new { });
         }
 
         [HttpGet("{id}/messages/{id2}")]
@@ -266,10 +262,6 @@ namespace AdvancedProjectWebApi.Controllers {
                 return NoContent();
             }
             return NotFound();
-        }
-
-        private bool RegisteredUserExists(string id) {
-            return _context.RegisteredUser.Any(e => e.username == id);
         }
     }
 }

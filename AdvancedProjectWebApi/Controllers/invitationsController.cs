@@ -29,7 +29,7 @@ namespace AdvancedProjectWebApi.Controllers {
                     server = invite.server
                 });
                 if (success) {
-                    return CreatedAtAction("invite", new {});
+                    return CreatedAtAction("invite", new { });
                 }
                 return NotFound();
             }

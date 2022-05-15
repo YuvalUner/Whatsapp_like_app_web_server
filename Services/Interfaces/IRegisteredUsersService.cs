@@ -29,5 +29,12 @@ namespace Services {
         /// <param name="username"></param>
         /// <returns></returns>
         Task<string?> getNickname(string? username);
+
+        /// <summary>
+        /// Adds a new registered user to the database.
+        /// </summary>
+        /// <param name="user">The pending user that finished their registration</param>
+        /// <return>true on success, false otherwise</return>
+        Task<bool> addNewRegisteredUser(PendingUser pendingUser);
     }
 }
