@@ -35,6 +35,6 @@ namespace Services {
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public Task<bool> RenewCode(string username, MailRequest mail);
+        public Task<bool> RenewCode(PendingUser? user, MailRequest mail);
     }
 }

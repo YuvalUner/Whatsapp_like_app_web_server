@@ -39,15 +39,15 @@ namespace Services {
             return false;
         }
 
-        public async Task<bool> RenewCode(string username, MailRequest mail) {
+        public async Task<bool> RenewCode(PendingUser? user, MailRequest mail) {
 
-            PendingUser? user = await this.GetPendingUser(username);
             if (user != null) {
                 user.verificationCode = Utils.generateRandString(verCodeString, codeLengths);
                 user.verificationCodeCreationTime = DateTime.UtcNow;
                 _context.Entry(user).State = EntityState.Modified;
                 mail.Body = ($"<p>Your verification code is:</p><h3>{user.verificationCode}</h3>" +
                     $"<p>It will be valid for the next 30 minutes</p>");
+                mail.ToEmail = user.email;
                 Utils.sendEmail(mail);
                 await _context.SaveChangesAsync();
                 return true;

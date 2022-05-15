@@ -32,6 +32,20 @@ namespace AdvancedProjectWebApi.Controllers {
             return mail;
         }
 
+        [HttpPost("{username}")]
+        public async Task<IActionResult> renewEmail(string? username) {
+            if (username == null) {
+                return BadRequest();
+            }
+            PendingUser? user = await _pendingUsersService.GetPendingUser(username);
+            if (user != null) {
+                MailRequest mail = this.createEmail(user.email);
+                await _pendingUsersService.RenewCode(user, mail);
+                return NoContent();
+            }
+            return NotFound();
+        }
+
         [HttpPost]
         public async Task<IActionResult> signUp([Bind("username,password,phone,email," +
             "nickname,secretQuestion")] PendingUser pendingUser) {
