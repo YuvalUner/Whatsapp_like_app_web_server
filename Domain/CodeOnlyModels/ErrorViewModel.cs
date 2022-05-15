@@ -1,4 +1,4 @@
-namespace Domain {
+namespace Domain.CodeOnlyModels {
     public class ErrorViewModel {
         public string? RequestId { get; set; }
 

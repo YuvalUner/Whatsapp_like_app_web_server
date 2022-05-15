@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services {
+namespace Services.DataManipulation.Interfaces {
     /// <summary>
     /// A service for cleaning the database of records that have passed the "expiry date" we've decided for them.
     /// Currently unusable because I can not use IHostedService or BackgroundTask, due to NuGet packages

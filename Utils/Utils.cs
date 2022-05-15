@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using Domain.CodeOnlyModels;
 
 namespace Utils {
 
@@ -45,7 +46,7 @@ namespace Utils {
 
         }
 
-        public static JwtSecurityToken generateJwtToken(string username, string subject, string key, string issuer, string audience) {
+        public static JwtSecurityToken generateJwtToken(string username, string subject, string key, string issuer, string audience, int expiry) {
 
             var claims = new[] {
                     new Claim(JwtRegisteredClaimNames.Sub, subject),
@@ -59,7 +60,7 @@ namespace Utils {
                 issuer,
                 audience,
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(20),
+                expires: DateTime.UtcNow.AddMinutes(expiry),
                 signingCredentials: mac
                 );
             return token;

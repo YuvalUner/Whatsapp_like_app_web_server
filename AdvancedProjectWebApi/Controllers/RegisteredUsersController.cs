@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Domain;
+using Domain.DatabaseEntryModels;
 using Data;
 using Services;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,6 +8,11 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Services.DataManipulation.DatabaseContextBasedImplementations;
+using Services.DataManipulation.Interfaces;
+using Domain.CodeOnlyModels;
+using Services.TokenServices.Interfaces;
+using Services.TokenServices.Implementations;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
@@ -18,11 +23,17 @@ namespace AdvancedProjectWebApi.Controllers {
 
         private readonly IRegisteredUsersService _registeredUsersService;
         private readonly IPendingUsersService _pendingUsersService;
+        private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IAuthTokenGenerator _authTokenGenerator;
+        private readonly IRefreshTokenGenerator _refreshTokenGenerator;
 
         public RegisteredUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._registeredUsersService = new DatabaseRegisteredUsersService(context);
             this._pendingUsersService = new DatabasePendingUsersService(context);
+            this._refreshTokenService = new RefreshTokenService(context);
+            this._authTokenGenerator = new AuthTokenGenerator();
+            this._refreshTokenGenerator = new AuthTokenGenerator();
             this._configuration = config;
 
         }
@@ -32,13 +43,12 @@ namespace AdvancedProjectWebApi.Controllers {
 
             if (await _registeredUsersService.doesUserExists(username) == true) {
 
-                JwtSecurityToken token = Utils.Utils.generateJwtToken(username,
+                return Ok(_authTokenGenerator.GenerateAuthToken(username,
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"]);
-
-                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+                    _configuration["JWTBearerParams:Audience"],
+                    20));
             }
             return BadRequest();
         }
@@ -63,7 +73,13 @@ namespace AdvancedProjectWebApi.Controllers {
             if (await _registeredUsersService.doesUserExists(username) == false) {
                 await _registeredUsersService.addNewRegisteredUser(userToSignUp);
                 await _pendingUsersService.RemovePendingUser(userToSignUp);
-                return Ok();
+                RefreshToken rToken = new RefreshToken() {
+                    Token = _refreshTokenGenerator.GenerateRefreshToken(),
+                    ExpiryDate = DateTime.UtcNow.AddDays(30),
+                    RegisteredUserusername = username
+                };
+                await _refreshTokenService.storeRefreshToken(rToken);
+                return Ok(rToken.Token);
             }
             return BadRequest();
         }

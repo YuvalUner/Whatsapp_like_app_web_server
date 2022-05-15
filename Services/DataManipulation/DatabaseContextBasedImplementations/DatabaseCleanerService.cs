@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using Data;
-using Domain;
+using Domain.DatabaseEntryModels;
 using Microsoft.EntityFrameworkCore;
+using Services.DataManipulation.Interfaces;
 
-namespace Services {
+namespace Services.DataManipulation.DatabaseContextBasedImplementations {
     public class DatabaseCleanerService : ICleanerService {
 
         private readonly AdvancedProgrammingProjectsServerContext _context;

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data;
-using Domain;
+using Domain.DatabaseEntryModels;
 using Microsoft.EntityFrameworkCore;
+using Services.DataManipulation.Interfaces;
+using Domain.CodeOnlyModels;
 
-namespace Services {
+namespace Services.DataManipulation.DatabaseContextBasedImplementations {
 
     public class DatabaseRegisteredUsersService : IRegisteredUsersService {
 

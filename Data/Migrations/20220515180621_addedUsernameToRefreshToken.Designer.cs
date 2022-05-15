@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AdvancedProgrammingProjectsServerContext))]
-    partial class AdvancedProgrammingProjectsServerContextModelSnapshot : ModelSnapshot
+    [Migration("20220515180621_addedUsernameToRefreshToken")]
+    partial class addedUsernameToRefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,10 +187,13 @@ namespace Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("RegisteredUserusername")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -308,9 +313,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("Domain.DatabaseEntryModels.RegisteredUser", null)
                         .WithMany()
-                        .HasForeignKey("RegisteredUserusername")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RegisteredUserusername");
                 });
 
             modelBuilder.Entity("Domain.DatabaseEntryModels.RegisteredUser", b =>

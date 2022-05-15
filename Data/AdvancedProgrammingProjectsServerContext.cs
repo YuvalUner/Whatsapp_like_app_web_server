@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Domain;
+using Domain.DatabaseEntryModels;
 
 namespace Data
 {
@@ -26,6 +26,8 @@ namespace Data
             modelBuilder.Entity<SecretQuestion>().HasKey(e => e.Id);
             modelBuilder.Entity<Contact>().HasKey(e => new {e.contactOf, e.id});
             modelBuilder.Entity<Rating>().HasKey(e => e.Id);
+            modelBuilder.Entity<RefreshToken>().HasKey(e => e.Id);
+            modelBuilder.Entity<RefreshToken>().HasOne<RegisteredUser>();
         }
 
         public DbSet<Contact> Contact { get; set; }
@@ -41,5 +43,7 @@ namespace Data
         public DbSet<PendingUser> PendingUser { get; set; }
 
         public DbSet<Rating> Rating { get; set; }
+
+        public DbSet<RefreshToken> RefreshToken { get; set; }
     }
 }

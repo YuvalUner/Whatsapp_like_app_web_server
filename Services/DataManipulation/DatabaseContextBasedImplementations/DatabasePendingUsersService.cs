@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain;
+using Domain.DatabaseEntryModels;
+using Domain.CodeOnlyModels;
 using Data;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Utils;
+using Services.DataManipulation.Interfaces;
 
-namespace Services {
+namespace Services.DataManipulation.DatabaseContextBasedImplementations {
+
     public class DatabasePendingUsersService : IPendingUsersService {
 
         private readonly AdvancedProgrammingProjectsServerContext _context;

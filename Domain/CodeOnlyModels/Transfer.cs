@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain {
-    public class Invite {
+namespace Domain.CodeOnlyModels {
+    public class Transfer {
 
         public string from { get; set; }
 
         public string to { get; set; }
 
-        public string server { get; set; }
+        public string content { get; set; }
     }
 }

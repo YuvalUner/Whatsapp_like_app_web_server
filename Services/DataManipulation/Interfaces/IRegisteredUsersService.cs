@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain;
+using Domain.DatabaseEntryModels;
+using Domain.CodeOnlyModels;
 
-namespace Services {
+namespace Services.DataManipulation.Interfaces {
 
     public interface IRegisteredUsersService {
 

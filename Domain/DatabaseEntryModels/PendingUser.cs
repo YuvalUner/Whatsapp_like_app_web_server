@@ -1,7 +1,7 @@
 ﻿using Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace Domain {
+namespace Domain.DatabaseEntryModels {
 
     public class PendingUser {
 

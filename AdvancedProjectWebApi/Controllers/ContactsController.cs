@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Data;
-using Domain;
-using Services;
+using Domain.DatabaseEntryModels;
+using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using Services.DataManipulation.Interfaces;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]

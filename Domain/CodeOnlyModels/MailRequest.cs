@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain {
+namespace Domain.CodeOnlyModels {
     public class MailRequest {
 
         public string ToEmail { get; set; }

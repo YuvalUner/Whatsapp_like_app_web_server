@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Domain;
+using Domain.DatabaseEntryModels;
 using Data;
-using Services;
+using Services.TokenServices.Implementations;
+using Services.TokenServices.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using Services.DataManipulation.DatabaseContextBasedImplementations;
+using Services.DataManipulation.Interfaces;
+using Domain.CodeOnlyModels;
+
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
@@ -13,10 +18,14 @@ namespace AdvancedProjectWebApi.Controllers {
 
         private readonly IPendingUsersService _pendingUsersService;
         private readonly IConfiguration _configuration;
+        private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IAccessTokenGenerator _authTokenGenerator;
 
         public PendingUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._pendingUsersService = new DatabasePendingUsersService(context);
+            this._refreshTokenService = new RefreshTokenService(context);
+            this._authTokenGenerator = new AuthTokenGenerator();
             this._configuration = config;
         }
 
@@ -74,13 +83,12 @@ namespace AdvancedProjectWebApi.Controllers {
             // On success, give the user the Json token they need for logging in (they will be auto logged in).
             if (await _pendingUsersService.canVerify(user, verificationCode)) {
 
-                JwtSecurityToken token = Utils.Utils.generateJwtToken(username,
+                return Ok(_authTokenGenerator.GenerateAccessToken(username,
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"]);
-
-                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+                    _configuration["JWTBearerParams:Audience"],
+                    20));
             };
             return BadRequest();
         }

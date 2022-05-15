@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Domain;
+using Domain.DatabaseEntryModels;
 using Data;
-using Services;
+using Services.DataManipulation.DatabaseContextBasedImplementations;
+using Services.DataManipulation.Interfaces;
+using Domain.CodeOnlyModels;
 
 namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]

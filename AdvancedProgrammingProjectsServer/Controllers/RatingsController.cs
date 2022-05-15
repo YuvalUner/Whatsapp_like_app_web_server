@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data;
-using Domain;
+using Domain.DatabaseEntryModels;
 
 namespace AdvancedProgrammingProjectsServer.Controllers
 {

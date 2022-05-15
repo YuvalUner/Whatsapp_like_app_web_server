@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain {
+namespace Domain.DatabaseEntryModels {
 
     public class Contact {
 

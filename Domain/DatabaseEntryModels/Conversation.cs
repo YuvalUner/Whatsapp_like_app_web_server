@@ -1,4 +1,4 @@
-﻿namespace Domain {
+﻿namespace Domain.DatabaseEntryModels {
 
     public class Conversation {
 
