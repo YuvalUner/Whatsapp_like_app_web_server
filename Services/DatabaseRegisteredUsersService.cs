@@ -12,6 +12,7 @@ namespace Services {
     public class DatabaseRegisteredUsersService : IRegisteredUsersService {
 
         private readonly AdvancedProgrammingProjectsServerContext _context;
+        private static readonly string nickNumString = "0123456789";
 
         public DatabaseRegisteredUsersService(AdvancedProgrammingProjectsServerContext context) {
 
@@ -65,16 +66,16 @@ namespace Services {
             return user.description;
         }
 
-        public string? generateNickNum(){
-            string nickNum = string.Empty;
-            Random rand = new Random();
-            for (int i = 0; i < 4; i++)
-            {
-                int number = rand.Next(0, 10);
-                nickNum = nickNum + number;
-            }
-            return nickNum;
-        }
+        //public string? generateNickNum(){
+        //    string nickNum = string.Empty;
+        //    Random rand = new Random();
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        int number = rand.Next(0, 10);
+        //        nickNum = nickNum + number;
+        //    }
+        //    return nickNum;
+        //}
 
         public async Task<string?> getNickNum(string? username)
         {

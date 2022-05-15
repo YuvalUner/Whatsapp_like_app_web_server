@@ -33,7 +33,7 @@ namespace Services {
             client.EnableSsl = true;
             client.UseDefaultCredentials = false;
             client.Credentials = basicCredential1;
-            client.Send(message);
+            client.SendMailAsync(message);
 
         }
     }

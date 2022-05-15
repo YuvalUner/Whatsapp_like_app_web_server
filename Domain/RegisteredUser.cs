@@ -11,7 +11,7 @@ namespace Domain {
 
         public string salt { get; set; }
 
-        public string encryptionAlgorithm { get; set; }
+        public string hashingAlgorithm { get; set; }
 
         public string phone { get; set; }
 

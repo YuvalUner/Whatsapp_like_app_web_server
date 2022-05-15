@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Domain;
 using System.Configuration;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,8 +62,6 @@ builder.Services.AddCors(options => {
         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
-
-
 
 var app = builder.Build();
 

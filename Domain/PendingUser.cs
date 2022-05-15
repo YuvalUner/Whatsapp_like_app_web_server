@@ -12,7 +12,7 @@ namespace Domain {
 
         public string salt { get; set; }
 
-        public string encryptionAlgorithm { get; set; }
+        public string hashingAlgorithm { get; set; }
 
         public string phone { get; set; }
 
@@ -22,8 +22,10 @@ namespace Domain {
 
         public SecretQuestion secretQuestions { get; set; }
 
-        public string verificationcode { get; set; }
+        public string? verificationCode { get; set; }
 
         public DateTime timeCreated { get; set; }
+
+        public DateTime verificationCodeCreationTime { get; set; }
     }
 }

@@ -29,5 +29,12 @@ namespace Services {
         /// <param name="username"></param>
         /// <returns>The user if it exists, null otherwise.</returns>
         public Task<PendingUser?> GetPendingUser(string? username);
+
+        /// <summary>
+        /// Renews the user's verification code.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public Task<bool> RenewCode(string username, MailRequest mail);
     }
 }

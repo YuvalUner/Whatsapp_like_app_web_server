@@ -20,6 +20,18 @@ namespace AdvancedProjectWebApi.Controllers {
 
         }
 
+        private MailRequest createEmail(string emailTo) {
+            MailRequest mail = new MailRequest() {
+                Email = config["MailSettings:Mail"],
+                Password = config["MailSettings:Password"],
+                Subject = "Your verification code",
+                ToEmail = emailTo,
+                Host = config["MailSettings:Host"],
+                Port = Int32.Parse(config["MailSettings:Port"])
+            };
+            return mail;
+        }
+
         [HttpPost]
         public async Task<IActionResult> signUp([Bind("username,password,phone,email," +
             "nickname,secretQuestion")] PendingUser pendingUser) {
@@ -27,14 +39,7 @@ namespace AdvancedProjectWebApi.Controllers {
             if (ModelState.IsValid) {
                 if (await _pendingUsersService.doesUserExist(pendingUser.username) == false) {
 
-                    MailRequest mail = new MailRequest() {
-                        Email = config["MailSettings:Mail"],
-                        Password = config["MailSettings:Password"],
-                        Subject = "Your verification code",
-                        ToEmail = pendingUser.email,
-                        Host = config["MailSettings:Host"],
-                        Port = Int32.Parse(config["MailSettings:Port"])
-                    };
+                    MailRequest mail = this.createEmail(pendingUser.email);
 
                     await _pendingUsersService.addToPending(pendingUser, "SHA256", mail);
                     return CreatedAtAction("signUp", new { });

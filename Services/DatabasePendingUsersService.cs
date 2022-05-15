@@ -14,6 +14,7 @@ namespace Services {
         private readonly AdvancedProgrammingProjectsServerContext _context;
         private static readonly string saltString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-=_+~?'][<>.,";
         private static readonly string verCodeString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        private static readonly int codeLengths = 6;
 
         public DatabasePendingUsersService(AdvancedProgrammingProjectsServerContext context) {
             this._context = context;
@@ -38,20 +39,39 @@ namespace Services {
             return false;
         }
 
-        public async Task<bool> addToPending(PendingUser pendingUser, string encryptionAlgorithm, MailRequest mail) {
+        public async Task<bool> RenewCode(string username, MailRequest mail) {
 
-            pendingUser.timeCreated = DateTime.Now;
-            pendingUser.salt = Utils.generateRandString(saltString, 6);
-            pendingUser.encryptionAlgorithm = encryptionAlgorithm;
-            using (SHA256 sha256 = SHA256.Create()) {
-                byte[] result = sha256.ComputeHash(new UTF8Encoding().GetBytes(pendingUser.password + pendingUser.salt));
-                pendingUser.password = Encoding.UTF8.GetString(result, 0, result.Length);
+            PendingUser? user = await this.GetPendingUser(username);
+            if (user != null) {
+                user.verificationCode = Utils.generateRandString(verCodeString, codeLengths);
+                user.verificationCodeCreationTime = DateTime.UtcNow;
+                _context.Entry(user).State = EntityState.Modified;
+                mail.Body = ($"<p>Your verification code is:</p><h3>{user.verificationCode}</h3>" +
+                    $"<p>It will be valid for the next 30 minutes</p>");
+                Utils.sendEmail(mail);
+                await _context.SaveChangesAsync();
+                return true;
             }
-            pendingUser.verificationcode = Utils.generateRandString(verCodeString, 6);
-            mail.Body = ($"<p>Your verification code is:</p><br><h3>{pendingUser.verificationcode}</h3><br>" +
+            return false;
+        }
+
+        public async Task<bool> addToPending(PendingUser pendingUser, string hasingAlgorithm, MailRequest mail) {
+
+            pendingUser.timeCreated = DateTime.UtcNow;
+            pendingUser.salt = Utils.generateRandString(saltString, codeLengths);
+
+            pendingUser.hashingAlgorithm = hasingAlgorithm;
+            if (hasingAlgorithm == "SHA256") {
+                using (SHA256 sha256 = SHA256.Create()) {
+                    byte[] result = sha256.ComputeHash(new UTF8Encoding().GetBytes(pendingUser.password + pendingUser.salt));
+                    pendingUser.password = Encoding.UTF8.GetString(result, 0, result.Length);
+                }
+            }
+            pendingUser.verificationCode = Utils.generateRandString(verCodeString, codeLengths);
+            mail.Body = ($"<p>Your verification code is:</p><h3>{pendingUser.verificationCode}</h3>" +
                 $"<p>It will be valid for the next 30 minutes</p>");
             Utils.sendEmail(mail);
-            var a = 5;
+            pendingUser.verificationCodeCreationTime = DateTime.UtcNow;
             _context.PendingUser.Add(pendingUser);
             await _context.SaveChangesAsync();
             return true;
