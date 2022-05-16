@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
 using Domain.CodeOnlyModels;
+using Utils;
 
 
 namespace AdvancedProjectWebApi.Controllers {
@@ -88,7 +89,7 @@ namespace AdvancedProjectWebApi.Controllers {
 
                     MailRequest mail = this.createEmail(pendingUser.email);
 
-                    await _pendingUsersService.addToPending(pendingUser, "Pbkdf2", mail);
+                    await _pendingUsersService.addToPending(pendingUser, Constants.currentPasswordHash, mail);
                     return CreatedAtAction("signUp", new { });
                 }
                 else {

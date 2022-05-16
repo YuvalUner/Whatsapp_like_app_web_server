@@ -8,6 +8,7 @@ using Domain.DatabaseEntryModels;
 using Microsoft.EntityFrameworkCore;
 using Services.DataManipulation.Interfaces;
 using Domain.CodeOnlyModels;
+using Utils;
 
 namespace Services.DataManipulation.DatabaseContextBasedImplementations {
 
@@ -130,7 +131,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                     return true;
                 }
             }
-            if (user.hashingAlgorithm == "Pbkdf2") {
+            if (user.hashingAlgorithm == Constants.currentPasswordHash) {
                 string hashedPassword = Utils.Utils.HashWithPbkdf2(password, user.salt);
                 if (user.password == hashedPassword) {
                     return true;
