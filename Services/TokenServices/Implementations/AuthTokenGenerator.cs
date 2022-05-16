@@ -18,8 +18,7 @@ namespace Services.TokenServices.Implementations {
     /// </summary>
     public class AuthTokenGenerator : IAuthTokenGenerator, IRefreshTokenGenerator, IAccessTokenGenerator, IHybridTokenGenerator {
 
-
-        public string GenerateAccessToken(string username, string subject, string key, string issuer, string audience, int expiry) {
+        public string GenerateAccessToken(string username, string subject, string key, string issuer, string audience, int expiry = 5) {
             var claims = new[] {
                     new Claim(JwtRegisteredClaimNames.Sub, subject),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -32,7 +31,9 @@ namespace Services.TokenServices.Implementations {
                 issuer,
                 audience,
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(expiry),
+                //expires: DateTime.UtcNow.AddMinutes(expiry),
+                // TODO: Remove this line and uncomment previous line when not testing in swagger.
+                expires: DateTime.UtcNow.AddMinutes(Constants.accessTokenTestingExpiry),
                 signingCredentials: mac
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -46,7 +47,7 @@ namespace Services.TokenServices.Implementations {
         }
 
         public string GenerateRefreshToken() {
-            return Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, 256);
+            return Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.refreshTokenLength);
         }
 
     }

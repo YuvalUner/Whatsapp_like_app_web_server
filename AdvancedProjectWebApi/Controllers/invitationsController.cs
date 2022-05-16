@@ -8,16 +8,29 @@ using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Domain.CodeOnlyModels;
 
 namespace AdvancedProjectWebApi.Controllers {
+
+    /// <summary>
+    /// A controller for managing invitiations from other servers.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class invitationsController : ControllerBase {
 
         private readonly IContactsService _contactsService;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
         public invitationsController(AdvancedProgrammingProjectsServerContext context) {
             this._contactsService = new DatabaseContactsService(context);
         }
 
+        /// <summary>
+        /// Adds a user from another server to the contact list of a user.
+        /// </summary>
+        /// <param name="invite">An invite containing to, from and which server</param>
+        /// <returns>204 on success, 404 if user not found, 401 otherwise</returns>
         [HttpPost]
         public async Task<IActionResult> invite([Bind("to,from,server")] Invite invite) {
 

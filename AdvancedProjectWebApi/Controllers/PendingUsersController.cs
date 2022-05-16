@@ -11,6 +11,10 @@ using Domain.CodeOnlyModels;
 
 
 namespace AdvancedProjectWebApi.Controllers {
+
+    /// <summary>
+    /// A controller for managing users pending verification.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [RequireHttps]
@@ -21,6 +25,11 @@ namespace AdvancedProjectWebApi.Controllers {
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IAccessTokenGenerator _authTokenGenerator;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="config"></param>
         public PendingUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._pendingUsersService = new DatabasePendingUsersService(context);
@@ -29,6 +38,11 @@ namespace AdvancedProjectWebApi.Controllers {
             this._configuration = config;
         }
 
+        /// <summary>
+        /// Creates an email to send to the user.
+        /// </summary>
+        /// <param name="emailTo">The user's email address</param>
+        /// <returns>An email with all the parameters filled</returns>
         private MailRequest createEmail(string emailTo) {
             MailRequest mail = new MailRequest() {
                 Email = _configuration["MailSettings:Mail"],
@@ -41,8 +55,13 @@ namespace AdvancedProjectWebApi.Controllers {
             return mail;
         }
 
+        /// <summary>
+        /// Renews the user's verification code and resends it.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>204 on success, 404 if user not found, 401 otherwise.</returns>
         [HttpPut("{username}")]
-        public async Task<IActionResult> renewEmail(string? username) {
+        public async Task<IActionResult> renewCode(string? username) {
             if (username == null) {
                 return BadRequest();
             }
@@ -55,6 +74,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return NotFound();
         }
 
+        /// <summary>
+        /// Signs up the user as a pending user (pending email verification).
+        /// </summary>
+        /// <param name="pendingUser">A pending user with all the values input during registration</param>
+        /// <returns>201 on success, 401 otheriwse.</returns>
         [HttpPost]
         public async Task<IActionResult> signUp([Bind("username,password,phone,email," +
             "nickname,secretQuestion")] PendingUser pendingUser) {
@@ -64,7 +88,7 @@ namespace AdvancedProjectWebApi.Controllers {
 
                     MailRequest mail = this.createEmail(pendingUser.email);
 
-                    await _pendingUsersService.addToPending(pendingUser, "SHA256", mail);
+                    await _pendingUsersService.addToPending(pendingUser, "Pbkdf2", mail);
                     return CreatedAtAction("signUp", new { });
                 }
                 else {
@@ -74,8 +98,14 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+        /// <summary>
+        /// Verifies a user's verification code.
+        /// </summary>
+        /// <param name="username">The user</param>
+        /// <param name="verificationCode">The verification code they input.</param>
+        /// <returns>200 with an access token on success, 401 otherwise.</returns>
         [HttpGet("{username}")]
-        public async Task<IActionResult> verifyCode(string? username, string? verificationCode) {
+        public async Task<IActionResult> verifyCode(string? username, [Bind("verificationCode")] string? verificationCode) {
             if (username == null || verificationCode == null) {
                 return BadRequest();
             }
@@ -87,8 +117,7 @@ namespace AdvancedProjectWebApi.Controllers {
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"],
-                    20));
+                    _configuration["JWTBearerParams:Audience"]));
             };
             return BadRequest();
         }

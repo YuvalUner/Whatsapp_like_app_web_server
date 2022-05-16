@@ -5,6 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.CodeOnlyModels {
+
+    /// <summary>
+    /// A collection of fields needed for sending an email.
+    /// Contains who to email to, email subject, email body, as well as email, password of sender 
+    /// and host + port of smtp service.
+    /// </summary>
     public class MailRequest {
 
         public string ToEmail { get; set; }

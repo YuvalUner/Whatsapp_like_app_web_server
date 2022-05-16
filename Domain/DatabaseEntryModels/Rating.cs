@@ -2,6 +2,10 @@
 
 namespace Domain.DatabaseEntryModels {
 
+    /// <summary>
+    /// A model for a rating.
+    /// Contains how many stars, feedback, submitter name and time submitted.
+    /// </summary>
     public class Rating {
 
         public int Id { get; set; }

@@ -2,6 +2,10 @@
 
 namespace Domain.DatabaseEntryModels {
 
+    /// <summary>
+    /// A model for a contract
+    /// Contains contactOf, id, last (message), server, name (nickname) and lastDate (last seen).
+    /// </summary>
     public class Contact {
 
 

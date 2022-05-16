@@ -8,6 +8,9 @@ using Domain.CodeOnlyModels;
 
 namespace Services.DataManipulation.Interfaces {
 
+    /// <summary>
+    /// A service for handling registered users.
+    /// </summary>
     public interface IRegisteredUsersService {
 
         /// <summary>

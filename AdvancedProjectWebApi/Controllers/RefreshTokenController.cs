@@ -11,6 +11,9 @@ using Domain.CodeOnlyModels;
 
 namespace AdvancedProjectWebApi.Controllers {
 
+    /// <summary>
+    /// A controller for managing the renewal of auth tokens.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class RefreshTokenController : ControllerBase {
@@ -19,14 +22,24 @@ namespace AdvancedProjectWebApi.Controllers {
         private readonly IAuthTokenGenerator _authTokenGenerator;
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="config"></param>
         public RefreshTokenController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
             this._refreshTokenService = new RefreshTokenService(context);
             this._authTokenGenerator = new AuthTokenGenerator();
             this._configuration = config;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> renewTokens(string? token) {
+        /// <summary>
+        /// Renews a user's access and refresh tokens.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>A new access and refresh token on success, 404 if access token not found, 401 otherwise.</returns>
+        [HttpPut]
+        public async Task<IActionResult> renewTokens([Bind("token")] string? token) {
             if (token == null) {
                 return BadRequest();
             }
@@ -40,8 +53,7 @@ namespace AdvancedProjectWebApi.Controllers {
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"],
-                    20);
+                    _configuration["JWTBearerParams:Audience"]);
 
                     await _refreshTokenService.RemovePreviousTokens(rToken.RegisteredUserusername, userAgent);
                     await _refreshTokenService.storeRefreshToken(aToken.RefreshToken, rToken.RegisteredUserusername, userAgent); ;

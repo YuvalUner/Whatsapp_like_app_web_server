@@ -117,9 +117,24 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             if (user == null) {
                 return false;
             }
-            string hashedPassword = Utils.Utils.hashWithSHA256(password + user.salt);
-            if (user.password == hashedPassword) {
-                return true;
+            // We used SHA256 for testing early on, before we knew more about handling passwords.
+            // This made it a good opprotunity to show the reason why we save the algorithm used as well.
+            if (user.hashingAlgorithm == "SHA256") {
+                string hashedPassword = Utils.Utils.hashWithSHA256(password + user.salt);
+                if (user.password == hashedPassword) {
+                    user.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
+                    user.password = Utils.Utils.HashWithPbdkf2(password, user.salt);
+                    user.hashingAlgorithm = "Pbdkf2";
+                    _context.Entry(user).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            if (user.hashingAlgorithm == "Pbdkf2") {
+                string hashedPassword = Utils.Utils.HashWithPbdkf2(password, user.salt);
+                if (user.password == hashedPassword) {
+                    return true;
+                }
             }
             return false;
 

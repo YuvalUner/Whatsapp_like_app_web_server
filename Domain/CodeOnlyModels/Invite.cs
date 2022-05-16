@@ -4,7 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DatabaseEntryModels {
+namespace Domain.CodeOnlyModels {
+    
+    /// <summary>
+    /// A model for an invite.
+    /// Contains from, to and server fields.
+    /// </summary>
     public class Invite {
 
         public string from { get; set; }

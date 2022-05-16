@@ -2,6 +2,11 @@
 
 namespace Domain.DatabaseEntryModels {
 
+    /// <summary>
+    /// A model for a user that was verified and can access the application.
+    /// Contains all of the pending user's fields + contacts, discriminator number (nickNum), description,
+    /// conversations.
+    /// </summary>
     public class RegisteredUser {
 
         [Key]

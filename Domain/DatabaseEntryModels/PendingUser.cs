@@ -3,6 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.DatabaseEntryModels {
 
+    /// <summary>
+    /// A model for a pending user (pending verification).
+    /// contains username, password + salt and hashing algorithm for it, phone, email, nickname, user's 
+    /// secret questions, verification code, time the account was created, and time the verification
+    /// code was created.
+    /// </summary>
     public class PendingUser {
 
         [Key]

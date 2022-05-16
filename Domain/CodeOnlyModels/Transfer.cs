@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.CodeOnlyModels {
+    /// <summary>
+    /// A model for transferring a message from one server to another.
+    /// Contains from, to and content.
+    /// </summary>
     public class Transfer {
 
         public string from { get; set; }

@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace Domain.DatabaseEntryModels {
 
+    /// <summary>
+    /// A model for a refresh token.
+    /// Contains id, token string, expiry date, username it belongs to, and user agent (browser).
+    /// </summary>
     public class RefreshToken {
 
         [Key]

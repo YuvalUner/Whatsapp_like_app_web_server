@@ -15,6 +15,10 @@ using Services.TokenServices.Interfaces;
 using Services.TokenServices.Implementations;
 
 namespace AdvancedProjectWebApi.Controllers {
+
+    /// <summary>
+    /// A controller for managing already registered users.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class RegisteredUsersController : ControllerBase {
@@ -26,6 +30,11 @@ namespace AdvancedProjectWebApi.Controllers {
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IHybridTokenGenerator _tokenGenerator;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="config"></param>
         public RegisteredUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._registeredUsersService = new DatabaseRegisteredUsersService(context);
@@ -36,6 +45,12 @@ namespace AdvancedProjectWebApi.Controllers {
 
         }
 
+        /// <summary>
+        /// Logs in the user if their username and password match.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns>200 with access and refresh tokens on success, BadRequest otherwise.</returns>
         [HttpPost]
         public async Task<IActionResult> LogIn(string? username, string? password) {
 
@@ -45,8 +60,7 @@ namespace AdvancedProjectWebApi.Controllers {
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"],
-                    20);
+                    _configuration["JWTBearerParams:Audience"]);
                 string? userAgent = Request.Headers["User-Agent"].ToString();
                 await _refreshTokenService.RemovePreviousTokens(username, userAgent);
                 await _refreshTokenService.storeRefreshToken(token.RefreshToken, username, userAgent);
@@ -56,6 +70,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+        /// <summary>
+        /// Remove later.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpPost("testingOnlyRemoveLater")]
         public async Task<IActionResult> LogIn(string? username) {
 
@@ -65,8 +84,7 @@ namespace AdvancedProjectWebApi.Controllers {
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"],
-                    20);
+                    _configuration["JWTBearerParams:Audience"]);
                 string? userAgent = Request.Headers["User-Agent"].ToString();
                 await _refreshTokenService.RemovePreviousTokens(username, userAgent);
                 await _refreshTokenService.storeRefreshToken(token.RefreshToken, username, userAgent);
@@ -76,6 +94,10 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+        /// <summary>
+        /// Finishes the sign up process of a user and adds them to the database as a registered user.
+        /// </summary>
+        /// <returns>200 and refresh token on success, BadRequest otherwise</returns>
         [HttpPost("signUp")]
         [Authorize]
         public async Task<IActionResult> FinishSignUp() {

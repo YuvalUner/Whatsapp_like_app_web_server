@@ -2,6 +2,10 @@
 
 namespace Domain.DatabaseEntryModels {
 
+    /// <summary>
+    /// A model for a single message.
+    /// Contains id, the conversation id it belongs to, created time, content, sender (bool) and type (text, img, etc...)
+    /// </summary>
     public class Message {
 
         [Key]
