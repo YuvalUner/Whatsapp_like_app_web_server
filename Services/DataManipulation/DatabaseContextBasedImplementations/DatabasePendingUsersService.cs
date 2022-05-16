@@ -66,7 +66,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             pendingUser.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
 
             pendingUser.hashingAlgorithm = hasingAlgorithm;
-            pendingUser.password = Utils.Utils.HashWithPbdkf2(pendingUser.password, pendingUser.salt);
+            pendingUser.password = Utils.Utils.HashWithPbkdf2(pendingUser.password, pendingUser.salt);
             pendingUser.verificationCode = Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, Constants.codeLength);
             mail.Body = ($"<p>Your verification code is:</p><h3>{pendingUser.verificationCode}</h3>" +
                 $"<p>It will be valid for the next 30 minutes</p>");

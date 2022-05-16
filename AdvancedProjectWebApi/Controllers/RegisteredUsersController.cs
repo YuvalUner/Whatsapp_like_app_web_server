@@ -52,18 +52,18 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="password"></param>
         /// <returns>200 with access and refresh tokens on success, BadRequest otherwise.</returns>
         [HttpPost]
-        public async Task<IActionResult> LogIn(string? username, string? password) {
+        public async Task<IActionResult> LogIn([Bind("username,password")] RegisteredUser user) {
 
-            if (await _registeredUsersService.verifyUser(username, password) == true) {
+            if (await _registeredUsersService.verifyUser(user.username, user.password) == true) {
 
-                AuthToken token = _tokenGenerator.GenerateAuthToken(username,
+                AuthToken token = _tokenGenerator.GenerateAuthToken(user.username,
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
                     _configuration["JWTBearerParams:Audience"]);
                 string? userAgent = Request.Headers["User-Agent"].ToString();
-                await _refreshTokenService.RemovePreviousTokens(username, userAgent);
-                await _refreshTokenService.storeRefreshToken(token.RefreshToken, username, userAgent);
+                await _refreshTokenService.RemovePreviousTokens(user.username, userAgent);
+                await _refreshTokenService.storeRefreshToken(token.RefreshToken, user.username, userAgent);
 
                 return Ok(token);
             }

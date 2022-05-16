@@ -123,15 +123,15 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 string hashedPassword = Utils.Utils.hashWithSHA256(password + user.salt);
                 if (user.password == hashedPassword) {
                     user.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
-                    user.password = Utils.Utils.HashWithPbdkf2(password, user.salt);
+                    user.password = Utils.Utils.HashWithPbkdf2(password, user.salt);
                     user.hashingAlgorithm = "Pbdkf2";
                     _context.Entry(user).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                     return true;
                 }
             }
-            if (user.hashingAlgorithm == "Pbdkf2") {
-                string hashedPassword = Utils.Utils.HashWithPbdkf2(password, user.salt);
+            if (user.hashingAlgorithm == "Pbkdf2") {
+                string hashedPassword = Utils.Utils.HashWithPbkdf2(password, user.salt);
                 if (user.password == hashedPassword) {
                     return true;
                 }

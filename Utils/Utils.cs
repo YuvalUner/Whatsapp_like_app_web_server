@@ -70,14 +70,14 @@ namespace Utils {
         }
 
         /// <summary>
-        /// A simple method for hashing using Pbdkf2.
+        /// A simple method for hashing using Pbkdf2.
         /// Currently used for password hashing, should be switched to Argon2 when we can install
         /// NuGet packages for it.
         /// </summary>
         /// <param name="password"></param>
         /// <param name="salt"></param>
         /// <returns></returns>
-        public static string HashWithPbdkf2(string password, string salt) {
+        public static string HashWithPbkdf2(string password, string salt) {
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                             password: password,
                             salt: Encoding.UTF8.GetBytes(salt),

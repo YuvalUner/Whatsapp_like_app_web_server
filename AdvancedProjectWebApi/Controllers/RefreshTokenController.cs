@@ -39,11 +39,11 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="token"></param>
         /// <returns>A new access and refresh token on success, 404 if access token not found, 401 otherwise.</returns>
         [HttpPut]
-        public async Task<IActionResult> renewTokens([Bind("token")] string? token) {
+        public async Task<IActionResult> renewTokens([Bind("token")] RefreshToken token) {
             if (token == null) {
                 return BadRequest();
             }
-            RefreshToken? rToken = await _refreshTokenService.GetToken(token);
+            RefreshToken? rToken = await _refreshTokenService.GetToken(token.Token);
             string? userAgent = Request.Headers["User-Agent"].ToString();
             if (rToken != null) {
                 if (await _refreshTokenService.validateTokenExpiry(rToken) == true 

@@ -105,7 +105,7 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="verificationCode">The verification code they input.</param>
         /// <returns>200 with an access token on success, 401 otherwise.</returns>
         [HttpGet("{username}")]
-        public async Task<IActionResult> verifyCode(string? username, [Bind("verificationCode")] string? verificationCode) {
+        public async Task<IActionResult> verifyCode(string? username, string? verificationCode) {
             if (username == null || verificationCode == null) {
                 return BadRequest();
             }
