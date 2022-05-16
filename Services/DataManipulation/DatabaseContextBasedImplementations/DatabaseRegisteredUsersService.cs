@@ -108,6 +108,23 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return true;
         }
 
+        public async Task<bool> verifyUser(string? username, string? password) {
+
+            if (username == null || password == null) {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null) {
+                return false;
+            }
+            string hashedPassword = Utils.Utils.hashWithSHA256(password + user.salt);
+            if (user.password == hashedPassword) {
+                return true;
+            }
+            return false;
+
+        }
+
         public async Task<bool> addNewRegisteredUser(PendingUser? pendingUser) {
 
             if (pendingUser != null) {

@@ -18,5 +18,7 @@ namespace Domain.DatabaseEntryModels {
 
         // Using the name from the database. 
         public string RegisteredUserusername { get; set; }
+
+        public string? UserAgent { get; set; }
     }
 }

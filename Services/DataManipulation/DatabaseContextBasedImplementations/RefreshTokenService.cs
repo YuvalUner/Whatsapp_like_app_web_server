@@ -1,36 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
-using Services.TokenServices.Interfaces;
-using Data;
+﻿using Data;
 using Domain.DatabaseEntryModels;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using Services.TokenServices.Implementations;
 using Services.DataManipulation.Interfaces;
+using Services.TokenServices.Implementations;
+using Services.TokenServices.Interfaces;
 
 namespace Services.DataManipulation.DatabaseContextBasedImplementations {
 
     public class RefreshTokenService : IRefreshTokenService {
 
         private readonly AdvancedProgrammingProjectsServerContext _context;
-        private readonly IRefreshTokenGenerator refreshTokenGenerator;
 
         public RefreshTokenService(AdvancedProgrammingProjectsServerContext context) {
             this._context = context;
-            this.refreshTokenGenerator = new AuthTokenGenerator();
         }
 
-        public async Task<bool> storeRefreshToken(RefreshToken token) {
+        public async Task<bool> storeRefreshToken(string token, string username, string userAgent) {
             RefreshToken hashedToken = new RefreshToken() {
-                Token = Utils.Utils.hashWithSHA256(token.Token),
-                RegisteredUserusername = token.RegisteredUserusername,
-                ExpiryDate = token.ExpiryDate
+                Token = Utils.Utils.hashWithSHA256(token),
+                RegisteredUserusername = username,
+                ExpiryDate = DateTime.UtcNow.AddDays(30),
+                UserAgent = userAgent
             };
             _context.RefreshToken.Add(hashedToken);
             await _context.SaveChangesAsync();
@@ -45,18 +35,6 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             string hashedToken = Utils.Utils.hashWithSHA256(token);
             RefreshToken? rToken = await _context.RefreshToken.Where(r => r.Token == hashedToken).FirstOrDefaultAsync();
             return rToken;
-        }
-
-        public async Task<RefreshToken> renewRefreshToken(RefreshToken token) {
-
-            await this.RemoveToken(token);
-            RefreshToken newToken = new RefreshToken() {
-                RegisteredUserusername = token.RegisteredUserusername,
-                ExpiryDate = DateTime.UtcNow.AddDays(30),
-                Token = this.refreshTokenGenerator.GenerateRefreshToken()
-            };
-            await this.storeRefreshToken(newToken);
-            return newToken;
         }
 
         public async Task<bool> RemoveToken(RefreshToken token) {
@@ -75,6 +53,20 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             await this.RemoveToken(token);
             return false;
+        }
+
+        public async Task<bool> RemovePreviousTokens(string? username, string? userAgent) {
+
+            if (username == null) {
+                return false;
+            }
+
+            List<RefreshToken> prevTokens = await _context.RefreshToken.Where(r => r.RegisteredUserusername == username && r.UserAgent == userAgent).ToListAsync();
+            foreach(RefreshToken token in prevTokens) {
+                _context.RefreshToken.Remove(token);
+            }
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

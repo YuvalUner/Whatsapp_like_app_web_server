@@ -36,17 +36,27 @@ namespace AdvancedProjectWebApi.Controllers {
 
         }
 
-        private async Task<RefreshToken> storeRefreshToken(string username, string token) {
-            RefreshToken refreshToken = new RefreshToken() {
-                Token = token,
-                RegisteredUserusername = username,
-                ExpiryDate = DateTime.UtcNow.AddDays(30)
-            };
-            await _refreshTokenService.storeRefreshToken(refreshToken);
-            return refreshToken;
+        [HttpPost]
+        public async Task<IActionResult> LogIn(string? username, string? password) {
+
+            if (await _registeredUsersService.verifyUser(username, password) == true) {
+
+                AuthToken token = _tokenGenerator.GenerateAuthToken(username,
+                    _configuration["JWTBearerParams:Subject"],
+                    _configuration["JWTBearerParams:Key"],
+                    _configuration["JWTBearerParams:Issuer"],
+                    _configuration["JWTBearerParams:Audience"],
+                    20);
+                string? userAgent = Request.Headers["User-Agent"].ToString();
+                await _refreshTokenService.RemovePreviousTokens(username, userAgent);
+                await _refreshTokenService.storeRefreshToken(token.RefreshToken, username, userAgent);
+
+                return Ok(token);
+            }
+            return BadRequest();
         }
 
-        [HttpPost]
+        [HttpPost("testingOnlyRemoveLater")]
         public async Task<IActionResult> LogIn(string? username) {
 
             if (await _registeredUsersService.doesUserExists(username) == true) {
@@ -57,8 +67,9 @@ namespace AdvancedProjectWebApi.Controllers {
                     _configuration["JWTBearerParams:Issuer"],
                     _configuration["JWTBearerParams:Audience"],
                     20);
-
-                await this.storeRefreshToken(username, token.RefreshToken);
+                string? userAgent = Request.Headers["User-Agent"].ToString();
+                await _refreshTokenService.RemovePreviousTokens(username, userAgent);
+                await _refreshTokenService.storeRefreshToken(token.RefreshToken, username, userAgent);
 
                 return Ok(token);
             }
@@ -83,10 +94,16 @@ namespace AdvancedProjectWebApi.Controllers {
 
             // Also should always be false, short of an attack.
             if (await _registeredUsersService.doesUserExists(username) == false) {
+
                 await _registeredUsersService.addNewRegisteredUser(userToSignUp);
                 await _pendingUsersService.RemovePendingUser(userToSignUp);
-                RefreshToken rToken = await this.storeRefreshToken(username, _tokenGenerator.GenerateRefreshToken());
-                return Ok(rToken.Token);
+
+                string? userAgent = Request.Headers["User-Agent"].ToString();
+                string rToken = _tokenGenerator.GenerateRefreshToken();
+                await _refreshTokenService.RemovePreviousTokens(username, userAgent);
+                await _refreshTokenService.storeRefreshToken(rToken, username, userAgent);
+
+                return Ok(rToken);
             }
             return BadRequest();
         }

@@ -7,6 +7,7 @@ using Services.DataManipulation.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Services.TokenServices.Interfaces;
 using Services.TokenServices.Implementations;
+using Domain.CodeOnlyModels;
 
 namespace AdvancedProjectWebApi.Controllers {
 
@@ -14,12 +15,12 @@ namespace AdvancedProjectWebApi.Controllers {
     [ApiController]
     public class RefreshTokenController : ControllerBase {
 
-        private readonly IRefreshTokenService refreshTokenService;
+        private readonly IRefreshTokenService _refreshTokenService;
         private readonly IAuthTokenGenerator _authTokenGenerator;
         private readonly IConfiguration _configuration;
 
         public RefreshTokenController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
-            this.refreshTokenService = new RefreshTokenService(context);
+            this._refreshTokenService = new RefreshTokenService(context);
             this._authTokenGenerator = new AuthTokenGenerator();
             this._configuration = config;
         }
@@ -29,16 +30,23 @@ namespace AdvancedProjectWebApi.Controllers {
             if (token == null) {
                 return BadRequest();
             }
-            RefreshToken? rToken = await refreshTokenService.GetToken(token);
+            RefreshToken? rToken = await _refreshTokenService.GetToken(token);
+            string? userAgent = Request.Headers["User-Agent"].ToString();
             if (rToken != null) {
-                if (await refreshTokenService.validateTokenExpiry(rToken) == true) {
+                if (await _refreshTokenService.validateTokenExpiry(rToken) == true 
+                    && rToken.UserAgent == userAgent) {
 
-                    return Ok(_authTokenGenerator.GenerateAuthToken(rToken.RegisteredUserusername,
+                    AuthToken aToken = _authTokenGenerator.GenerateAuthToken(rToken.RegisteredUserusername,
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
                     _configuration["JWTBearerParams:Audience"],
-                    20));
+                    20);
+
+                    await _refreshTokenService.RemovePreviousTokens(rToken.RegisteredUserusername, userAgent);
+                    await _refreshTokenService.storeRefreshToken(aToken.RefreshToken, rToken.RegisteredUserusername, userAgent); ;
+
+                    return Ok(aToken);
                 }
                 return NotFound();
             }
