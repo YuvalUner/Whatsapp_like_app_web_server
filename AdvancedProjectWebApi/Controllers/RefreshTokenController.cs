@@ -12,7 +12,6 @@ namespace AdvancedProjectWebApi.Controllers {
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RefreshTokenController : ControllerBase {
 
         private readonly IRefreshTokenService refreshTokenService;
@@ -32,21 +31,16 @@ namespace AdvancedProjectWebApi.Controllers {
             }
             RefreshToken? rToken = await refreshTokenService.GetToken(token);
             if (rToken != null) {
-                string? username = User.FindFirst("username")?.Value;
-                if (rToken.RegisteredUserusername == username) {
-                    if (await refreshTokenService.validateTokenExpiry(rToken) == true) {
+                if (await refreshTokenService.validateTokenExpiry(rToken) == true) {
 
-                        return Ok(_authTokenGenerator.GenerateAuthToken(username,
-                        _configuration["JWTBearerParams:Subject"],
-                        _configuration["JWTBearerParams:Key"],
-                        _configuration["JWTBearerParams:Issuer"],
-                        _configuration["JWTBearerParams:Audience"],
-                        20));
-                        }
-                        return NotFound();
-
+                    return Ok(_authTokenGenerator.GenerateAuthToken(rToken.RegisteredUserusername,
+                    _configuration["JWTBearerParams:Subject"],
+                    _configuration["JWTBearerParams:Key"],
+                    _configuration["JWTBearerParams:Issuer"],
+                    _configuration["JWTBearerParams:Audience"],
+                    20));
                 }
-                return Forbid();
+                return NotFound();
             }
             return BadRequest();
         }

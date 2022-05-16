@@ -11,7 +11,12 @@ using Services.TokenServices.Interfaces;
 
 namespace Services.TokenServices.Implementations {
 
-    public class AuthTokenGenerator : IAuthTokenGenerator, IRefreshTokenGenerator, IAccessTokenGenerator {
+    /// <summary>
+    /// A generator for auth tokens.
+    /// Can be treated as a generator for each of the individual types, or as all of them together, depending
+    /// on the interface chosen as the static type on creation.
+    /// </summary>
+    public class AuthTokenGenerator : IAuthTokenGenerator, IRefreshTokenGenerator, IAccessTokenGenerator, IHybridTokenGenerator {
 
 
         public string GenerateAccessToken(string username, string subject, string key, string issuer, string audience, int expiry) {
@@ -41,7 +46,7 @@ namespace Services.TokenServices.Implementations {
         }
 
         public string GenerateRefreshToken() {
-            return Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, 128);
+            return Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, 256);
         }
 
     }

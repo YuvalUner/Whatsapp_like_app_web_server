@@ -24,16 +24,14 @@ namespace AdvancedProjectWebApi.Controllers {
         private readonly IRegisteredUsersService _registeredUsersService;
         private readonly IPendingUsersService _pendingUsersService;
         private readonly IRefreshTokenService _refreshTokenService;
-        private readonly IAuthTokenGenerator _authTokenGenerator;
-        private readonly IRefreshTokenGenerator _refreshTokenGenerator;
+        private readonly IHybridTokenGenerator _tokenGenerator;
 
         public RegisteredUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
 
             this._registeredUsersService = new DatabaseRegisteredUsersService(context);
             this._pendingUsersService = new DatabasePendingUsersService(context);
             this._refreshTokenService = new RefreshTokenService(context);
-            this._authTokenGenerator = new AuthTokenGenerator();
-            this._refreshTokenGenerator = new AuthTokenGenerator();
+            this._tokenGenerator = new AuthTokenGenerator();
             this._configuration = config;
 
         }
@@ -53,7 +51,7 @@ namespace AdvancedProjectWebApi.Controllers {
 
             if (await _registeredUsersService.doesUserExists(username) == true) {
 
-                AuthToken token = _authTokenGenerator.GenerateAuthToken(username,
+                AuthToken token = _tokenGenerator.GenerateAuthToken(username,
                     _configuration["JWTBearerParams:Subject"],
                     _configuration["JWTBearerParams:Key"],
                     _configuration["JWTBearerParams:Issuer"],
@@ -87,7 +85,7 @@ namespace AdvancedProjectWebApi.Controllers {
             if (await _registeredUsersService.doesUserExists(username) == false) {
                 await _registeredUsersService.addNewRegisteredUser(userToSignUp);
                 await _pendingUsersService.RemovePendingUser(userToSignUp);
-                RefreshToken rToken = await this.storeRefreshToken(username, _refreshTokenGenerator.GenerateRefreshToken());
+                RefreshToken rToken = await this.storeRefreshToken(username, _tokenGenerator.GenerateRefreshToken());
                 return Ok(rToken.Token);
             }
             return BadRequest();
