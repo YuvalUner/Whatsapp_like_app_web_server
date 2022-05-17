@@ -103,7 +103,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             if (username == null) {
                 return null;
             }
-            PendingUser? user = await _context.PendingUser.Where(pu => pu.username == username).Include(pu => pu.secretQuestions).FirstOrDefaultAsync();
+            PendingUser? user = await _context.PendingUser.Where(pu => pu.username == username).Include(pu => pu.secretQuestion).FirstOrDefaultAsync();
             return user;
         }
     }

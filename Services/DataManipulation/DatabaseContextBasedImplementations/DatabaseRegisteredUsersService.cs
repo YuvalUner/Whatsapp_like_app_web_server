@@ -163,7 +163,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 if (user.password == hashedPassword) {
                     user.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
                     user.password = Utils.Utils.HashWithPbkdf2(password, user.salt);
-                    user.hashingAlgorithm = "Pbdkf2";
+                    user.hashingAlgorithm = Constants.currentPasswordHash;
                     _context.Entry(user).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                     return true;
@@ -213,8 +213,8 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 user.nickname = pendingUser.nickname;
                 user.verificationcode = null;
                 user.secretQuestions = new SecretQuestion() {
-                    Answer = pendingUser.secretQuestions.Answer,
-                    Question = pendingUser.secretQuestions.Question
+                    Answer = pendingUser.secretQuestion.Answer,
+                    Question = pendingUser.secretQuestion.Question
                 };
                 user.contacts = new List<Contact>();
                 user.conversations = new List<Conversation>();

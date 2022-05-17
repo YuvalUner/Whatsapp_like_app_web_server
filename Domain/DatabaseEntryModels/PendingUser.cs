@@ -16,17 +16,17 @@ namespace Domain.DatabaseEntryModels {
 
         public string password { get; set; }
 
-        public string salt { get; set; }
+        public string? salt { get; set; }
 
-        public string hashingAlgorithm { get; set; }
+        public string? hashingAlgorithm { get; set; }
 
-        public string phone { get; set; }
+        public string? phone { get; set; }
 
         public string email { get; set; }
 
         public string nickname { get; set; }
 
-        public SecretQuestion secretQuestions { get; set; }
+        public SecretQuestion secretQuestion { get; set; }
 
         public string? verificationCode { get; set; }
 

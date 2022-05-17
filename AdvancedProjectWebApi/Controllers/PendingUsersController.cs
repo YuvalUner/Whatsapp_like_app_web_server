@@ -18,13 +18,13 @@ namespace AdvancedProjectWebApi.Controllers {
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [RequireHttps]
     public class PendingUsersController : ControllerBase {
 
         private readonly IPendingUsersService _pendingUsersService;
         private readonly IConfiguration _configuration;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IAccessTokenGenerator _authTokenGenerator;
+        private readonly IRegisteredUsersService _registeredUsersService;
 
         /// <summary>
         /// Constructor
@@ -36,6 +36,7 @@ namespace AdvancedProjectWebApi.Controllers {
             this._pendingUsersService = new DatabasePendingUsersService(context);
             this._refreshTokenService = new RefreshTokenService(context);
             this._authTokenGenerator = new AuthTokenGenerator();
+            this._registeredUsersService = new DatabaseRegisteredUsersService(context);
             this._configuration = config;
         }
 
@@ -85,7 +86,8 @@ namespace AdvancedProjectWebApi.Controllers {
             "nickname,secretQuestion")] PendingUser pendingUser) {
 
             if (ModelState.IsValid) {
-                if (await _pendingUsersService.doesUserExist(pendingUser.username) == false) {
+                if (await _pendingUsersService.doesUserExist(pendingUser.username) == false 
+                    || await _registeredUsersService.doesUserExists(pendingUser.username)) {
 
                     MailRequest mail = this.createEmail(pendingUser.email);
 
