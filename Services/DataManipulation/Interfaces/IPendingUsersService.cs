@@ -59,5 +59,33 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="username"></param>
         /// <returns></returns>
         public Task<PendingUser?> GetPendingUserWithSecretQuestion(string? username);
+
+        /// <summary>
+        /// get pending user by their email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<PendingUser?> GetPendingUserByEmail(string? email);
+
+        /// <summary>
+        /// checks if pending user exists by email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<bool> doesPendingUserExistsByEmail(string? email);
+
+        /// <summary>
+        /// checks if pending user exists by phone
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        Task<bool> doesPendingUserExistsByPhone(string? phone);
+
+        /// <summary>
+        /// get pending user by their phone
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        Task<PendingUser?> GetPendingUserByPhone(string? phone);
     }
 }

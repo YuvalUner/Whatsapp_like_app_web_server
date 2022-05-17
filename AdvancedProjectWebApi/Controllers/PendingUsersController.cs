@@ -124,5 +124,28 @@ namespace AdvancedProjectWebApi.Controllers {
             };
             return BadRequest();
         }
+
+        [HttpGet("doesPendingUserExistByUsername/{username}")]
+        public async Task<bool> doesPendingUserExistByUsername(string? username)
+        {
+            string? currentUser = User.FindFirst("username")?.Value;
+            return await _pendingUsersService.doesUserExist(username);
+        }
+
+        [HttpGet("doesPendingUserExistByEmail/{username}")]
+        public async Task<bool> doesPendingUserExistByEmail(string? username)
+        {
+            string? currentUser = User.FindFirst("username")?.Value;
+            return await _pendingUsersService.doesPendingUserExistsByEmail(username);
+        }
+
+        [HttpGet("doesPendingUserExistByPhone/{username}")]
+        public async Task<bool> doesPendingUserExistByPhone(string? username)
+        {
+            string? currentUser = User.FindFirst("username")?.Value;
+            return await _pendingUsersService.doesPendingUserExistsByPhone(username);
+        }
+
+
     }
 }

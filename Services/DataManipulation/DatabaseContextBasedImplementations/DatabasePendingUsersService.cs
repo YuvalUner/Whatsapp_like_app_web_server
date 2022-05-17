@@ -106,5 +106,51 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             PendingUser? user = await _context.PendingUser.Where(pu => pu.username == username).Include(pu => pu.secretQuestion).FirstOrDefaultAsync();
             return user;
         }
+
+        public async Task<PendingUser?> GetPendingUserByEmail(string? email)
+        {
+            if (email == null)
+            {
+                return null;
+            }
+            PendingUser? user = await _context.PendingUser.Where(ru => ru.email == email).FirstOrDefaultAsync();
+            return user;
+        }
+
+        public async Task<bool> doesPendingUserExistsByEmail(string? email)
+        {
+            if (email == null)
+            {
+                return false;
+            }
+            if (await this.GetPendingUserByEmail(email) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> doesPendingUserExistsByPhone(string? phone)
+        {
+            if (phone == null)
+            {
+                return false;
+            }
+            if (await this.GetPendingUserByPhone(phone) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<PendingUser?> GetPendingUserByPhone(string? phone)
+        {
+            if (phone == null)
+            {
+                return null;
+            }
+            PendingUser? user = await _context.PendingUser.Where(ru => ru.phone == phone).FirstOrDefaultAsync();
+            return user;
+        }
     }
 }
