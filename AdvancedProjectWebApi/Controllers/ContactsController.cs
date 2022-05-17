@@ -23,7 +23,7 @@ namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    [RequireHttps]
+    //[RequireHttps]
     public class ContactsController : ControllerBase {
         private readonly IContactsService _contactsService;
 
@@ -316,6 +316,17 @@ namespace AdvancedProjectWebApi.Controllers {
             bool success = await _contactsService.DeleteMessage(currentUser, id, id2AsInt);
             if (success) {
                 return NoContent();
+            }
+            return NotFound();
+        }
+
+        [HttpGet("getConvo/{convoWith}")]
+        public async Task<ActionResult<Conversation>> getConversation(string id) {
+
+            string user = User.FindFirst("username")?.Value;
+            Conversation? convo = await _contactsService.GetConversation(user, id);
+            if (convo != null) {
+                return convo;
             }
             return NotFound();
         }
