@@ -141,7 +141,7 @@ namespace AdvancedProjectWebApi.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{nickname}")]
+        [HttpGet("/GetNickName")]
         [Authorize]
         public async Task<IActionResult> getNickName(string? username)
         {
@@ -160,7 +160,7 @@ namespace AdvancedProjectWebApi.Controllers
                 return Ok(user.nickname);
             }
         }
-        [HttpPut("{password}")]
+        [HttpPut("/editPassword")]
         [Authorize]
         public async Task<IActionResult> updatePassword(string? newPassword)
         {
@@ -180,7 +180,7 @@ namespace AdvancedProjectWebApi.Controllers
             }
         }
 
-        [HttpPut("{nickname}")]
+        [HttpPut("/editNickName")]
         [Authorize]
         public async Task<IActionResult> editNickName(string? newNickName)
         {
