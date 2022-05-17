@@ -16,5 +16,8 @@ namespace Utils {
         public static readonly int refreshTokenLength = 256;
         public static readonly string currentPasswordHash = "Pbkdf2";
         public static readonly int accessTokenTestingExpiry = 60;
+        public static readonly string alphaNumericSpecial = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-=_+~?'][<>.,";
+        public static readonly string alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        public static readonly string numeric = "0123456789";
     }
 }
