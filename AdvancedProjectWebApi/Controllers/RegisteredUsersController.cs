@@ -161,14 +161,10 @@ namespace AdvancedProjectWebApi.Controllers
             }
         }
 
-        [HttpGet("{nicknum}")]
+        [HttpGet("getNickNum")]
         [Authorize]
-        public async Task<IActionResult> getNickNum(string? username)
+        public async Task<IActionResult> getNickNum()
         {
-            if (username == null)
-            {
-                return BadRequest();
-            }
             string? currentUser = User.FindFirst("username")?.Value;
             RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
             if (user == null)
