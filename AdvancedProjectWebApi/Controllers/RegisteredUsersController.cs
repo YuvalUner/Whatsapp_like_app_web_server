@@ -141,7 +141,7 @@ namespace AdvancedProjectWebApi.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("getNickName/{username}")]
         [Authorize]
         public async Task<IActionResult> getNickName(string? username)
         {
@@ -158,6 +158,26 @@ namespace AdvancedProjectWebApi.Controllers
             else
             {
                 return Ok(user.nickname);
+            }
+        }
+
+        [HttpGet("getDescription/{username}")]
+        [Authorize]
+        public async Task<IActionResult> getDescription(string? username)
+        {
+            if (username == null)
+            {
+                return BadRequest();
+            }
+            string? currentUser = User.FindFirst("username")?.Value;
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user.description);
             }
         }
 
