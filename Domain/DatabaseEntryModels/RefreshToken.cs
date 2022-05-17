@@ -21,7 +21,7 @@ namespace Domain.DatabaseEntryModels {
         public DateTime ExpiryDate { get; set; }
 
         // Using the name from the database. 
-        public string RegisteredUserusername { get; set; }
+        public string? RegisteredUserusername { get; set; }
 
         public string? UserAgent { get; set; }
     }

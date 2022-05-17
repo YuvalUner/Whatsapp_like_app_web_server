@@ -15,10 +15,10 @@ namespace Domain.DatabaseEntryModels {
 
         public DateTime created { get; set; }
 
-        public string content { get; set; }
+        public string? content { get; set; }
 
         public bool sent { get; set; }
 
-        public string type { get; set; }
+        public string? type { get; set; }
     }
 }

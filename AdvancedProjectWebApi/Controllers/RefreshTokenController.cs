@@ -57,7 +57,7 @@ namespace AdvancedProjectWebApi.Controllers {
 
                     await _refreshTokenService.RemovePreviousTokens(rToken.RegisteredUserusername, userAgent);
                     await _refreshTokenService.storeRefreshToken(aToken.RefreshToken, rToken.RegisteredUserusername, userAgent); ;
-
+                    
                     return Ok(aToken);
                 }
                 return NotFound();

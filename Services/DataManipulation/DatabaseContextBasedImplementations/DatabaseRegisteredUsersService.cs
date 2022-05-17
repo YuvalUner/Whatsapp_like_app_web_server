@@ -176,7 +176,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             {
                 return false;
             }
-            user.password = newPassword;
+            user.password = Utils.Utils.HashWithPbkdf2(newPassword, user.salt);
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return true;
@@ -266,7 +266,6 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return false;
         }
 
-
         public async Task<bool> addNewRegisteredUser(PendingUser? pendingUser) {
 
             if (pendingUser != null) {
@@ -287,6 +286,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 user.conversations = new List<Conversation>();
                 user.nickNum = Utils.Utils.generateRandString(Utils.Utils.numeric, 4);
                 user.verificationCodeCreationTime = new DateTime();
+                user.description = "I've just created my account! Please be nice uwu";
                 _context.RegisteredUser.Add(user);
                 await _context.SaveChangesAsync();
                 return true;

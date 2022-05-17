@@ -55,7 +55,7 @@ namespace AdvancedProjectWebApi.Controllers
         /// <param name="password"></param>
         /// <returns>200 with access and refresh tokens on success, BadRequest otherwise.</returns>
         [HttpPost]
-        public async Task<IActionResult> LogIn([Bind("username,password")] RegisteredUser user)
+        public async Task<IActionResult> LogIn([Bind("username,password")] RegisteredUser user, bool rememberMe)
         {
 
             if (await _registeredUsersService.verifyUser(user.username, user.password) == true)
@@ -69,7 +69,9 @@ namespace AdvancedProjectWebApi.Controllers
                 string? userAgent = Request.Headers["User-Agent"].ToString();
                 await _refreshTokenService.RemovePreviousTokens(user.username, userAgent);
                 await _refreshTokenService.storeRefreshToken(token.RefreshToken, user.username, userAgent);
-
+                if (rememberMe) {
+                    Response.Cookies.Append("rToken", token.RefreshToken);
+                }
                 return Ok(token);
             }
             return BadRequest();
@@ -149,8 +151,7 @@ namespace AdvancedProjectWebApi.Controllers
             {
                 return BadRequest();
             }
-            string? currentUser = User.FindFirst("username")?.Value;
-            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(username);
             if (user == null)
             {
                 return NotFound();
@@ -169,8 +170,7 @@ namespace AdvancedProjectWebApi.Controllers
             {
                 return BadRequest();
             }
-            string? currentUser = User.FindFirst("username")?.Value;
-            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(username);
             if (user == null)
             {
                 return NotFound();

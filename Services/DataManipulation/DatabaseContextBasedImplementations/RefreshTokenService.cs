@@ -19,7 +19,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             RefreshToken hashedToken = new RefreshToken() {
                 Token = Utils.Utils.hashWithSHA256(token),
                 RegisteredUserusername = username,
-                ExpiryDate = DateTime.UtcNow.AddDays(30),
+                ExpiryDate = DateTime.UtcNow.AddDays(1),
                 UserAgent = userAgent
             };
             _context.RefreshToken.Add(hashedToken);

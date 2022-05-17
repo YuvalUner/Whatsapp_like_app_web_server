@@ -192,16 +192,19 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="content">The message's content</param>
         /// <returns>204 on success, 404 if other user not found, or 401</returns>
         [HttpPost("{id}/messages")]
-        public async Task<IActionResult> addMessage(string id, [Bind("content")] string content) {
+        public async Task<IActionResult> addMessage(string id, [Bind("content")] Message message) {
 
             // Not allowing empty messages
-            if (id == null || content == null) {
+            if (id == null || message.content == null) {
                 return BadRequest();
             }
 
             string currentUser = User.FindFirst("username")?.Value;
+            message.created = DateTime.Now;
+            message.type = "text";
+            message.sent = true;
 
-            bool success = await _contactsService.addMessage(currentUser, id, new Message() { content = content, created = DateTime.Now, type = "text", sent = true });
+            bool success = await _contactsService.addMessage(currentUser, id, message);
             if (!success) {
                 return NotFound();
             }
@@ -212,7 +215,7 @@ namespace AdvancedProjectWebApi.Controllers {
             var transferContent = new {
                 from = currentUser,
                 to = id,
-                content = content
+                content = message.content
             };
 
             var transfer = JsonSerializer.Serialize(transferContent);
@@ -320,15 +323,26 @@ namespace AdvancedProjectWebApi.Controllers {
             return NotFound();
         }
 
-        [HttpGet("getConvo/{convoWith}")]
-        public async Task<ActionResult<Conversation>> getConversation(string id) {
+        [HttpGet("getConvo")]
+        public async Task<ActionResult<Conversation>> getConversation(string convoWith) {
+
+            if (convoWith == null) {
+                // Normally makes no sense, but needed to make the already built react app work.
+                return Ok(new Conversation() {
+                    with = convoWith,
+                    messages = new List<Message>()
+                });
+            }
 
             string user = User.FindFirst("username")?.Value;
-            Conversation? convo = await _contactsService.GetConversation(user, id);
+            Conversation? convo = await _contactsService.GetConversation(user, convoWith);
             if (convo != null) {
-                return convo;
+                return Ok(convo);
             }
-            return NotFound();
+            return Ok(new Conversation() {
+                with = convoWith,
+                messages = new List<Message>()
+            });
         }
     }
 }
