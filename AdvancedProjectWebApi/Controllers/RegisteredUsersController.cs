@@ -197,6 +197,27 @@ namespace AdvancedProjectWebApi.Controllers
             }
         }
 
+        [HttpGet("doesUserExistByUsername/{username}")]
+        public async Task<bool> doesUserExistByUsername(string? username)
+        {
+            string? currentUser = User.FindFirst("username")?.Value;
+            return await _registeredUsersService.doesUserExists(username);
+        }
+
+        [HttpGet("doesUserExistByEmail/{username}")]
+        public async Task<bool> doesUserExistByEmail(string? email)
+        {
+            string? currentUser = User.FindFirst("username")?.Value;
+            return await _registeredUsersService.doesUserExistsByEmail(email);
+        }
+
+        [HttpGet("doesUserExistByPhone/{username}")]
+        public async Task<bool> doesUserExistByPhone(string? phone)
+        {
+            string? currentUser = User.FindFirst("username")?.Value;
+            return await _registeredUsersService.doesUserExistsByPhone(phone);
+        }
+
         [HttpPut("/editPassword")]
         [Authorize]
         public async Task<IActionResult> updatePassword(string? newPassword)

@@ -32,6 +32,19 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return true;
         }
 
+        public async Task<bool> doesUserExistsByEmail(string? email)
+        {
+            if (email == null)
+            {
+                return false;
+            }
+            if (await this.GetRegisteredUserByEmail(email) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<RegisteredUser?> GetRegisteredUser(string? username) {
             if (username == null) {
                 return null;
@@ -47,6 +60,29 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 return null;
             }
             RegisteredUser? user = await _context.RegisteredUser.Where(ru => ru.email == email).FirstOrDefaultAsync();
+            return user;
+        }
+
+        public async Task<bool> doesUserExistsByPhone(string? phone)
+        {
+            if (phone == null)
+            {
+                return false;
+            }
+            if (await this.GetRegisteredUserByPhone(phone) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<RegisteredUser?> GetRegisteredUserByPhone(string? phone)
+        {
+            if (phone == null)
+            {
+                return null;
+            }
+            RegisteredUser? user = await _context.RegisteredUser.Where(ru => ru.phone == phone).FirstOrDefaultAsync();
             return user;
         }
 

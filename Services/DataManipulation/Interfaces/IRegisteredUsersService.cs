@@ -21,6 +21,20 @@ namespace Services.DataManipulation.Interfaces {
         Task<bool> doesUserExists(string? username);
 
         /// <summary>
+        /// Returns whether a user with a specified email exists or not.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<bool> doesUserExistsByEmail(string? email);
+
+        /// <summary>
+        /// Returns whether a user with a specified phone exists or not.
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        Task<bool> doesUserExistsByPhone(string? phone);
+
+        /// <summary>
         /// Gets a registered user by their username
         /// </summary>
         /// <param name="username"></param>
@@ -33,6 +47,13 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="email"></param>
         /// <returns></returns>
         Task<RegisteredUser?> GetRegisteredUserByEmail(string? email);
+
+        /// <summary>
+        /// Gets a registered user by their phone.
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        Task<RegisteredUser?> GetRegisteredUserByPhone(string? phone);
 
         /// <summary>
         /// gets nickname of user
