@@ -204,14 +204,14 @@ namespace AdvancedProjectWebApi.Controllers
             return await _registeredUsersService.doesUserExists(username);
         }
 
-        [HttpGet("doesUserExistByEmail/{username}")]
+        [HttpGet("doesUserExistByEmail/{email}")]
         public async Task<bool> doesUserExistByEmail(string? email)
         {
             string? currentUser = User.FindFirst("username")?.Value;
             return await _registeredUsersService.doesUserExistsByEmail(email);
         }
 
-        [HttpGet("doesUserExistByPhone/{username}")]
+        [HttpGet("doesUserExistByPhone/{phone}")]
         public async Task<bool> doesUserExistByPhone(string? phone)
         {
             string? currentUser = User.FindFirst("username")?.Value;
