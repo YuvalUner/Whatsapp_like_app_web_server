@@ -40,6 +40,16 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return user;
         }
 
+        public async Task<RegisteredUser?> GetRegisteredUserByEmail(string? email)
+        {
+            if (email == null)
+            {
+                return null;
+            }
+            RegisteredUser? user = await _context.RegisteredUser.Where(ru => ru.email == email).FirstOrDefaultAsync();
+            return user;
+        }
+
         public async Task<bool?> editDescription(string? username, string? newDescription) {
             if (username == null || newDescription == null) {
                 return false;
@@ -178,7 +188,39 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return false;
         }
 
+        public async Task<bool> doEmailAndPasswordMAtch(string? email, string? password)
+        {
 
+            if (password == null || email == null)
+            {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUserByEmail(email);
+            if (user == null)
+            {
+                return false;
+            }
+            // This made it a good opprotunity to show the reason why we save the algorithm used as well.
+            if (user.hashingAlgorithm == "SHA256")
+            {
+                string hashedPassword = Utils.Utils.hashWithSHA256(password + user.salt);
+                if (user.password == hashedPassword)
+                {
+                    user.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
+                    user.password = Utils.Utils.HashWithPbkdf2(password, user.salt);
+                    user.hashingAlgorithm = "Pbdkf2";
+                    _context.Entry(user).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            string hashsedPassword = Utils.Utils.HashWithPbkdf2(password, user.salt);
+            if (user.password == hashsedPassword)
+            {
+                return true;
+            }
+            return false;
+        }
 
         public async Task<bool> verifySecretQuestion(string? username, string? questionNum, string? answer)
         {
