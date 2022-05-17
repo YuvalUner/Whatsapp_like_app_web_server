@@ -141,10 +141,11 @@ namespace AdvancedProjectWebApi.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{password}")]
+        [HttpGet("{nickname}")]
         [Authorize]
-        public async Task<IActionResult> getNickName(string? nickname){
-            if (nickname == null)
+        public async Task<IActionResult> getNickName(string? username)
+        {
+            if (username == null)
             {
                 return BadRequest();
             }
@@ -159,8 +160,7 @@ namespace AdvancedProjectWebApi.Controllers
                 return Ok(user.nickname);
             }
         }
-
-        [HttpGet("{nickname}")]
+        [HttpPut("{password}")]
         [Authorize]
         public async Task<IActionResult> updatePassword(string? newPassword)
         {
@@ -177,6 +177,26 @@ namespace AdvancedProjectWebApi.Controllers
             else
             {
                 return Ok(user.password = newPassword);
+            }
+        }
+
+        [HttpPut("{nickname}")]
+        [Authorize]
+        public async Task<IActionResult> editNickName(string? newNickName)
+        {
+            if (newNickName == null)
+            {
+                return BadRequest();
+            }
+            string? currentUser = User.FindFirst("username")?.Value;
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user.nickname = newNickName);
             }
         }
 
