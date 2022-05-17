@@ -14,14 +14,16 @@ using Domain.CodeOnlyModels;
 using Services.TokenServices.Interfaces;
 using Services.TokenServices.Implementations;
 
-namespace AdvancedProjectWebApi.Controllers {
+namespace AdvancedProjectWebApi.Controllers
+{
 
     /// <summary>
     /// A controller for managing already registered users.
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class RegisteredUsersController : ControllerBase {
+    public class RegisteredUsersController : ControllerBase
+    {
 
         public IConfiguration _configuration;
 
@@ -35,7 +37,8 @@ namespace AdvancedProjectWebApi.Controllers {
         /// </summary>
         /// <param name="context"></param>
         /// <param name="config"></param>
-        public RegisteredUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
+        public RegisteredUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config)
+        {
 
             this._registeredUsersService = new DatabaseRegisteredUsersService(context);
             this._pendingUsersService = new DatabasePendingUsersService(context);
@@ -52,9 +55,11 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="password"></param>
         /// <returns>200 with access and refresh tokens on success, BadRequest otherwise.</returns>
         [HttpPost]
-        public async Task<IActionResult> LogIn([Bind("username,password")] RegisteredUser user) {
+        public async Task<IActionResult> LogIn([Bind("username,password")] RegisteredUser user)
+        {
 
-            if (await _registeredUsersService.verifyUser(user.username, user.password) == true) {
+            if (await _registeredUsersService.verifyUser(user.username, user.password) == true)
+            {
 
                 AuthToken token = _tokenGenerator.GenerateAuthToken(user.username,
                     _configuration["JWTBearerParams:Subject"],
@@ -76,9 +81,11 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="username"></param>
         /// <returns></returns>
         [HttpPost("testingOnlyRemoveLater")]
-        public async Task<IActionResult> LogIn(string? username) {
+        public async Task<IActionResult> LogIn(string? username)
+        {
 
-            if (await _registeredUsersService.doesUserExists(username) == true) {
+            if (await _registeredUsersService.doesUserExists(username) == true)
+            {
 
                 AuthToken token = _tokenGenerator.GenerateAuthToken(username,
                     _configuration["JWTBearerParams:Subject"],
@@ -100,22 +107,26 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <returns>200 and refresh token on success, BadRequest otherwise</returns>
         [HttpPost("signUp")]
         [Authorize]
-        public async Task<IActionResult> FinishSignUp() {
+        public async Task<IActionResult> FinishSignUp()
+        {
 
             string? username = User.FindFirst("username")?.Value;
             // Really should absolutely never happen, short of an attack.
-            if (username == null) {
+            if (username == null)
+            {
                 return BadRequest();
             }
 
             PendingUser? userToSignUp = await _pendingUsersService.GetPendingUserWithSecretQuestion(username);
             // Also should absolutely never happen short of an attack.
-            if (userToSignUp == null) {
+            if (userToSignUp == null)
+            {
                 return BadRequest();
             }
 
             // Also should always be false, short of an attack.
-            if (await _registeredUsersService.doesUserExists(username) == false) {
+            if (await _registeredUsersService.doesUserExists(username) == false)
+            {
 
                 await _registeredUsersService.addNewRegisteredUser(userToSignUp);
                 await _pendingUsersService.RemovePendingUser(userToSignUp);
@@ -129,5 +140,45 @@ namespace AdvancedProjectWebApi.Controllers {
             }
             return BadRequest();
         }
+
+        [HttpPut("{password}")]
+        [Authorize]
+        public async Task<IActionResult> getNickName(string? nickname){
+            if (nickname == null)
+            {
+                return BadRequest();
+            }
+            string? currentUser = User.FindFirst("username")?.Value;
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user.nickname);
+            }
+        }
+
+        [HttpGet("{nickname}")]
+        [Authorize]
+        public async Task<IActionResult> updatePassword(string? newPassword)
+        {
+            if (newPassword == null)
+            {
+                return BadRequest();
+            }
+            string? currentUser = User.FindFirst("username")?.Value;
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user.password = newPassword);
+            }
+        }
+
     }
 }
