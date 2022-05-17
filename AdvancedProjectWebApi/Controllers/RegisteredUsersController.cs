@@ -141,7 +141,7 @@ namespace AdvancedProjectWebApi.Controllers
             return BadRequest();
         }
 
-        [HttpGet("/getNickName")]
+        [HttpGet("{username}")]
         [Authorize]
         public async Task<IActionResult> getNickName(string? username)
         {
@@ -169,15 +169,9 @@ namespace AdvancedProjectWebApi.Controllers
                 return BadRequest();
             }
             string? currentUser = User.FindFirst("username")?.Value;
-            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user.password = newPassword);
-            }
+            bool result = await _registeredUsersService.updatePassword(currentUser, newPassword);
+            if (!result) { return BadRequest(); }
+            return NoContent();
         }
 
         [HttpPut("/editNickName")]
@@ -189,15 +183,9 @@ namespace AdvancedProjectWebApi.Controllers
                 return BadRequest();
             }
             string? currentUser = User.FindFirst("username")?.Value;
-            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(user.nickname = newNickName);
-            }
+            bool result = await _registeredUsersService.editNickName(currentUser, newNickName);
+            if (!result) { return BadRequest(); }
+            return NoContent();
         }
 
     }

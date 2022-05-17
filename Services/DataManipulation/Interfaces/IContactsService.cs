@@ -100,5 +100,21 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="contactToGet"></param>
         /// <returns>true on success, false otherwise</returns>
         public Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet);
+
+        /// <summary>
+        /// checks if user has contact already.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        Task<bool> isAlreadyContact(string? username, string? contact);
+
+        /// <summary>
+        /// gets contact's last seen.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        Task<string?> getLastSeen(string? username, string? contact);
     }
 }
