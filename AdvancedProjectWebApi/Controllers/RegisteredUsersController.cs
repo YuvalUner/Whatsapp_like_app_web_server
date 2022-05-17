@@ -160,6 +160,27 @@ namespace AdvancedProjectWebApi.Controllers
                 return Ok(user.nickname);
             }
         }
+
+        [HttpGet("{nicknum}")]
+        [Authorize]
+        public async Task<IActionResult> getNickNum(string? username)
+        {
+            if (username == null)
+            {
+                return BadRequest();
+            }
+            string? currentUser = User.FindFirst("username")?.Value;
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(currentUser);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user.nickNum);
+            }
+        }
+
         [HttpPut("/editPassword")]
         [Authorize]
         public async Task<IActionResult> updatePassword(string? newPassword)
