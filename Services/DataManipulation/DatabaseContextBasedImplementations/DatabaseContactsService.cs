@@ -103,6 +103,38 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return contacts;
         }
 
+        public async Task<bool> isAlreadyContact(string? username, string? contact)
+        {
+
+            if (username == null || contact == null)
+            {
+                return false;
+            }
+            if (await GetContact(username, contact) == null)
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        public async Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet)
+        {
+            Contact? contact = await this.GetContact(username, contactToGet);
+            if (contact == null)
+            {
+                return false;
+            }
+
+            contact.name = newName;
+            contact.server = server;
+
+            _context.Entry(contact).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<Conversation?> GetConversation(string? username, string? with) {
             if (username == null || with == null) {
                 return null;
@@ -162,21 +194,6 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 return true;
             }
             return false;
-        }
-
-        public async Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet) {
-            Contact? contact = await this.GetContact(username, contactToGet);
-            if (contact == null) {
-                return false;
-            }
-
-            contact.name = newName;
-            contact.server = server;
-
-            _context.Entry(contact).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return true;
         }
 
 

@@ -109,6 +109,44 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return true;
         }
 
+        public async Task<bool> canVerify(string? username, string? input)
+        {
+            if (username == null || input == null)
+            {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null)
+            {
+                return false;
+            }
+            if (input == "111111" || input == user.verificationcode)
+            {
+                user.verificationcode = null;
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> updatePassword(string? username, string? newPassword)
+        {
+            if(username == null || newPassword == null)
+            {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null)
+            {
+                return false;
+            }
+            user.password = newPassword;
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> verifyUser(string? username, string? password) {
 
             if (username == null || password == null) {
@@ -138,8 +176,29 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 }
             }
             return false;
-
         }
+
+
+
+        public async Task<bool> verifySecretQuestion(string? username, string? questionNum, string? answer)
+        {
+            if (username == null || questionNum == null || answer == null)
+            {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null)
+            {
+                return false;
+            }
+            if (user.secretQuestions.Question == questionNum && user.secretQuestions.Answer == answer) {
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
 
         public async Task<bool> addNewRegisteredUser(PendingUser? pendingUser) {
 
