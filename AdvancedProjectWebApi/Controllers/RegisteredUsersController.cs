@@ -141,7 +141,7 @@ namespace AdvancedProjectWebApi.Controllers
             return BadRequest();
         }
 
-        [HttpGet("/GetNickName")]
+        [HttpGet("{username}")]
         [Authorize]
         public async Task<IActionResult> getNickName(string? username)
         {
