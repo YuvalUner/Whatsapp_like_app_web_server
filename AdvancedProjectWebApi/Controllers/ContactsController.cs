@@ -344,6 +344,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return Ok(result);
         }
 
+        /// <summary>
+        /// Checks if a user is contact by email.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         [HttpGet("byEmail/{email}")]
         public async Task<ActionResult<bool>> isAlreadyContactByEmail(string? email) {
             if (email == null) {
@@ -354,6 +359,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return Ok(result);
         }
 
+        /// <summary>
+        /// Checks if a user is a contact by phone.
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
         [HttpGet("byPhone/{phone}")]
         public async Task<ActionResult<bool>> isAlreadyContactByPhone(string? phone) {
             if (phone == null) {
@@ -364,6 +374,12 @@ namespace AdvancedProjectWebApi.Controllers {
             return Ok(result);
         }
 
+        /// <summary>
+        /// Adds a contact to a user by email.
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <param name="local"></param>
+        /// <returns></returns>
         [HttpPost("byEmail")]
         public async Task<IActionResult> addContactByEmail([Bind("id,server")] Contact contact, bool local = false) {
             if (ModelState.IsValid) {
@@ -409,6 +425,12 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+        /// <summary>
+        /// Adds a contact to a user by phone.
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <param name="local"></param>
+        /// <returns></returns>
         [HttpPost("byPhone")]
         public async Task<IActionResult> addContactByPhone([Bind("id,server")] Contact contact, bool local = false) {
             if (ModelState.IsValid) {

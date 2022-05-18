@@ -93,6 +93,12 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+
+        /// <summary>
+        /// Logs in the user if their email and password match.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost("emailLogIn")]
         public async Task<IActionResult> emailLogIn([Bind("email,password")] RegisteredUser user) {
 
@@ -113,6 +119,10 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+        /// <summary>
+        /// logs out user.
+        /// </summary>
+        /// <returns></returns>
         [HttpPut("logOut")]
         [Authorize]
         public async Task<IActionResult> logOut() {
@@ -158,6 +168,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+        /// <summary>
+        /// gets nickname of specific user.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet("getNickName/{username}")]
         [Authorize]
         public async Task<IActionResult> getNickName(string? username) {
@@ -172,7 +187,12 @@ namespace AdvancedProjectWebApi.Controllers {
                 return Ok(user.nickname);
             }
         }
-
+        
+        /// <summary>
+        /// gets description of user.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet("getDescription/{username}")]
         [Authorize]
         public async Task<IActionResult> getDescription(string? username) {
@@ -188,6 +208,10 @@ namespace AdvancedProjectWebApi.Controllers {
             }
         }
 
+        /// <summary>
+        /// gets NickNum of user.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getNickNum")]
         [Authorize]
         public async Task<IActionResult> getNickNum() {
@@ -201,6 +225,12 @@ namespace AdvancedProjectWebApi.Controllers {
             }
         }
 
+
+        /// <summary>
+        /// Checks if user exists by username.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet("doesUserExistByUsername/{username}")]
         [Authorize]
         public async Task<bool> doesUserExistByUsername(string? username) {
@@ -208,6 +238,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return await _registeredUsersService.doesUserExists(username);
         }
 
+        /// <summary>
+        /// checks if user exists by email.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         [HttpGet("doesUserExistByEmail/{email}")]
         [Authorize]
         public async Task<bool> doesUserExistByEmail(string? email) {
@@ -215,6 +250,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return await _registeredUsersService.doesUserExistsByEmail(email);
         }
 
+        /// <summary>
+        /// checks if user exists by phone.
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
         [HttpGet("doesUserExistByPhone/{phone}")]
         [Authorize]
         public async Task<bool> doesUserExistByPhone(string? phone) {
@@ -222,6 +262,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return await _registeredUsersService.doesUserExistsByPhone(phone);
         }
 
+        /// <summary>
+        /// changes user's password.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPut("editPassword")]
         [Authorize]
         public async Task<IActionResult> updatePassword([Bind("password")] RegisteredUser user) {
@@ -234,6 +279,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return NoContent();
         }
 
+        /// <summary>
+        /// changes nickname of user.
+        /// </summary>
+        /// <param name="newNickName"></param>
+        /// <returns></returns>
         [HttpPut("editNickName/{newNickName}")]
         [Authorize]
         public async Task<IActionResult> editNickName(string? newNickName) {
@@ -246,6 +296,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return NoContent();
         }
 
+        /// <summary>
+        /// changes description of user.
+        /// </summary>
+        /// <param name="newDescription"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut("editDescription/{newDescription}")]
         public async Task<IActionResult> editDescription(string? newDescription) {
@@ -261,6 +316,13 @@ namespace AdvancedProjectWebApi.Controllers {
             return NoContent();
         }
 
+        /// <summary>
+        /// Gets secret question of user.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="question"></param>
+        /// <param name="answer"></param>
+        /// <returns></returns>
         [HttpGet("secretQuestion/{username}")]
         public async Task<bool> verifySecretQuestion(string? username, string? question, string? answer) {
 
@@ -272,6 +334,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return result;
         }
 
+        /// <summary>
+        /// Renews vverification code of specific user.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpPut("renewVerificationCode/{username}")]
         public async Task<IActionResult> renewVerificationCode(string? username) {
             if (username == null) {
@@ -291,6 +358,12 @@ namespace AdvancedProjectWebApi.Controllers {
             return NotFound();
         }
 
+        /// <summary>
+        /// Checks if the code matches and user and if so, gives user access token.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="verificationCode"></param>
+        /// <returns></returns>
         [HttpGet("verifyCode/{username}")]
         public async Task<IActionResult> verifyCode(string? username, string? verificationCode) {
 

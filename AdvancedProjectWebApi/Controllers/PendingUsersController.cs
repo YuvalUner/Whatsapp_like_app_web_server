@@ -130,6 +130,11 @@ namespace AdvancedProjectWebApi.Controllers {
             return BadRequest();
         }
 
+        /// <summary>
+        /// Checks if pending user exists by username.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet("doesPendingUserExistByUsername/{username}")]
         public async Task<bool> doesPendingUserExistByUsername(string? username)
         {
@@ -137,6 +142,11 @@ namespace AdvancedProjectWebApi.Controllers {
                 || await _registeredUsersService.doesUserExists(username));
         }
 
+        /// <summary>
+        /// Checks if pending user exists by email.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet("doesPendingUserExistByEmail/{username}")]
         public async Task<bool> doesPendingUserExistByEmail(string? username)
         {
@@ -144,6 +154,11 @@ namespace AdvancedProjectWebApi.Controllers {
                 || await _registeredUsersService.doesUserExistsByEmail(username));
         }
 
+        /// <summary>
+        /// checks if pending user exists by phone.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet("doesPendingUserExistByPhone/{username}")]
         public async Task<bool> doesPendingUserExistByPhone(string? username)
         {
