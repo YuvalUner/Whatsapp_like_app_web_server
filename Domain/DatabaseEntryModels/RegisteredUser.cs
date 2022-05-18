@@ -10,7 +10,7 @@ namespace Domain.DatabaseEntryModels {
     public class RegisteredUser {
 
         [Key]
-        public string username { get; set; }
+        public string? username { get; set; }
 
         public string password { get; set; }
 

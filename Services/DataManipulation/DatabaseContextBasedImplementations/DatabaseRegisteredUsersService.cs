@@ -303,5 +303,41 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             return false;
         }
+
+        public async Task<bool> generateVerificationCode(string? username, MailRequest mail) {
+
+            if (username == null || mail == null) {
+                return false;
+            }
+            RegisteredUser? user = await GetRegisteredUser(username);
+            if (user != null) {
+                user.verificationcode = Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, Constants.codeLength);
+                user.verificationCodeCreationTime = DateTime.UtcNow;
+                _context.Entry(user).State = EntityState.Modified;
+                mail.Body = ($"<p>Your verification code is:</p><h3>{user.verificationcode}</h3>" +
+                    $"<p>It will be valid for the next 30 minutes</p>");
+                mail.ToEmail = user.email;
+                Utils.Utils.sendEmail(mail);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> verifyVerificationCode(string? username, string? code) {
+            
+            if (username == null || code == null) {
+                return false;
+            }
+            RegisteredUser? user = await GetRegisteredUser(username);
+            if (user.verificationcode == code 
+                && DateTime.UtcNow.Subtract(user.verificationCodeCreationTime).Minutes <= 30) {
+                user.verificationcode = null;
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

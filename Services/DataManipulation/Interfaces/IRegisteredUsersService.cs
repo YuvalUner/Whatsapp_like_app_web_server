@@ -147,5 +147,21 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="username"></param>
         /// <returns></returns>
         public Task<RegisteredUser?> getRegisteredUserWithSecretQuestions(string? username);
+
+        /// <summary>
+        /// Renews a user's verification code and sends it to them.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="mail"></param>
+        /// <returns></returns>
+        public Task<bool> generateVerificationCode(string? username, MailRequest mail);
+
+        /// <summary>
+        /// Checks whether a user's verification code is correct.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="code"></param>
+        /// <returns>True if yes, false otherwise</returns>
+        public Task<bool> verifyVerificationCode(string? username, string? code);
     }
 }
