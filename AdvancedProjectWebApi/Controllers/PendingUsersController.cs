@@ -90,9 +90,14 @@ namespace AdvancedProjectWebApi.Controllers {
                 if (await _pendingUsersService.doesUserExist(pendingUser.username) == false
                     && await _registeredUsersService.doesUserExists(pendingUser.username) == false
                     && await _pendingUsersService.doesPendingUserExistsByEmail(pendingUser.email) == false 
-                    && await _registeredUsersService.doesUserExistsByEmail(pendingUser.email) == false
-                    && await _pendingUsersService.doesPendingUserExistsByPhone(pendingUser.phone) == false
-                    && await _registeredUsersService.doesUserExistsByPhone(pendingUser.phone) == false) {
+                    && await _registeredUsersService.doesUserExistsByEmail(pendingUser.email) == false) {
+
+                    if (pendingUser.phone != null && pendingUser.phone.Length > 0) {
+                        if (await _pendingUsersService.doesPendingUserExistsByPhone(pendingUser.phone) == true
+                          || await _registeredUsersService.doesUserExistsByPhone(pendingUser.phone) == true) {
+                            return BadRequest();
+                        }
+                    }
 
                     MailRequest mail = this.createEmail(pendingUser.email);
 
