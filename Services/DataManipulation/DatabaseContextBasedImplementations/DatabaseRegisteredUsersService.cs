@@ -86,11 +86,14 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return user;
         }
 
-        public async Task<bool?> editDescription(string? username, string? newDescription) {
+        public async Task<bool> editDescription(string? username, string? newDescription) {
             if (username == null || newDescription == null) {
                 return false;
             }
             RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null) {
+                return false;
+            }
             user.description = newDescription;
 
             _context.Entry(user).State = EntityState.Modified;
@@ -253,17 +256,24 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             {
                 return false;
             }
-            RegisteredUser? user = await this.GetRegisteredUser(username);
+            RegisteredUser? user = await this.getRegisteredUserWithSecretQuestions(username);
             if (user == null)
             {
                 return false;
             }
-            if (user.secretQuestions.Question == questionNum && user.secretQuestions.Answer == answer) {
-                _context.Entry(user).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+            if (user.secretQuestion.Question == questionNum && user.secretQuestion.Answer == answer) {
                 return true;
             }
             return false;
+        }
+
+        public async Task<RegisteredUser?> getRegisteredUserWithSecretQuestions(string? username) {
+
+            if (username == null || username.Length == 0) {
+
+            }
+            RegisteredUser? user = await _context.RegisteredUser.Where(ru => ru.username == username).Include(ru => ru.secretQuestion).FirstOrDefaultAsync();
+            return user;
         }
 
         public async Task<bool> addNewRegisteredUser(PendingUser? pendingUser) {
@@ -278,7 +288,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 user.salt = pendingUser.salt;
                 user.nickname = pendingUser.nickname;
                 user.verificationcode = null;
-                user.secretQuestions = new SecretQuestion() {
+                user.secretQuestion = new SecretQuestion() {
                     Answer = pendingUser.secretQuestion.Answer,
                     Question = pendingUser.secretQuestion.Question
                 };

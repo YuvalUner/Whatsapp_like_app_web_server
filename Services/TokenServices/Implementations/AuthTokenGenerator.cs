@@ -48,7 +48,7 @@ namespace Services.TokenServices.Implementations {
         }
 
         public string GenerateRefreshToken() {
-            return Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.refreshTokenLength);
+            return Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, Constants.refreshTokenLength);
         }
 
     }

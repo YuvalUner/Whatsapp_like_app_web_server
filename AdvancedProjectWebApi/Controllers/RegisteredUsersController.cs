@@ -55,7 +55,7 @@ namespace AdvancedProjectWebApi.Controllers
         /// <param name="password"></param>
         /// <returns>200 with access and refresh tokens on success, BadRequest otherwise.</returns>
         [HttpPost]
-        public async Task<IActionResult> LogIn([Bind("username,password")] RegisteredUser user, bool rememberMe)
+        public async Task<IActionResult> LogIn([Bind("username,password")] RegisteredUser user)
         {
 
             if (await _registeredUsersService.verifyUser(user.username, user.password) == true)
@@ -69,9 +69,6 @@ namespace AdvancedProjectWebApi.Controllers
                 string? userAgent = Request.Headers["User-Agent"].ToString();
                 await _refreshTokenService.RemovePreviousTokens(user.username, userAgent);
                 await _refreshTokenService.storeRefreshToken(token.RefreshToken, user.username, userAgent);
-                if (rememberMe) {
-                    Response.Cookies.Append("rToken", token.RefreshToken);
-                }
                 return Ok(token);
             }
             return BadRequest();
@@ -218,7 +215,7 @@ namespace AdvancedProjectWebApi.Controllers
             return await _registeredUsersService.doesUserExistsByPhone(phone);
         }
 
-        [HttpPut("/editPassword")]
+        [HttpPut("editPassword/{newPassword}")]
         [Authorize]
         public async Task<IActionResult> updatePassword(string? newPassword)
         {
@@ -232,7 +229,7 @@ namespace AdvancedProjectWebApi.Controllers
             return NoContent();
         }
 
-        [HttpPut("/editNickName")]
+        [HttpPut("editNickName/{newNickName}")]
         [Authorize]
         public async Task<IActionResult> editNickName(string? newNickName)
         {
@@ -243,6 +240,20 @@ namespace AdvancedProjectWebApi.Controllers
             string? currentUser = User.FindFirst("username")?.Value;
             bool result = await _registeredUsersService.editNickName(currentUser, newNickName);
             if (!result) { return BadRequest(); }
+            return NoContent();
+        }
+
+        [HttpPut("editDescription/{newDescription}")]
+        public async Task<IActionResult> editDescription(string? newDescription) {
+
+            if (newDescription == null) {
+                return BadRequest();
+            }
+            string currentUser = User.FindFirst("username")?.Value;
+            bool result = await _registeredUsersService.editDescription(currentUser, newDescription);
+            if (!result) {
+                return BadRequest();
+            }
             return NoContent();
         }
 

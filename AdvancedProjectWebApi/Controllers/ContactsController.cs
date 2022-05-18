@@ -100,7 +100,7 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="contact">A contact with their id and server</param>
         /// <returns>201 on success, 404 if current user not found (should not happen), 401 otherwise.</returns>
         [HttpPost]
-        public async Task<IActionResult> PostContact([Bind("id,server")] Contact contact) {
+        public async Task<IActionResult> PostContact([Bind("id,server")] Contact contact, bool local = false) {
 
             if (ModelState.IsValid) {
 
@@ -109,6 +109,9 @@ namespace AdvancedProjectWebApi.Controllers {
                 contact.last = null;
                 contact.contactOf = user;
                 contact.lastdate = DateTime.Now;
+                if (local == true) {
+                    contact.server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                }
 
                 bool success = await _contactsService.addContact(user, contact);
                 if (!success) {
@@ -323,26 +326,15 @@ namespace AdvancedProjectWebApi.Controllers {
             return NotFound();
         }
 
-        [HttpGet("getConvo")]
-        public async Task<ActionResult<Conversation>> getConversation(string convoWith) {
-
-            if (convoWith == null) {
-                // Normally makes no sense, but needed to make the already built react app work.
-                return Ok(new Conversation() {
-                    with = convoWith,
-                    messages = new List<Message>()
-                });
+        [HttpGet("alreadyContact/{user}")]
+        [Authorize]
+        public async Task<ActionResult<bool>> isAlreadyContact(string? user) {
+            if (user == null) {
+                return BadRequest();
             }
-
-            string user = User.FindFirst("username")?.Value;
-            Conversation? convo = await _contactsService.GetConversation(user, convoWith);
-            if (convo != null) {
-                return Ok(convo);
-            }
-            return Ok(new Conversation() {
-                with = convoWith,
-                messages = new List<Message>()
-            });
+            string username = User.FindFirst("username")?.Value;
+            bool result = await _contactsService.isAlreadyContact(username, user);
+            return Ok(result);
         }
     }
 }

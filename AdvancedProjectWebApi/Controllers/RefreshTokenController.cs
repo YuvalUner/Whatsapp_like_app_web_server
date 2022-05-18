@@ -39,7 +39,7 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="token"></param>
         /// <returns>A new access and refresh token on success, 404 if access token not found, 401 otherwise.</returns>
         [HttpPut]
-        public async Task<IActionResult> renewTokens([Bind("token")] RefreshToken token) {
+        public async Task<IActionResult> renewTokens([Bind("token")] RefreshToken token, bool login = false) {
             if (token == null) {
                 return BadRequest();
             }
@@ -57,8 +57,16 @@ namespace AdvancedProjectWebApi.Controllers {
 
                     await _refreshTokenService.RemovePreviousTokens(rToken.RegisteredUserusername, userAgent);
                     await _refreshTokenService.storeRefreshToken(aToken.RefreshToken, rToken.RegisteredUserusername, userAgent); ;
-                    
-                    return Ok(aToken);
+                    if (!login) {
+                        return Ok(aToken);
+                    }
+                    else {
+                        return Ok(new {
+                            refreshToken = aToken.RefreshToken,
+                            accessToken = aToken.AccessToken,
+                            username = rToken.RegisteredUserusername
+                        });
+                    }
                 }
                 return NotFound();
             }

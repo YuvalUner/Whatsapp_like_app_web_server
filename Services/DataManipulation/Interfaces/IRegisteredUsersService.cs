@@ -68,7 +68,7 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="username"></param>
         /// <param name="newDescription"></param>
         /// <returns></returns>
-        Task<bool?> editDescription(string? username, string? newDescription);
+        Task<bool> editDescription(string? username, string? newDescription);
 
         /// <summary>
         /// get user description.
@@ -140,5 +140,12 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="answer"></param>
         /// <returns></returns>
         Task<bool> verifySecretQuestion(string? username, string? questionNum, string? answer);
+
+        /// <summary>
+        /// Gets a user with their secret question.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public Task<RegisteredUser?> getRegisteredUserWithSecretQuestions(string? username);
     }
 }

@@ -24,7 +24,7 @@ namespace Domain.DatabaseEntryModels {
 
         public string? nickname { get; set; }
 
-        public SecretQuestion? secretQuestions { get; set; }
+        public SecretQuestion? secretQuestion { get; set; }
 
         public string? verificationcode { get; set; }
 
