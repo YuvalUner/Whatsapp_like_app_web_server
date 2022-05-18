@@ -475,5 +475,16 @@ namespace AdvancedProjectWebApi.Controllers {
             }
             return BadRequest();
         }
+
+        [HttpGet("{contact}/lastSeen")]
+        public async Task<IActionResult> GetLastSeen(string contact) {
+
+            string user = User.FindFirst("username")?.Value;
+            Contact? cont = await _contactsService.GetContact(user, contact);
+            if (cont != null) {
+                return Ok(cont.lastdate);
+            }
+            return BadRequest();
+        }
     }
 }

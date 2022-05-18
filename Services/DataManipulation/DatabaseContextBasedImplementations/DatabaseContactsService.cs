@@ -21,7 +21,6 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             this._registeredUsersService = new DatabaseRegisteredUsersService(context);
         }
 
-
         public async Task<bool> addContact(string? username, Contact contact) {
             RegisteredUser? user = await this.GetRegisteredUserWithConvoAndContacts(username);
             if (user == null) {
@@ -49,6 +48,16 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             convo.messages.Add(msg);
 
             _context.Entry(convo).State = EntityState.Modified;
+
+            RegisteredUser? user = await this.GetRegisteredUserWithConvoAndContacts(with);
+            if (user != null) {
+                Contact? contact = user.contacts.Find(c => c.id == username);
+                if (contact != null) {
+                    contact.lastdate = DateTime.Now;
+                    _context.Entry(contact).State = EntityState.Modified;
+                }
+            }
+
             await _context.SaveChangesAsync();
 
             return true;

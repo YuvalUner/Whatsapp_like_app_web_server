@@ -60,12 +60,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", builder => {
-        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+        .WithOrigins("http://localhost:3000");
     });
 });
 
-var app = builder.Build();
+builder.Services.AddSignalR();
 
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
@@ -75,16 +77,18 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
 
 app.UseCors("AllowAll");
 app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.MapControllers();
+
 app.UseEndpoints(endpoints => {
     endpoints.MapHub<ChatAppHub>("/ChatAppHub");
 });
-
-app.MapControllers();
 
 app.Run();

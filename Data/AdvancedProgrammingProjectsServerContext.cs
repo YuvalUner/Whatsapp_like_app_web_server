@@ -11,7 +11,7 @@ namespace Data
     public class AdvancedProgrammingProjectsServerContext : DbContext
     {
 
-        private const string connectionString = "server=localhost;port=3306;database=ErezYuvalProjectServer;user=root;password=dangit65";
+        private const string connectionString = "***REMOVED***";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             optionsBuilder.UseMySql(connectionString, MariaDbServerVersion.AutoDetect(connectionString));
@@ -28,6 +28,7 @@ namespace Data
             modelBuilder.Entity<Rating>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasOne<RegisteredUser>();
+            modelBuilder.Entity<ActiveConnection>().HasKey(e => new { e.ConnectionId, e.UserAgent, e.Username });
         }
 
         public DbSet<Contact> Contact { get; set; }
@@ -45,5 +46,7 @@ namespace Data
         public DbSet<Rating> Rating { get; set; }
 
         public DbSet<RefreshToken> RefreshToken { get; set; }
+
+        public DbSet<ActiveConnection> ActiveConnection { get; set; }
     }
 }
