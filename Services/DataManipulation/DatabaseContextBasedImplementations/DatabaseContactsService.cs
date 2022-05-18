@@ -103,26 +103,21 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return contacts;
         }
 
-        public async Task<bool> isAlreadyContact(string? username, string? contact)
-        {
+        public async Task<bool> isAlreadyContact(string? username, string? contact) {
 
-            if (username == null || contact == null)
-            {
+            if (username == null || contact == null) {
                 return false;
             }
-            if (await GetContact(username, contact) == null)
-            {
+            if (await GetContact(username, contact) == null) {
                 return false;
             }
             return true;
 
         }
 
-        public async Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet)
-        {
+        public async Task<bool> editContact(string? username, string? server, string? newName, string? contactToGet) {
             Contact? contact = await this.GetContact(username, contactToGet);
-            if (contact == null)
-            {
+            if (contact == null) {
                 return false;
             }
 
@@ -196,7 +191,6 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return false;
         }
 
-
         public async Task<bool> DeleteMessage(string username, string with, int msgId) {
 
             Message? msg = await this.GetMessage(username, with, msgId);
@@ -219,7 +213,51 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             return contactSeeninfo.last;
         }
 
+        public async Task<Contact> GetContactByEmail(string username, string? email) {
+            if (username == null || email == null) {
+                return null;
+            }
+            RegisteredUser? rUser = await _registeredUsersService.GetRegisteredUserByEmail(email);
+            if (rUser == null) {
+                return null;
+            }
+            Contact? contact = await _context.Contact.Where(c => c.contactOf == username && c.id == rUser.username).FirstOrDefaultAsync();
+            return contact;
+        }
 
+        public async Task<bool> isAlreadyContactByEmail(string username, string? email) {
+
+            if (email == null) {
+                return false;
+            }
+            if (await GetContactByEmail(username, email) != null) {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<Contact> GetContactByPhone(string username, string? phone) {
+            if (username == null || phone == null) {
+                return null;
+            }
+            RegisteredUser? rUser = await _registeredUsersService.GetRegisteredUserByPhone(phone);
+            if (rUser == null) {
+                return null;
+            }
+            Contact? contact = await _context.Contact.Where(c => c.contactOf == username && c.id == rUser.username).FirstOrDefaultAsync();
+            return contact;
+        }
+
+        public async Task<bool> isAlreadyContactByPhone(string username, string? email) {
+
+            if (email == null) {
+                return false;
+            }
+            if (await GetContactByPhone(username, email) != null) {
+                return true;
+            }
+            return false;
+        }
     }
 }
 

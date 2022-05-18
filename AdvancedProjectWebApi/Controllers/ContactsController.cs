@@ -25,7 +25,9 @@ namespace AdvancedProjectWebApi.Controllers {
     [Authorize]
     //[RequireHttps]
     public class ContactsController : ControllerBase {
+
         private readonly IContactsService _contactsService;
+        private readonly IRegisteredUsersService _registeredUsersService;
 
         /// <summary>
         /// Constructor
@@ -33,6 +35,7 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <param name="context"></param>
         public ContactsController(AdvancedProgrammingProjectsServerContext context) {
             _contactsService = new DatabaseContactsService(context);
+            _registeredUsersService = new DatabaseRegisteredUsersService(context);
         }
 
         /// <summary>
@@ -326,8 +329,12 @@ namespace AdvancedProjectWebApi.Controllers {
             return NotFound();
         }
 
+        /// <summary>
+        /// Returns whether or not a user is already the current user's contact.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpGet("alreadyContact/{user}")]
-        [Authorize]
         public async Task<ActionResult<bool>> isAlreadyContact(string? user) {
             if (user == null) {
                 return BadRequest();
@@ -335,6 +342,116 @@ namespace AdvancedProjectWebApi.Controllers {
             string username = User.FindFirst("username")?.Value;
             bool result = await _contactsService.isAlreadyContact(username, user);
             return Ok(result);
+        }
+
+        [HttpGet("byEmail/{email}")]
+        public async Task<ActionResult<bool>> isAlreadyContactByEmail(string? email) {
+            if (email == null) {
+                return BadRequest();
+            }
+            string username = User.FindFirst("username")?.Value;
+            bool result = await _contactsService.isAlreadyContactByEmail(username, email);
+            return Ok(result);
+        }
+
+        [HttpGet("byPhone/{phone}")]
+        public async Task<ActionResult<bool>> isAlreadyContactByPhone(string? phone) {
+            if (phone == null) {
+                return BadRequest();
+            }
+            string username = User.FindFirst("username")?.Value;
+            bool result = await _contactsService.isAlreadyContactByPhone(username, phone);
+            return Ok(result);
+        }
+
+        [HttpPost("byEmail")]
+        public async Task<IActionResult> addContactByEmail([Bind("id,server")] Contact contact, bool local = false) {
+            if (ModelState.IsValid) {
+
+                string user = User.FindFirst("username")?.Value;
+
+                RegisteredUser rUser = await _registeredUsersService.GetRegisteredUserByEmail(contact.id);
+                if (rUser == null) {
+                    return NotFound();
+                }
+
+                contact.id = rUser.username;
+                contact.last = null;
+                contact.contactOf = user;
+                contact.lastdate = DateTime.Now;
+                if (local == true) {
+                    contact.server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                }
+
+                bool success = await _contactsService.addContact(user, contact);
+                if (!success) {
+                    return NotFound();
+                }
+
+                var invitiationContent = new {
+                    from = user,
+                    to = contact.id,
+                    server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}"
+                };
+
+                var invitation = JsonSerializer.Serialize(invitiationContent);
+
+                var url = contact.server + "/api/invitations";
+
+                using (var httpClient = new HttpClient()) {
+                    httpClient.DefaultRequestHeaders.Accept.Clear();
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = await httpClient.PostAsync(url, new StringContent(invitation, Encoding.UTF8, "application/json"));
+                }
+
+                return CreatedAtAction("PostContact", new { });
+            }
+            return BadRequest();
+        }
+
+        [HttpPost("byPhone")]
+        public async Task<IActionResult> addContactByPhone([Bind("id,server")] Contact contact, bool local = false) {
+            if (ModelState.IsValid) {
+
+                string user = User.FindFirst("username")?.Value;
+
+                RegisteredUser rUser = await _registeredUsersService.GetRegisteredUserByPhone(contact.id);
+                if (rUser == null) {
+                    return NotFound();
+                }
+
+                contact.id = rUser.username;
+                contact.last = null;
+                contact.contactOf = user;
+                contact.lastdate = DateTime.Now;
+                if (local == true) {
+                    contact.server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                }
+
+                bool success = await _contactsService.addContact(user, contact);
+                if (!success) {
+                    return NotFound();
+                }
+
+                var invitiationContent = new {
+                    from = user,
+                    to = contact.id,
+                    server = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}"
+                };
+
+                var invitation = JsonSerializer.Serialize(invitiationContent);
+
+                var url = contact.server + "/api/invitations";
+
+                using (var httpClient = new HttpClient()) {
+                    httpClient.DefaultRequestHeaders.Accept.Clear();
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = await httpClient.PostAsync(url, new StringContent(invitation, Encoding.UTF8, "application/json"));
+                }
+
+                return CreatedAtAction("PostContact", new { });
+            }
+            return BadRequest();
         }
     }
 }

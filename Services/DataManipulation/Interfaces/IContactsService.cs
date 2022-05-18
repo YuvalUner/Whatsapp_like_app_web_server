@@ -116,5 +116,37 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="contact"></param>
         /// <returns></returns>
         Task<string?> getLastSeen(string? username, string? contact);
+
+        /// <summary>
+        /// Gets a contact by their email.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public Task<Contact> GetContactByEmail(string username, string? email);
+
+        /// <summary>
+        /// Returns whether a contact is a user's contact by their email.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public Task<bool> isAlreadyContactByEmail(string username, string? email);
+
+        /// <summary>
+        /// Gets a contact by their phone number.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        public Task<Contact> GetContactByPhone(string username, string? phone);
+
+        /// <summary>
+        /// Returns whether a contact is a user's contact by their phone number.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public Task<bool> isAlreadyContactByPhone(string username, string? email);
     }
 }

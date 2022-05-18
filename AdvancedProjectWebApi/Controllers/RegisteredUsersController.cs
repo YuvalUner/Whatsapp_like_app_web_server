@@ -195,6 +195,7 @@ namespace AdvancedProjectWebApi.Controllers
         }
 
         [HttpGet("doesUserExistByUsername/{username}")]
+        [Authorize]
         public async Task<bool> doesUserExistByUsername(string? username)
         {
             string? currentUser = User.FindFirst("username")?.Value;
@@ -202,6 +203,7 @@ namespace AdvancedProjectWebApi.Controllers
         }
 
         [HttpGet("doesUserExistByEmail/{email}")]
+        [Authorize]
         public async Task<bool> doesUserExistByEmail(string? email)
         {
             string? currentUser = User.FindFirst("username")?.Value;
@@ -209,6 +211,7 @@ namespace AdvancedProjectWebApi.Controllers
         }
 
         [HttpGet("doesUserExistByPhone/{phone}")]
+        [Authorize]
         public async Task<bool> doesUserExistByPhone(string? phone)
         {
             string? currentUser = User.FindFirst("username")?.Value;
@@ -243,6 +246,7 @@ namespace AdvancedProjectWebApi.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPut("editDescription/{newDescription}")]
         public async Task<IActionResult> editDescription(string? newDescription) {
 
@@ -257,5 +261,18 @@ namespace AdvancedProjectWebApi.Controllers
             return NoContent();
         }
 
+        [HttpGet("secretQuestion/{username}")]
+        public async Task<bool> verifySecretQuestion(string? username, [Bind("Question,Answer")] SecretQuestion secretQuestion) { 
+
+            if (username == null) {
+                return false;
+            }
+
+            if (ModelState.IsValid) {
+                bool result = await _registeredUsersService.verifySecretQuestion(username, secretQuestion.Question, secretQuestion.Answer);
+                return result;
+            }
+            return false;
+        }
     }
 }

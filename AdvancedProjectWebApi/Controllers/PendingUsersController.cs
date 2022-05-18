@@ -86,8 +86,13 @@ namespace AdvancedProjectWebApi.Controllers {
             "nickname,secretQuestion")] PendingUser pendingUser) {
 
             if (ModelState.IsValid) {
-                if (await _pendingUsersService.doesUserExist(pendingUser.username) == false 
-                    || await _registeredUsersService.doesUserExists(pendingUser.username)) {
+                // Only sign up the user if all of their unique values are indeed unique
+                if (await _pendingUsersService.doesUserExist(pendingUser.username) == false
+                    && await _registeredUsersService.doesUserExists(pendingUser.username) == false
+                    && await _pendingUsersService.doesPendingUserExistsByEmail(pendingUser.email) == false 
+                    && await _registeredUsersService.doesUserExistsByEmail(pendingUser.email) == false
+                    && await _pendingUsersService.doesPendingUserExistsByPhone(pendingUser.phone) == false
+                    && await _registeredUsersService.doesUserExistsByPhone(pendingUser.phone) == false) {
 
                     MailRequest mail = this.createEmail(pendingUser.email);
 
@@ -128,22 +133,22 @@ namespace AdvancedProjectWebApi.Controllers {
         [HttpGet("doesPendingUserExistByUsername/{username}")]
         public async Task<bool> doesPendingUserExistByUsername(string? username)
         {
-            string? currentUser = User.FindFirst("username")?.Value;
-            return await _pendingUsersService.doesUserExist(username);
+            return (await _pendingUsersService.doesUserExist(username) 
+                || await _registeredUsersService.doesUserExists(username));
         }
 
         [HttpGet("doesPendingUserExistByEmail/{username}")]
         public async Task<bool> doesPendingUserExistByEmail(string? username)
         {
-            string? currentUser = User.FindFirst("username")?.Value;
-            return await _pendingUsersService.doesPendingUserExistsByEmail(username);
+            return (await _pendingUsersService.doesPendingUserExistsByEmail(username) 
+                || await _registeredUsersService.doesUserExistsByEmail(username));
         }
 
         [HttpGet("doesPendingUserExistByPhone/{username}")]
         public async Task<bool> doesPendingUserExistByPhone(string? username)
         {
-            string? currentUser = User.FindFirst("username")?.Value;
-            return await _pendingUsersService.doesPendingUserExistsByPhone(username);
+            return (await _pendingUsersService.doesPendingUserExistsByPhone(username) 
+                || await _registeredUsersService.doesUserExistsByPhone(username)) ;
         }
 
 
