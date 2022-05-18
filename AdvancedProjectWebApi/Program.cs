@@ -6,6 +6,7 @@ using System.Text;
 using Domain;
 using System.Configuration;
 using Services;
+using AdvancedProjectWebApi.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +80,10 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints => {
+    endpoints.MapHub<ChatAppHub>("/ChatAppHub");
+});
 
 app.MapControllers();
 
