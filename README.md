@@ -1,4 +1,4 @@
-_# `Submitters`:
+# `Submitters`:
 Yuval Uner, ID: ***REMOVED***, Github: OddPanda.\
 Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
 
