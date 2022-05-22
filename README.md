@@ -59,4 +59,3 @@ This controller includes functionalities such as:
 5. Check existance of user by email/username/phone.
 6. Provides the ability to change the user's password/nickname/description.
 7. Renews vverification code of specific user.
-8. 
