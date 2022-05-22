@@ -7,12 +7,12 @@ Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
 To run the project, use "npm start".\
 The root file is index.js.
 
-### `dependencies frontend`
+### `Dependencies frontend`
 1. React
 2. React-Bootstrap
 3. React-router / React-router-dom
 
-### `dependencies backend`
+### `Dependencies backend`
 1.JWT Bearer
 2. SignalR
 3. MariaDB
