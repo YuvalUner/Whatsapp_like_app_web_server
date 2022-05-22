@@ -1,4 +1,4 @@
-# `Submitters`:
+_# `Submitters`:
 Yuval Uner, ID: ***REMOVED***, Github: OddPanda.\
 Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
 
@@ -37,7 +37,7 @@ ports your machine uses when running the servers.
 # `Reviews part`
 
 The reviews part, according to the instructions, appears as follows:
-[![reviews page]](https://imgur.com/a/NzXfTPH)
+![[reviews page]](https://imgur.com/a/NzXfTPH)
 
 ## `Testing`
 To create users not via the front end, follow these steps:
@@ -107,5 +107,5 @@ with a one time code.
 Only upon verifying that 1 time code will they be given an access token for performing the action they wish to perform.
 
 In the case of sign-up, the user will only be signed up after verifying their email.\
-In the case of password reset, the user will not be allowed to reset their password before verifying their code.
+In the case of password reset, the user will not be allowed to reset their password before verifying their code._
 
