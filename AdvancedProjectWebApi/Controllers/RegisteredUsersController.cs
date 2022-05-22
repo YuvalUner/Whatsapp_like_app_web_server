@@ -1,14 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Domain.DatabaseEntryModels;
-using Data;
-using Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
 using Domain.CodeOnlyModels;
 using Services.TokenServices.Interfaces;
@@ -21,6 +13,8 @@ namespace AdvancedProjectWebApi.Controllers {
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    // Ideally, should require this. But we don't know what the testers will be running.
+    // [RequireHttps]
     public class RegisteredUsersController : ControllerBase {
 
         public IConfiguration _configuration;
@@ -35,11 +29,12 @@ namespace AdvancedProjectWebApi.Controllers {
         /// </summary>
         /// <param name="context"></param>
         /// <param name="config"></param>
-        public RegisteredUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
+        public RegisteredUsersController(IConfiguration config, IRegisteredUsersService registeredUsersService,
+            IPendingUsersService pendingUsersService, IRefreshTokenService refreshTokenService) {
 
-            this._registeredUsersService = new DatabaseRegisteredUsersService(context);
-            this._pendingUsersService = new DatabasePendingUsersService(context);
-            this._refreshTokenService = new RefreshTokenService(context);
+            this._registeredUsersService = registeredUsersService;
+            this._pendingUsersService = pendingUsersService;
+            this._refreshTokenService = refreshTokenService;
             this._tokenGenerator = new AuthTokenGenerator();
             this._configuration = config;
 
@@ -68,31 +63,6 @@ namespace AdvancedProjectWebApi.Controllers {
             }
             return BadRequest();
         }
-
-        /// <summary>
-        /// Remove later.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        [HttpPost("testingOnlyRemoveLater")]
-        public async Task<IActionResult> LogIn(string? username) {
-
-            if (await _registeredUsersService.doesUserExists(username) == true) {
-
-                AuthToken token = _tokenGenerator.GenerateAuthToken(username,
-                    _configuration["JWTBearerParams:Subject"],
-                    _configuration["JWTBearerParams:Key"],
-                    _configuration["JWTBearerParams:Issuer"],
-                    _configuration["JWTBearerParams:Audience"]);
-                string? userAgent = Request.Headers["User-Agent"].ToString();
-                await _refreshTokenService.RemovePreviousTokens(username, userAgent);
-                await _refreshTokenService.storeRefreshToken(token.RefreshToken, username, userAgent);
-
-                return Ok(token);
-            }
-            return BadRequest();
-        }
-
 
         /// <summary>
         /// Logs in the user if their email and password match.

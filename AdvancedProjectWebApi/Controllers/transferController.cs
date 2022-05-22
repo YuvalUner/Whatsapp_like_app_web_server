@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Domain.DatabaseEntryModels;
 using Data;
 using Services.DataManipulation.DatabaseContextBasedImplementations;
@@ -13,6 +12,8 @@ namespace AdvancedProjectWebApi.Controllers {
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    // Ideally, should require this. But we don't know what the testers will be running.
+    // [RequireHttps]
     public class transferController : ControllerBase {
 
         private readonly IContactsService _contactsService;
@@ -21,8 +22,8 @@ namespace AdvancedProjectWebApi.Controllers {
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        public transferController(AdvancedProgrammingProjectsServerContext context) {
-            this._contactsService = new DatabaseContactsService(context);
+        public transferController(IContactsService contactsService) {
+            this._contactsService = contactsService;
         }
 
         /// <summary>

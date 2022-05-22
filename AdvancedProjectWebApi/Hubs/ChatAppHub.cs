@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Domain.DatabaseEntryModels;
-using Data;
-using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
 
 namespace AdvancedProjectWebApi.Hubs {
@@ -11,9 +9,9 @@ namespace AdvancedProjectWebApi.Hubs {
         private readonly IRegisteredUsersService _registeredUsersService;
         private readonly IContactsService _contactsService;
 
-        public ChatAppHub(AdvancedProgrammingProjectsServerContext context) {
-            _contactsService = new DatabaseContactsService(context);
-            _registeredUsersService = new DatabaseRegisteredUsersService(context);
+        public ChatAppHub(IRegisteredUsersService registeredUsersService, IContactsService contactsService) {
+            _contactsService = contactsService;
+            _registeredUsersService = registeredUsersService;
         }
 
         /// <summary>
@@ -58,7 +56,11 @@ namespace AdvancedProjectWebApi.Hubs {
             await Clients.Groups(username).SendAsync("updateContacts");
         }
 
-        //Send update contacts to user.
+        /// <summary>
+        /// Sends an update contacts event to the user.
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
         public async Task addedContactByPhone(string phone) {
 
             RegisteredUser? user = await _registeredUsersService.GetRegisteredUserByPhone(phone);

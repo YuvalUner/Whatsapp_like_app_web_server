@@ -3,7 +3,7 @@
 
     let value = $("#search-box").val();
 
-    $("#review-table-body").load("/Ratings/Search?nameToSearch=" + value);
+    $("#review-table-body").load("/Ratings/Search?content=" + value);
 }
 
 $(function () {

@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Domain;
-using System.Configuration;
-using Services;
 using AdvancedProjectWebApi.Hubs;
+using Services.DataManipulation.DatabaseContextBasedImplementations;
+using Services.DataManipulation.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,13 +57,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAll", builder => {
-        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-        .WithOrigins("http://localhost:3000").WithOrigins("https://localhost:7031");
+    options.AddPolicy("AllowAll", optionsBuilder => {
+        optionsBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+        .WithOrigins(builder.Configuration["AllowedOrigins:React"])
+        .WithOrigins(builder.Configuration["AllowedOrigins:WebAPI"])
+        .WithOrigins(builder.Configuration["AllowedOrigins:WebServer"]);
     });
 });
 
 builder.Services.AddSignalR();
+builder.Services.AddScoped<IRegisteredUsersService, DatabaseRegisteredUsersService>();
+builder.Services.AddScoped<IPendingUsersService, DatabasePendingUsersService>();
+builder.Services.AddScoped<IRefreshTokenService, DatabaseRefreshTokenService>();
+builder.Services.AddScoped<IContactsService, DatabaseContactsService>();
 
 var app = builder.Build();
 

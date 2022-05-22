@@ -1,19 +1,22 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Domain.DatabaseEntryModels;
+using Microsoft.Extensions.Configuration;
 
 namespace Data
 {
     public class AdvancedProgrammingProjectsServerContext : DbContext
-    {
 
-        private const string connectionString = "***REMOVED***";
+    {
+        private readonly IConfiguration _configuration;
+        private string connectionString;
+
+        public AdvancedProgrammingProjectsServerContext(IConfiguration config) {
+            this._configuration = config;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+            connectionString = _configuration["ConnectionStrings:MariaDB"];
             optionsBuilder.UseMySql(connectionString, MariaDbServerVersion.AutoDetect(connectionString));
         }
 
