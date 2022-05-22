@@ -12,7 +12,7 @@ namespace Domain.DatabaseEntryModels {
     public class PendingUser {
 
         [Key]
-        public string username { get; set; }
+        public string? username { get; set; }
 
         public string password { get; set; }
 
@@ -22,11 +22,11 @@ namespace Domain.DatabaseEntryModels {
 
         public string? phone { get; set; }
 
-        public string email { get; set; }
+        public string? email { get; set; }
 
-        public string nickname { get; set; }
+        public string? nickname { get; set; }
 
-        public SecretQuestion secretQuestion { get; set; }
+        public SecretQuestion? secretQuestion { get; set; }
 
         public string? verificationCode { get; set; }
 

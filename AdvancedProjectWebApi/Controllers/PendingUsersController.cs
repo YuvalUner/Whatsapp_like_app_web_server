@@ -171,6 +171,44 @@ namespace AdvancedProjectWebApi.Controllers {
                 || await _registeredUsersService.doesUserExistsByPhone(username)) ;
         }
 
+        [HttpPost("match")]
+        public async Task<ActionResult<bool>> match([Bind("username,password")] PendingUser pendingUser) {
+
+            if (ModelState.IsValid) {
+
+                PendingUser? dbUser = await _pendingUsersService.GetPendingUser(pendingUser.username);
+                return Ok(_pendingUsersService.MatchUserAndPassword(pendingUser, dbUser));
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost("matchEmail")]
+        public async Task<ActionResult<bool>> matchByEmail([Bind("email,password")] PendingUser pendingUser) {
+
+            if (ModelState.IsValid) {
+
+                PendingUser? dbUser = await _pendingUsersService.GetPendingUserByEmail(pendingUser.email);
+                return Ok(_pendingUsersService.MatchUserAndPassword(pendingUser, dbUser));
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPut("renew/{email}")]
+        [HttpPut("{username}")]
+        public async Task<IActionResult> renewCodeByemail(string? email) {
+            if (email == null) {
+                return BadRequest();
+            }
+            PendingUser? user = await _pendingUsersService.GetPendingUserByEmail(email);
+            if (user != null) {
+                MailRequest mail = this.createEmail(user.email);
+                await _pendingUsersService.RenewCode(user, mail);
+                return NoContent();
+            }
+            return NotFound();
+        }
 
     }
 }

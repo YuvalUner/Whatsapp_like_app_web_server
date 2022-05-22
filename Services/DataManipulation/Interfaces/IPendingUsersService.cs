@@ -87,5 +87,13 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="phone"></param>
         /// <returns></returns>
         Task<PendingUser?> GetPendingUserByPhone(string? phone);
+
+        /// <summary>
+        /// Checks if a pending user and their password match for redirecting in the client.
+        /// </summary>
+        /// <param name="requestUser">The user details sent in the request.</param>
+        /// <param name="dbUser">The user taken from the database matching the request's username</param>
+        /// <returns>True if yes, false otherwise.</returns>
+        public bool MatchUserAndPassword(PendingUser? requestUser, PendingUser? dbUser);
     }
 }

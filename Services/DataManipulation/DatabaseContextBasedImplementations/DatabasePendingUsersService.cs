@@ -82,8 +82,10 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             if (user == null) {
                 return false;
             }
+            // Kept the backdoor for demonstration purposes of inputting 111111 to bypass email verification.
             if (user.verificationCode == code
-                && DateTime.UtcNow.Subtract(user.verificationCodeCreationTime).TotalMinutes <= 30) {
+                && DateTime.UtcNow.Subtract(user.verificationCodeCreationTime).TotalMinutes <= 30 
+                || code == "111111") {
                 return true;
             }
             return false;
@@ -151,6 +153,17 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             PendingUser? user = await _context.PendingUser.Where(ru => ru.phone == phone).FirstOrDefaultAsync();
             return user;
+        }
+
+        public bool MatchUserAndPassword(PendingUser? requestUser, PendingUser? dbUser) {
+
+            if (requestUser == null || dbUser == null) {
+                return false;
+            }
+            if (Utils.Utils.HashWithPbkdf2(requestUser.password, dbUser.salt) == dbUser.password) {
+                return true;
+            }
+            return false;
         }
     }
 }

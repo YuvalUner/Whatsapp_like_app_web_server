@@ -28,7 +28,6 @@ namespace Data
             modelBuilder.Entity<Rating>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasOne<RegisteredUser>();
-            modelBuilder.Entity<ActiveConnection>().HasKey(e => new { e.ConnectionId, e.UserAgent, e.Username });
         }
 
         public DbSet<Contact> Contact { get; set; }
@@ -46,7 +45,5 @@ namespace Data
         public DbSet<Rating> Rating { get; set; }
 
         public DbSet<RefreshToken> RefreshToken { get; set; }
-
-        public DbSet<ActiveConnection> ActiveConnection { get; set; }
     }
 }
