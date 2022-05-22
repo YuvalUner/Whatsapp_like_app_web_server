@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.DatabaseEntryModels;
+﻿using Domain.DatabaseEntryModels;
 using Domain.CodeOnlyModels;
 using Data;
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Utils;
 using Services.DataManipulation.Interfaces;
@@ -47,7 +41,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
         public async Task<bool> RenewCode(PendingUser? user, MailRequest mail) {
 
             if (user != null) {
-                user.verificationCode = Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, Constants.codeLength);
+                user.verificationCode = Utils.Utils.generateRandString(Utils.Constants.alphaNumeric, Constants.codeLength);
                 user.verificationCodeCreationTime = DateTime.UtcNow;
                 _context.Entry(user).State = EntityState.Modified;
                 mail.Body = ($"<p>Your verification code is:</p><h3>{user.verificationCode}</h3>" +
@@ -63,11 +57,11 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
         public async Task<bool> addToPending(PendingUser pendingUser, string hasingAlgorithm, MailRequest mail) {
 
             pendingUser.timeCreated = DateTime.UtcNow;
-            pendingUser.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
+            pendingUser.salt = Utils.Utils.generateRandString(Utils.Constants.alphaNumericSpecial, Constants.saltLength);
 
             pendingUser.hashingAlgorithm = hasingAlgorithm;
             pendingUser.password = Utils.Utils.HashWithPbkdf2(pendingUser.password, pendingUser.salt);
-            pendingUser.verificationCode = Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, Constants.codeLength);
+            pendingUser.verificationCode = Utils.Utils.generateRandString(Utils.Constants.alphaNumeric, Constants.codeLength);
             mail.Body = ($"<p>Your verification code is:</p><h3>{pendingUser.verificationCode}</h3>" +
                 $"<p>It will be valid for the next 30 minutes</p>");
             Utils.Utils.sendEmail(mail);

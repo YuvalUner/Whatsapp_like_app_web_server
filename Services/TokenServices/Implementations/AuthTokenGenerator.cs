@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Domain.CodeOnlyModels;
 using Microsoft.IdentityModel.Tokens;
 using Services.TokenServices.Interfaces;
@@ -48,7 +44,7 @@ namespace Services.TokenServices.Implementations {
         }
 
         public string GenerateRefreshToken() {
-            return Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, Constants.refreshTokenLength);
+            return Utils.Utils.generateRandString(Utils.Constants.alphaNumeric, Constants.refreshTokenLength);
         }
 
     }

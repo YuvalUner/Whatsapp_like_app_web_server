@@ -1,10 +1,5 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Domain.DatabaseEntryModels;
@@ -15,18 +10,25 @@ namespace AdvancedProgrammingProjectsServer.Controllers
     {
         private readonly AdvancedProgrammingProjectsServerContext _context;
 
-        public RatingsController()
+        public RatingsController(AdvancedProgrammingProjectsServerContext context)
         {
-            _context = new AdvancedProgrammingProjectsServerContext();
+            _context = context;
         }
 
-        // GET: Ratings
+        /// <summary>
+        /// Gets all the ratings
+        /// </summary>
+        /// <returns>A page showing all the ratings in a list</returns>
         public async Task<IActionResult> Index()
         {
             return View(await _context.Rating.ToListAsync());
         }
 
-        // GET: Ratings/Details/5
+        /// <summary>
+        /// Gets details about a single review
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,15 +46,20 @@ namespace AdvancedProgrammingProjectsServer.Controllers
             return View(rating);
         }
 
-        // GET: Ratings/Create
+        /// <summary>
+        /// Goes to the view for creating a new ratings.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Ratings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Creates a new ratings
+        /// </summary>
+        /// <param name="rating"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Stars,Feedback,Name")] Rating rating)
@@ -67,7 +74,11 @@ namespace AdvancedProgrammingProjectsServer.Controllers
             return View(rating);
         }
 
-        // GET: Ratings/Edit/5
+        /// <summary>
+        /// Displays the edit page for a single review
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,9 +94,12 @@ namespace AdvancedProgrammingProjectsServer.Controllers
             return View(rating);
         }
 
-        // POST: Ratings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Edits a single review
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="rating"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Stars,Feedback,Name,TimeSubmitted")] Rating rating)
@@ -118,7 +132,11 @@ namespace AdvancedProgrammingProjectsServer.Controllers
             return View(rating);
         }
 
-        // GET: Ratings/Delete/5
+        /// <summary>
+        /// Displays the page for deleting a review
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,7 +154,11 @@ namespace AdvancedProgrammingProjectsServer.Controllers
             return View(rating);
         }
 
-        // POST: Ratings/Delete/5
+        /// <summary>
+        /// Deletes a post
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -152,10 +174,15 @@ namespace AdvancedProgrammingProjectsServer.Controllers
             return _context.Rating.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> Search(string nameToSearch) {
+        /// <summary>
+        /// Searches for reviews with the matching feedback text.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> Search(string content) {
 
-            if (nameToSearch != null) {
-                var ratings2 = _context.Rating.Where(r => r.Name.Contains(nameToSearch));
+            if (content != null) {
+                var ratings2 = _context.Rating.Where(r => r.Feedback.Contains(content));
                 return PartialView(await ratings2.ToListAsync());
             }
             else {

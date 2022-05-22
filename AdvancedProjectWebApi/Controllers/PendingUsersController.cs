@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Domain.DatabaseEntryModels;
-using Data;
 using Services.TokenServices.Implementations;
 using Services.TokenServices.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
-using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
 using Domain.CodeOnlyModels;
 using Utils;
@@ -18,11 +14,12 @@ namespace AdvancedProjectWebApi.Controllers {
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    // Ideally, should require this. But we don't know what the testers will be running.
+    // [RequireHttps]
     public class PendingUsersController : ControllerBase {
 
         private readonly IPendingUsersService _pendingUsersService;
         private readonly IConfiguration _configuration;
-        private readonly IRefreshTokenService _refreshTokenService;
         private readonly IAccessTokenGenerator _authTokenGenerator;
         private readonly IRegisteredUsersService _registeredUsersService;
 
@@ -31,12 +28,12 @@ namespace AdvancedProjectWebApi.Controllers {
         /// </summary>
         /// <param name="context"></param>
         /// <param name="config"></param>
-        public PendingUsersController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
+        public PendingUsersController(IConfiguration config, IPendingUsersService pendingUsers,
+            IRegisteredUsersService registeredUsers, IRefreshTokenService refreshTokens) {
 
-            this._pendingUsersService = new DatabasePendingUsersService(context);
-            this._refreshTokenService = new RefreshTokenService(context);
+            this._pendingUsersService = pendingUsers;
             this._authTokenGenerator = new AuthTokenGenerator();
-            this._registeredUsersService = new DatabaseRegisteredUsersService(context);
+            this._registeredUsersService = registeredUsers;
             this._configuration = config;
         }
 

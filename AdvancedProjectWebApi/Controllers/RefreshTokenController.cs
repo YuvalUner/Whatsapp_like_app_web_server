@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using Domain.DatabaseEntryModels;
-using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Services.TokenServices.Interfaces;
 using Services.TokenServices.Implementations;
 using Domain.CodeOnlyModels;
@@ -16,6 +12,8 @@ namespace AdvancedProjectWebApi.Controllers {
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    // Ideally, should require this. But we don't know what the testers will be running.
+    // [RequireHttps]
     public class RefreshTokenController : ControllerBase {
 
         private readonly IRefreshTokenService _refreshTokenService;
@@ -27,8 +25,8 @@ namespace AdvancedProjectWebApi.Controllers {
         /// </summary>
         /// <param name="context"></param>
         /// <param name="config"></param>
-        public RefreshTokenController(AdvancedProgrammingProjectsServerContext context, IConfiguration config) {
-            this._refreshTokenService = new RefreshTokenService(context);
+        public RefreshTokenController(IConfiguration config, IRefreshTokenService refreshTokens) {
+            this._refreshTokenService = refreshTokens;
             this._authTokenGenerator = new AuthTokenGenerator();
             this._configuration = config;
         }

@@ -7,11 +7,11 @@ using Services.TokenServices.Interfaces;
 
 namespace Services.DataManipulation.DatabaseContextBasedImplementations {
 
-    public class RefreshTokenService : IRefreshTokenService {
+    public class DatabaseRefreshTokenService : IRefreshTokenService {
 
         private readonly AdvancedProgrammingProjectsServerContext _context;
 
-        public RefreshTokenService(AdvancedProgrammingProjectsServerContext context) {
+        public DatabaseRefreshTokenService(AdvancedProgrammingProjectsServerContext context) {
             this._context = context;
         }
 

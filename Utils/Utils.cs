@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain;
-using System.IO;
+﻿using System.Text;
 using System.Net;
 using System.Net.Mail;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using Domain.CodeOnlyModels;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -20,10 +11,6 @@ namespace Utils {
     /// Where all methods with no actual specific affiliation go.
     /// </summary>
     public class Utils {
-
-        public static readonly string alphaNumericSpecial = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-=_+~?'][<>.,";
-        public static readonly string alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        public static readonly string numeric = "0123456789";
 
         /// <summary>
         /// Generates a random string.

@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Domain.DatabaseEntryModels;
-using Services;
-using Data;
 using Services.DataManipulation.Interfaces;
-using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Domain.CodeOnlyModels;
 
 namespace AdvancedProjectWebApi.Controllers {
@@ -14,6 +10,8 @@ namespace AdvancedProjectWebApi.Controllers {
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    // Ideally, should require this. But we don't know what the testers will be running.
+    // [RequireHttps]
     public class invitationsController : ControllerBase {
 
         private readonly IContactsService _contactsService;
@@ -22,8 +20,8 @@ namespace AdvancedProjectWebApi.Controllers {
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        public invitationsController(AdvancedProgrammingProjectsServerContext context) {
-            this._contactsService = new DatabaseContactsService(context);
+        public invitationsController(IContactsService contacts) {
+            this._contactsService = contacts;
         }
 
         /// <summary>

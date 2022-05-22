@@ -1,14 +1,6 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Data;
 using Domain.DatabaseEntryModels;
-using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 using System.Text;
@@ -23,7 +15,8 @@ namespace AdvancedProjectWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    //[RequireHttps]
+    // Ideally, should require this. But we don't know what the testers will be running.
+    // [RequireHttps]
     public class ContactsController : ControllerBase {
 
         private readonly IContactsService _contactsService;
@@ -33,9 +26,9 @@ namespace AdvancedProjectWebApi.Controllers {
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        public ContactsController(AdvancedProgrammingProjectsServerContext context) {
-            _contactsService = new DatabaseContactsService(context);
-            _registeredUsersService = new DatabaseRegisteredUsersService(context);
+        public ContactsController(IContactsService contacts, IRegisteredUsersService registeredUsers) {
+            _contactsService = contacts;
+            _registeredUsersService = registeredUsers;
         }
 
         /// <summary>

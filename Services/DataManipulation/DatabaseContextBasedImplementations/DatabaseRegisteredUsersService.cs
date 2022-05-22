@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Data;
+﻿using Data;
 using Domain.DatabaseEntryModels;
 using Microsoft.EntityFrameworkCore;
 using Services.DataManipulation.Interfaces;
@@ -199,7 +194,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             if (user.hashingAlgorithm == "SHA256") {
                 string hashedPassword = Utils.Utils.hashWithSHA256(password + user.salt);
                 if (user.password == hashedPassword) {
-                    user.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
+                    user.salt = Utils.Utils.generateRandString(Utils.Constants.alphaNumericSpecial, Constants.saltLength);
                     user.password = Utils.Utils.HashWithPbkdf2(password, user.salt);
                     user.hashingAlgorithm = Constants.currentPasswordHash;
                     _context.Entry(user).State = EntityState.Modified;
@@ -234,7 +229,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 string hashedPassword = Utils.Utils.hashWithSHA256(password + user.salt);
                 if (user.password == hashedPassword)
                 {
-                    user.salt = Utils.Utils.generateRandString(Utils.Utils.alphaNumericSpecial, Constants.saltLength);
+                    user.salt = Utils.Utils.generateRandString(Utils.Constants.alphaNumericSpecial, Constants.saltLength);
                     user.password = Utils.Utils.HashWithPbkdf2(password, user.salt);
                     user.hashingAlgorithm = "Pbdkf2";
                     _context.Entry(user).State = EntityState.Modified;
@@ -294,7 +289,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                 };
                 user.contacts = new List<Contact>();
                 user.conversations = new List<Conversation>();
-                user.nickNum = Utils.Utils.generateRandString(Utils.Utils.numeric, 4);
+                user.nickNum = Utils.Utils.generateRandString(Utils.Constants.numeric, 4);
                 user.verificationCodeCreationTime = new DateTime();
                 user.description = "I've just created my account! Please be nice uwu";
                 _context.RegisteredUser.Add(user);
@@ -311,7 +306,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             RegisteredUser? user = await GetRegisteredUser(username);
             if (user != null) {
-                user.verificationcode = Utils.Utils.generateRandString(Utils.Utils.alphaNumeric, Constants.codeLength);
+                user.verificationcode = Utils.Utils.generateRandString(Utils.Constants.alphaNumeric, Constants.codeLength);
                 user.verificationCodeCreationTime = DateTime.UtcNow;
                 _context.Entry(user).State = EntityState.Modified;
                 mail.Body = ($"<p>Your verification code is:</p><h3>{user.verificationcode}</h3>" +
