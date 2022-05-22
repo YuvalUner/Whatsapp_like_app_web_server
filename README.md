@@ -21,7 +21,7 @@ The root file is index.js.
 5. Identity Framework Core
 6. Entity Framework Core
 
-### `testing`
+# `Testing`
 To test our project, please create users by the following steps:
 1. Go to PendingUsers [POST] in Swagger UI and enter the information of your user. Make sure to enter a real and valid email.
 2. go check the email you entered and copy the code that was sent to that email.
