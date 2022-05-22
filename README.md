@@ -1,5 +1,5 @@
 AdvancedProgrammingProjectsServer
-### `Submitters`:
+# `Submitters`:
 
 Yuval Uner, ID: ***REMOVED***, Github: OddPanda.\
 Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
@@ -7,12 +7,13 @@ Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
 To run the project, use "npm start".\
 The root file is index.js.
 
-### `Dependencies frontend`
+# `Dependencies`:
+### `Frontend`
 1. React
 2. React-Bootstrap
 3. React-router / React-router-dom
 
-### `Dependencies backend`
+### `Backend`
 1.JWT Bearer
 2. SignalR
 3. MariaDB
