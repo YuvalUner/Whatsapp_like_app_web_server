@@ -1,11 +1,8 @@
 AdvancedProgrammingProjectsServer
-# `Submitters`:
 
+# `Submitters`:
 Yuval Uner, ID: ***REMOVED***, Github: OddPanda.\
 Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
-
-To run the project, use "npm start".\
-The root file is index.js.
 
 # `Dependencies`:
 ### `Frontend`
