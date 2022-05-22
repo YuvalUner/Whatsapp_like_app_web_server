@@ -61,7 +61,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", builder => {
         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-        .WithOrigins("http://localhost:3000");
+        .WithOrigins("http://localhost:3000").WithOrigins("https://localhost:7031");
     });
 });
 

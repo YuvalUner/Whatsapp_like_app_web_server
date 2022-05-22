@@ -196,7 +196,6 @@ namespace AdvancedProjectWebApi.Controllers {
         }
 
         [HttpPut("renew/{email}")]
-        [HttpPut("{username}")]
         public async Task<IActionResult> renewCodeByemail(string? email) {
             if (email == null) {
                 return BadRequest();
