@@ -19,6 +19,9 @@ In addition, an installation of MariaDB is needed.
 
 # `Configuration and running`
 
+To set up the project via visual studio, open the package manager console, set the active
+project in it to "Data", then run update-database.
+
 The projects / servers that need to be run are:
 1. AdvancedProgrammingProjectsServer
 2. AdvancedProjectWebApi
