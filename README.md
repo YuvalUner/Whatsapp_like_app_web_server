@@ -66,6 +66,3 @@ A controller in charge of adding messages from other servers.
 In order to provide some level of security for our user's information, the passwords of our users are hashed by Pbkdf2. We use this specific method of hash for passwords because it is considered a slow algorithm and thus convinient for password hashing.
 
 Furtheremore, the refresh tokens are hashed via SHA256. This is a faster algortihm than the Pbkdf2 which is why we use it for the tokens.
-
-
-
