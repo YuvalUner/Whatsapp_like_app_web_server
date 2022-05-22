@@ -1,0 +1,190 @@
+/*for class */
+.background {
+    background-image: url(https://colorlib.com/etc/lf/Login_v5/images/bg-01.jpg);
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    background-size: 100% 100%;
+}
+
+/*for id */
+#wrong-details-text {
+    display: none;
+    color: red;
+}
+
+#base-form {
+    padding: 14px;
+    min-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*Erez wtf is this*/
+.padding {
+    margin-right: 10px;
+}
+
+.hide-stuff {
+    display: none;
+}
+
+.very-small-text {
+    font-size: 10px;
+}
+
+.break-text {
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.error-text {
+    display: none;
+    color: red;
+}
+
+.small-text {
+    font-size: 13px;
+}
+
+.required-field {
+    color: red;
+}
+
+.user-profile-img {
+    width: 54px;
+    height: 54px;
+}
+
+.no-effect-button:focus {
+    border-style: outset;
+    outline: none;
+    box-shadow: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.hover-pointer {
+    cursor: pointer;
+}
+
+.chat-bubble {
+    padding: 10px 14px;
+    background: #eee;
+    margin: 10px 30px;
+    border-radius: 10px;
+    position: relative;
+    animation: fadeIn 1s ease-in;
+    word-wrap: break-word;
+}
+
+.chat-bubble-left {
+    left: 0;
+    border-right-color: #eee;
+    border-left: 0;
+    margin-left: -20px;
+    background: lightgrey;
+}
+
+.chat-bubble-right {
+    right: 0;
+    border-right: 0;
+    margin-right: -20px;
+    background: lawngreen;
+}
+
+.input-message-pad {
+    background: lightgrey;
+    padding: 10px 15px;
+}
+
+.bi-input {
+    color: black;
+    vertical-align: middle;
+}
+
+.chat-container {
+    max-height: 78%;
+    background: burlywood;
+}
+
+.end-padded {
+    padding-right: 40%;
+}
+
+#conversation {
+    height: 92vh;
+}
+
+#sidebar-div {
+    min-height: 100%;
+}
+
+.overflow-case {
+    height: 75vh;
+}
+
+.overflow-lesser {
+    height: 100vh;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.chat-img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+
+/*TODO*/
+.chat-bubble-video-right {
+    margin-left: -150px;
+    right: 0;
+}
+
+.chat-bubble-img-right {
+    margin-left: -150px;
+    right: 0;
+}
+
+.chat-bubble-audio-right {
+    position: relative;
+    left: -140px;
+    margin-right: -150px;
+}
+
+.chat-bubble-video-left {
+    margin-left: -150px;
+    left: 130px;
+}
+
+.chat-bubble-img-left {
+    margin-left: -150px;
+    left: 130px;
+}
+
+.chat-bubble-audio-left {
+    left: 0;
+    margin-right: -100px;
+}
