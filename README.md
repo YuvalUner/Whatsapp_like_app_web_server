@@ -26,6 +26,8 @@ To test our project, please create users by the following steps:
 4. Copy the printed token on screen, swipe up to the "Authorize" button on the top right of the Swagger UI screen, and type in "Bearer " and paste the copied token.
 5. Switch to RegisteredUsers/signup and press execute.
 
+Once You created several users, messages can be sent from one user to another through the frontend app.
+
 # Controllers
 
 ### `Contacts Controller`
