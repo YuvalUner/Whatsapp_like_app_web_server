@@ -14,10 +14,10 @@ The root file is index.js.
 3. React-router / React-router-dom
 
 ### `Backend`
-1.JWT Bearer
+1. JWT Bearer
 2. SignalR
 3. MariaDB
-4. ASP.Net CORE
+4. ASP.Net Core
 5. Identity Framework Core
 6. Entity Framework Core
 
