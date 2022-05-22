@@ -21,8 +21,8 @@ Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
 # `Testing`
 To test our project, please create users by the following steps:
 1. Go to PendingUsers [POST] in Swagger UI and enter the information of your user. Make sure to enter a real and valid email.
-2. go check the email you entered and copy the code that was sent to that email.
-3. Now switch to PendingUsers[GET] and enter the username and the code that you copied.
+2. Check the email you entered and copy the code that was sent to that email.
+3. Switch to PendingUsers[GET] and enter the username and the code that you copied.
 4. Copy the printed token on screen, swipe up to the "Authorize" button on the top right of the Swagger UI screen, and type in "Bearer " and paste the copied token.
 5. Switch to RegisteredUsers/signup and press execute.
 
