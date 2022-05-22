@@ -39,11 +39,23 @@ A controller for managing invitiations from other servers.
 
 ### `PendingUser Controller`
 A controller in charge of managing users that are pending verification.
-This includes signing up users as pending users, sending the user a verification email and verifiying the verification code.
-Checking if the pending user exists via username\email\phone.
+This controller includes functionalities such as:
+1. Signing up users as pending users
+2. Creating and sending the user a verification email and verifiying the verification code.
+3. Checking if the pending user exists via username\email\phone.
 
 ### `Refresh Token Controller`
 A controller for managing the renewal of auth tokens.
 Provides the ability to renew a user's access and refresh tokens.
 
 ### `Registered Users Controller`
+Controller in charge of managing already registered users.
+This controller includes functionalities such as:
+1. Allowing the user to log in once the username/email and password match.
+2. Log the user out of the app.
+3. Adds the user to the data base once the signup process is over.
+4. Getters for the user's description, nickname, nicknum and secret question.
+5. Check existance of user by email/username/phone.
+6. Provides the ability to change the user's password/nickname/description.
+7. Renews vverification code of specific user.
+8. 
