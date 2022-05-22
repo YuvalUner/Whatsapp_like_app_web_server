@@ -36,9 +36,10 @@ ports your machine uses when running the servers.
 
 # `Reviews part`
 
-The reviews part, according to the instructions, appears as follows:
-![[reviews page]](https://imgur.com/a/NzXfTPH)
+The reviews part holds up to the all the requirements.\
+In addition, it has a link to our React app at its bottom.
 
+# `WebAPI and React app`
 ## `Testing`
 To create users not via the front end, follow these steps:
 1. Go to PendingUsers using [POST] and enter the information of your user. Make sure to enter a real and valid email.
