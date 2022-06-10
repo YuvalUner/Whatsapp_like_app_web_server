@@ -158,5 +158,21 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="code"></param>
         /// <returns>True if yes, false otherwise</returns>
         public Task<bool> verifyVerificationCode(string? username, string? code);
+        
+        
+        /// <summary>
+        /// Changes the user's registered server
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="newServer"></param>
+        /// <returns></returns>
+        public Task<bool> changeServer(string? username, string? newServer);
+
+        /// <summary>
+        /// Sets the user's firebase phone token.
+        /// </summary>
+        /// <param name="phoneToken"></param>
+        /// <returns></returns>
+        public Task<bool> setPhoneToken(string username, string? phoneToken);
     }
 }

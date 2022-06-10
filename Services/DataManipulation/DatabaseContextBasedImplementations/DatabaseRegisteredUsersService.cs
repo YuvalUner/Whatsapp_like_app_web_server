@@ -335,5 +335,33 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             return false;
         }
+
+        public async Task<bool> changeServer(string? username, string? newServer) {
+            if (username == null || newServer == null) {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user == null) {
+                return false;
+            }
+            user.server = newServer;
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> setPhoneToken(string username, string? phoneToken) {
+            if (phoneToken == null) {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user != null) {
+                user.androidToken = phoneToken;
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

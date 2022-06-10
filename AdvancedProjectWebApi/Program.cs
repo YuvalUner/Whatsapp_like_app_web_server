@@ -5,6 +5,7 @@ using System.Text;
 using AdvancedProjectWebApi.Hubs;
 using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
+using System.Web.Http.SelfHost;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +80,7 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseRouting();
 

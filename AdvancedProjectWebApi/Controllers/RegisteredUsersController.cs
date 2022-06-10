@@ -178,6 +178,20 @@ namespace AdvancedProjectWebApi.Controllers {
             }
         }
 
+        [HttpGet("getServer/{username}")]
+        public async Task<IActionResult> getServer(string? username) {
+            if (username == null) {
+                return BadRequest();
+            }
+            RegisteredUser? user = await _registeredUsersService.GetRegisteredUser(username);
+            if (user == null) {
+                return NotFound();
+            }
+            else {
+                return Ok(user.server);
+            }
+        }
+
         /// <summary>
         /// gets NickNum of user.
         /// </summary>
@@ -286,6 +300,21 @@ namespace AdvancedProjectWebApi.Controllers {
             return NoContent();
         }
 
+        [Authorize]
+        [HttpPut("changeServer/{newServer}")]
+        public async Task<IActionResult> changeServer(string? newServer) {
+
+            if (newServer == null) {
+                return BadRequest();
+            }
+            string currentUser = User.FindFirst("username")?.Value;
+            bool result = await _registeredUsersService.changeServer(currentUser, newServer);
+            if (!result) {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
         /// <summary>
         /// Gets secret question of user.
         /// </summary>
@@ -348,6 +377,20 @@ namespace AdvancedProjectWebApi.Controllers {
                     _configuration["JWTBearerParams:Issuer"],
                     _configuration["JWTBearerParams:Audience"]
                     ));
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("setPhoneToken")]
+        [Authorize]
+        public async Task<IActionResult> setPhoneToken(string? phoneToken) {
+            if (phoneToken == null) {
+                return BadRequest();
+            }
+            string username = User.FindFirst("username")?.Value;
+            bool result = await _registeredUsersService.setPhoneToken(username, phoneToken);
+            if (result) {
+                return NoContent();
             }
             return BadRequest();
         }

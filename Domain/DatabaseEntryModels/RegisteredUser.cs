@@ -37,5 +37,9 @@ namespace Domain.DatabaseEntryModels {
         public string? description { get; set; }
 
         public List<Conversation>? conversations { get; set; }
+
+        public string? server { get; set; }
+        
+        public string? androidToken { get; set; }
     }
 }
