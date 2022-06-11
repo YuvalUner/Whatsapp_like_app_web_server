@@ -9,6 +9,9 @@ using Google.Apis.Auth.OAuth2;
 using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.SignalR;
 using AdvancedProjectWebApi.Hubs;
+using System.Text.Json;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace AdvancedProjectWebApi.Controllers {
 
@@ -23,7 +26,6 @@ namespace AdvancedProjectWebApi.Controllers {
 
         private readonly IContactsService _contactsService;
         private readonly IRegisteredUsersService _registeredUsersService;
-        private readonly IConfiguration config;
         private readonly IHubContext<ChatAppHub> hub;
 
         /// <summary>
@@ -31,10 +33,9 @@ namespace AdvancedProjectWebApi.Controllers {
         /// </summary>
         /// <param name="context"></param>
         public transferController(IContactsService contactsService, IRegisteredUsersService registeredUsersService,
-            IConfiguration config, IHubContext<ChatAppHub> hub) {
+            IHubContext<ChatAppHub> hub) {
             this._contactsService = contactsService;
             this._registeredUsersService = registeredUsersService;
-            this.config = config;
             this.hub = hub;
             if (FirebaseApp.DefaultInstance == null) {
                 FirebaseApp.Create(new AppOptions() {
@@ -46,14 +47,33 @@ namespace AdvancedProjectWebApi.Controllers {
         private async void sendFirebasePushNotification(RegisteredUser userFrom,
             RegisteredUser userTo, string content) {
 
+            //var messageInfo = new {
+            //    registration_ids = userTo.androidToken,
+            //    data = new Dictionary<string, string>() {
+            //        { "username", userFrom.username },
+            //        { "nickname", userFrom.nickname }
+            //    },
+            //    notification = new Notification() {
+            //        Title = userFrom.nickname,
+            //        Body = content
+            //    }
+            //};
+
+            //var messageInfoSerialized = JsonSerializer.Serialize(messageInfo);
+            //var url = "https://fcm.googleapis.com/fcm/send";
+            //using (var httpClient = new HttpClient()) {
+            //    httpClient.DefaultRequestHeaders.Accept.Clear();
+            //    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", config["Firebase:private_key"]);
+            //    var response = httpClient.PostAsync(url, new StringContent(messageInfoSerialized, Encoding.UTF8, "application/json")).Result;
+            //    int a = 5;
+            //}
+
             var message = new FirebaseAdmin.Messaging.Message() {
                 Data = new Dictionary<string, string>() {
                     { "username", userFrom.username },
-                    { "nickname", userFrom.nickname }
-                },
-                Notification = new Notification() {
-                    Title = userFrom.nickname,
-                    Body = content
+                    { "nickname", userFrom.nickname },
+                    { "content", content }
                 },
                 Token = userTo.androidToken
             };
