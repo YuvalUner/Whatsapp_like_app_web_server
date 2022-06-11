@@ -8,26 +8,29 @@ namespace Data
     public class AdvancedProgrammingProjectsServerContext : DbContext
 
     {
-        private readonly IConfiguration _configuration;
-        private string connectionString;
+        //private readonly IConfiguration _configuration;
+        private string connectionString = "server=localhost;port=3306;database=ErezYuvalAdvancedProjectsServer;user=root;password=P@$$W0rd";
 
-        public AdvancedProgrammingProjectsServerContext(IConfiguration config) {
-            this._configuration = config;
+        public AdvancedProgrammingProjectsServerContext(/*IConfiguration config*/) {
+            //this._configuration = config;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            connectionString = _configuration["ConnectionStrings:MariaDB"];
+            //connectionString = _configuration["ConnectionStrings:MariaDB"];
             optionsBuilder.UseMySql(connectionString, MariaDbServerVersion.AutoDetect(connectionString));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
             modelBuilder.Entity<RegisteredUser>().HasKey(e => e.username);
+            modelBuilder.Entity<RegisteredUser>().Property(e => e.username).HasMaxLength(127);
             modelBuilder.Entity<PendingUser>().HasKey(e => e.username);
+            modelBuilder.Entity<PendingUser>().Property(e => e.username).HasMaxLength(127);
             modelBuilder.Entity<Message>().HasKey(e => e.id);
             modelBuilder.Entity<Conversation>().HasKey(e => e.Id);
             modelBuilder.Entity<SecretQuestion>().HasKey(e => e.Id);
             modelBuilder.Entity<Contact>().HasKey(e => new {e.contactOf, e.id});
+            modelBuilder.Entity<Contact>().Property(e => e.id).HasMaxLength(127);
             modelBuilder.Entity<Rating>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasOne<RegisteredUser>();

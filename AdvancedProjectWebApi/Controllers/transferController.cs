@@ -76,6 +76,9 @@ namespace AdvancedProjectWebApi.Controllers {
                         created = DateTime.Now
                     });
                 if (result == true) {
+                    Contact contact = await _contactsService.GetContact(transfer.from, transfer.to);
+                    contact.last = transfer.content;
+                    await _contactsService.setLast(contact);
                     RegisteredUser? userFrom = await _registeredUsersService.GetRegisteredUser(transfer.from);
                     RegisteredUser? userTo = await _registeredUsersService.GetRegisteredUser(transfer.to);
                     if (userFrom != null && userTo != null && userTo.androidToken != null) {

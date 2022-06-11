@@ -143,5 +143,7 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="email"></param>
         /// <returns></returns>
         public Task<bool> isAlreadyContactByPhone(string username, string? email);
+
+        public Task<bool> setLast(Contact contact);
     }
 }

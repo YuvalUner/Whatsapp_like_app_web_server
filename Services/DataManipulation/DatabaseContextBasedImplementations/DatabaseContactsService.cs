@@ -262,6 +262,15 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             return false;
         }
+
+        public async Task<bool> setLast(Contact contact) {
+            if (contact == null) {
+                return false;
+            }
+            _context.Entry(contact).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
 

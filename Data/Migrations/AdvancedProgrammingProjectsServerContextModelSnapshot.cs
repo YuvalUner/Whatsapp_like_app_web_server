@@ -22,13 +22,15 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.DatabaseEntryModels.Contact", b =>
                 {
                     b.Property<string>("contactOf")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("id")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("RegisteredUserusername")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("last")
                         .HasColumnType("longtext");
@@ -56,7 +58,7 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RegisteredUserusername")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("with")
                         .IsRequired()
@@ -100,7 +102,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.DatabaseEntryModels.PendingUser", b =>
                 {
                     b.Property<string>("username")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("email")
                         .HasColumnType("longtext");
@@ -176,7 +179,7 @@ namespace Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("RegisteredUserusername")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -195,7 +198,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.DatabaseEntryModels.RegisteredUser", b =>
                 {
                     b.Property<string>("username")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("androidToken")
                         .HasColumnType("longtext");

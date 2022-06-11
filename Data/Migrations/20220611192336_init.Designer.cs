@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AdvancedProgrammingProjectsServerContext))]
-    [Migration("20220517204154_madeMoreThingsNullable3")]
-    partial class madeMoreThingsNullable3
+    [Migration("20220611192336_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,13 +24,15 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.DatabaseEntryModels.Contact", b =>
                 {
                     b.Property<string>("contactOf")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("id")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("RegisteredUserusername")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("last")
                         .HasColumnType("longtext");
@@ -58,7 +60,7 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RegisteredUserusername")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("with")
                         .IsRequired()
@@ -102,17 +104,16 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.DatabaseEntryModels.PendingUser", b =>
                 {
                     b.Property<string>("username")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("email")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("hashingAlgorithm")
                         .HasColumnType("longtext");
 
                     b.Property<string>("nickname")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("password")
@@ -125,7 +126,7 @@ namespace Data.Migrations
                     b.Property<string>("salt")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("secretQuestionId")
+                    b.Property<int?>("secretQuestionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("timeCreated")
@@ -180,7 +181,7 @@ namespace Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("RegisteredUserusername")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(127)");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -199,7 +200,11 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.DatabaseEntryModels.RegisteredUser", b =>
                 {
                     b.Property<string>("username")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(127)
+                        .HasColumnType("varchar(127)");
+
+                    b.Property<string>("androidToken")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("description")
                         .HasColumnType("longtext");
@@ -226,8 +231,11 @@ namespace Data.Migrations
                     b.Property<string>("salt")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("secretQuestionsId")
+                    b.Property<int?>("secretQuestionId")
                         .HasColumnType("int");
+
+                    b.Property<string>("server")
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("verificationCodeCreationTime")
                         .HasColumnType("datetime(6)");
@@ -237,7 +245,7 @@ namespace Data.Migrations
 
                     b.HasKey("username");
 
-                    b.HasIndex("secretQuestionsId");
+                    b.HasIndex("secretQuestionId");
 
                     b.ToTable("RegisteredUser");
                 });
@@ -288,9 +296,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("Domain.DatabaseEntryModels.SecretQuestion", "secretQuestion")
                         .WithMany()
-                        .HasForeignKey("secretQuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("secretQuestionId");
 
                     b.Navigation("secretQuestion");
                 });
@@ -304,11 +310,11 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.DatabaseEntryModels.RegisteredUser", b =>
                 {
-                    b.HasOne("Domain.DatabaseEntryModels.SecretQuestion", "secretQuestions")
+                    b.HasOne("Domain.DatabaseEntryModels.SecretQuestion", "secretQuestion")
                         .WithMany()
-                        .HasForeignKey("secretQuestionsId");
+                        .HasForeignKey("secretQuestionId");
 
-                    b.Navigation("secretQuestions");
+                    b.Navigation("secretQuestion");
                 });
 
             modelBuilder.Entity("Domain.DatabaseEntryModels.Conversation", b =>
