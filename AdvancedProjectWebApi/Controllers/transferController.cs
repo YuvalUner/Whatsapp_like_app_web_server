@@ -47,28 +47,6 @@ namespace AdvancedProjectWebApi.Controllers {
         private async void sendFirebasePushNotification(RegisteredUser userFrom,
             RegisteredUser userTo, string content) {
 
-            //var messageInfo = new {
-            //    registration_ids = userTo.androidToken,
-            //    data = new Dictionary<string, string>() {
-            //        { "username", userFrom.username },
-            //        { "nickname", userFrom.nickname }
-            //    },
-            //    notification = new Notification() {
-            //        Title = userFrom.nickname,
-            //        Body = content
-            //    }
-            //};
-
-            //var messageInfoSerialized = JsonSerializer.Serialize(messageInfo);
-            //var url = "https://fcm.googleapis.com/fcm/send";
-            //using (var httpClient = new HttpClient()) {
-            //    httpClient.DefaultRequestHeaders.Accept.Clear();
-            //    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", config["Firebase:private_key"]);
-            //    var response = httpClient.PostAsync(url, new StringContent(messageInfoSerialized, Encoding.UTF8, "application/json")).Result;
-            //    int a = 5;
-            //}
-
             var message = new FirebaseAdmin.Messaging.Message() {
                 Data = new Dictionary<string, string>() {
                     { "username", userFrom.username },
