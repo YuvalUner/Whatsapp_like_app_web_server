@@ -84,7 +84,11 @@ namespace AdvancedProjectWebApi.Controllers {
                 string? userAgent = Request.Headers["User-Agent"].ToString();
                 await _refreshTokenService.RemovePreviousTokens(user.username, userAgent);
                 await _refreshTokenService.storeRefreshToken(token.RefreshToken, user.username, userAgent);
-                return Ok(token);
+                return Ok(new {
+                    accessToken = token.AccessToken,
+                    refreshToken = token.RefreshToken,
+                    username = user.username
+                });
             }
             return BadRequest();
         }
@@ -101,7 +105,20 @@ namespace AdvancedProjectWebApi.Controllers {
             await _refreshTokenService.RemovePreviousTokens(username, Request.Headers["User-Agent"].ToString());
             return Ok();
         }
-        
+
+        /// <summary>
+        /// Logs out an android user by deleting both their refresh token and firebase token.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("logOutAndroid")]
+        public async Task<IActionResult> logOutAndroid() {
+
+            string? username = User.FindFirst("username")?.Value;
+            await _refreshTokenService.RemovePreviousTokens(username, Request.Headers["User-Agent"].ToString());
+            await _registeredUsersService.removePhoneToken(username);
+            return Ok();
+        }
+
         /// <summary>
         /// Finishes the sign up process of a user and adds them to the database as a registered user.
         /// </summary>
@@ -157,7 +174,7 @@ namespace AdvancedProjectWebApi.Controllers {
                 return Ok(user.nickname);
             }
         }
-        
+
         /// <summary>
         /// gets description of user.
         /// </summary>
@@ -343,7 +360,7 @@ namespace AdvancedProjectWebApi.Controllers {
             if (username == null) {
                 return BadRequest();
             }
-            bool success = await _registeredUsersService.generateVerificationCode(username, 
+            bool success = await _registeredUsersService.generateVerificationCode(username,
                 new MailRequest() {
                     Email = _configuration["MailSettings:Mail"],
                     Password = _configuration["MailSettings:Password"],

@@ -363,5 +363,19 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             return false;
         }
+
+        public async Task<bool> removePhoneToken(string? username) {
+            if (username == null) {
+                return false;
+            }
+            RegisteredUser? user = await this.GetRegisteredUser(username);
+            if (user != null && user.androidToken != null) {
+                user.androidToken = null;
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

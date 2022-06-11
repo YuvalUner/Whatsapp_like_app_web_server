@@ -174,5 +174,7 @@ namespace Services.DataManipulation.Interfaces {
         /// <param name="phoneToken"></param>
         /// <returns></returns>
         public Task<bool> setPhoneToken(string username, string? phoneToken);
+
+        public Task<bool> removePhoneToken(string? username);
     }
 }

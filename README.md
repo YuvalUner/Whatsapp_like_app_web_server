@@ -1,3 +1,10 @@
+## `Note about updates:`
+We pushed to master branch on 10/6/2022 and 6/11/2022.
+These updates had nothing to do with the 2nd assignment, and were updates regarding the 3rd assignment, that is, 
+mobile integration.\
+These changes were mostly just firebase integration, as well as changes for the additional options in the mobile
+options screen.
+
 # `Submitters`:
 Yuval Uner, ID: ***REMOVED***, Github: OddPanda.\
 Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.

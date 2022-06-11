@@ -5,7 +5,6 @@ using System.Text;
 using AdvancedProjectWebApi.Hubs;
 using Services.DataManipulation.DatabaseContextBasedImplementations;
 using Services.DataManipulation.Interfaces;
-using System.Web.Http.SelfHost;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,12 +56,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", optionsBuilder => {
-        optionsBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-        .WithOrigins(builder.Configuration["AllowedOrigins:React"])
-        .WithOrigins(builder.Configuration["AllowedOrigins:WebAPI"])
-        .WithOrigins(builder.Configuration["AllowedOrigins:WebServer"]);
+        optionsBuilder.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+        //.WithOrigins(builder.Configuration["AllowedOrigins:React"],
+        //builder.Configuration["AllowedOrigins:WebApi"], builder.Configuration["AllowedOrigins:WebServer"])
+        .SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
     });
 });
 
