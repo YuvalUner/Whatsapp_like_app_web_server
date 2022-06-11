@@ -210,6 +210,8 @@ namespace AdvancedProjectWebApi.Controllers {
 
             // No risk of this being null if the previous function succeeded
             Contact? contact = await _contactsService.GetContact(currentUser, id);
+            contact.last = message.content;
+            await _contactsService.setLast(contact);
 
             var transferContent = new {
                 from = currentUser,
