@@ -159,5 +159,17 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
             }
             return false;
         }
+
+        public async Task<bool> setToken(string username, string token) {
+            
+            PendingUser? user = await this.GetPendingUser(username);
+            if (user != null) {
+                user.androidToken = token;
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

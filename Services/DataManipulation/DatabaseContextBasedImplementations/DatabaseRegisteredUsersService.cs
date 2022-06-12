@@ -287,6 +287,7 @@ namespace Services.DataManipulation.DatabaseContextBasedImplementations {
                     Answer = pendingUser.secretQuestion.Answer,
                     Question = pendingUser.secretQuestion.Question
                 };
+                user.androidToken = pendingUser.androidToken;
                 user.contacts = new List<Contact>();
                 user.conversations = new List<Conversation>();
                 user.nickNum = Utils.Utils.generateRandString(Utils.Constants.numeric, 4);

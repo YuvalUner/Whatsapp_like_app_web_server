@@ -203,5 +203,16 @@ namespace AdvancedProjectWebApi.Controllers {
             return NotFound();
         }
 
+        [HttpPut("setToken/{user}")]
+        public async Task<IActionResult> setToken(string user, string token) {
+            if (token == null) {
+                return BadRequest();
+            }
+            bool result = await _pendingUsersService.setToken(user, token);
+            if (result) {
+                return NoContent();
+            }
+            return BadRequest();
+        }
     }
 }

@@ -8,11 +8,11 @@ namespace Data
     public class AdvancedProgrammingProjectsServerContext : DbContext
 
     {
-        //private readonly IConfiguration _configuration;
-        private string connectionString = "server=localhost;port=3306;database=ErezYuvalAdvancedProjectsServer;user=root;password=P@$$W0rd";
+        // private readonly IConfiguration _configuration;
+        private string connectionString = "server=localhost;port=3306;database=ErezYuvalProjectServer;user=root;password=P@$$W0rd";
 
         public AdvancedProgrammingProjectsServerContext(/*IConfiguration config*/) {
-            //this._configuration = config;
+            // this._configuration = config;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {

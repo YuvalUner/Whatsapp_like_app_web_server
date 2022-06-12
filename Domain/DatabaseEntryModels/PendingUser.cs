@@ -33,5 +33,7 @@ namespace Domain.DatabaseEntryModels {
         public DateTime timeCreated { get; set; }
 
         public DateTime verificationCodeCreationTime { get; set; }
+
+        public string? androidToken { get; set; }
     }
 }
