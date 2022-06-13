@@ -66,7 +66,7 @@ namespace AdvancedProjectWebApi.Controllers {
         /// <returns>201 on success, 404 if user not found, 401 otherwise.</returns>
         [HttpPost]
         public async Task<IActionResult> transfer([Bind("from,to,content")] Transfer transfer) {
-
+            
             if (ModelState.IsValid) {
                 bool result = await _contactsService.addMessage(transfer.to, transfer.from,
                     new Domain.DatabaseEntryModels.Message {
@@ -76,7 +76,7 @@ namespace AdvancedProjectWebApi.Controllers {
                         created = DateTime.Now
                     });
                 if (result == true) {
-                    Contact contact = await _contactsService.GetContact(transfer.from, transfer.to);
+                    Contact contact = await _contactsService.GetContact(transfer.to, transfer.from);
                     contact.last = transfer.content;
                     await _contactsService.setLast(contact);
                     RegisteredUser? userFrom = await _registeredUsersService.GetRegisteredUser(transfer.from);
