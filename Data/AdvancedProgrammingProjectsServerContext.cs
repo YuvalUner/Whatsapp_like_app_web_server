@@ -8,15 +8,15 @@ namespace Data
     public class AdvancedProgrammingProjectsServerContext : DbContext
 
     {
-        // private readonly IConfiguration _configuration;
-        private string connectionString = "server=localhost;port=3306;database=ErezYuvalProjectServer;user=root;password=P@$$W0rd";
+        private readonly IConfiguration _configuration;
+        private string connectionString;
 
-        public AdvancedProgrammingProjectsServerContext(/*IConfiguration config*/) {
-            // this._configuration = config;
+        public AdvancedProgrammingProjectsServerContext(IConfiguration config) {
+            this._configuration = config;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            //connectionString = _configuration["ConnectionStrings:MariaDB"];
+            connectionString = _configuration["ConnectionStrings:MariaDB"];
             optionsBuilder.UseMySql(connectionString, MariaDbServerVersion.AutoDetect(connectionString));
         }
 
@@ -31,6 +31,7 @@ namespace Data
             modelBuilder.Entity<SecretQuestion>().HasKey(e => e.Id);
             modelBuilder.Entity<Contact>().HasKey(e => new {e.contactOf, e.id});
             modelBuilder.Entity<Contact>().Property(e => e.id).HasMaxLength(127);
+            modelBuilder.Entity<Contact>().Property(e => e.contactOf).HasMaxLength(127);
             modelBuilder.Entity<Rating>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasKey(e => e.Id);
             modelBuilder.Entity<RefreshToken>().HasOne<RegisteredUser>();
