@@ -1,9 +1,10 @@
 ## `Note about updates:`
-We pushed to master branch on 10/6/2022 and 6/11/2022.
+We pushed to master branch from the 10/6/2022.
 These updates had nothing to do with the 2nd assignment, and were updates regarding the 3rd assignment, that is, 
 mobile integration.\
 These changes were mostly just firebase integration, as well as changes for the additional options in the mobile
-options screen.
+options screen - only things that were not implemented or did not exist in the web version.
+These affect nothing that regards the API defined in assignment 2 or the web client.
 
 # `Submitters`:
 Yuval Uner, ID: ***REMOVED***, Github: OddPanda.\
