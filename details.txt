@@ -1,3 +1,3 @@
-Yuval Uner: ***REMOVED***, Github: OddPanda
-Nadav Elgrabli: ***REMOVED***, Github: ZycleXx
+Yuval Uner, Github: OddPanda
+Nadav Elgrabli, Github: ZycleXx
 Repository: https://github.com/CulturedPanda/AdvancedProgrammingProjectsServer.git
