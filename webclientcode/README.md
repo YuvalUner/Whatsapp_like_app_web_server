@@ -2,8 +2,8 @@
 
 ### `Submitters`:
 
-Yuval Uner, ID: ***REMOVED***, Github: OddPanda.\
-Nadav Elgrabli, ID: ***REMOVED***, Github: ZycleXx.
+Yuval Uner, Github: YuvalUner.\
+Nadav Elgrabli, Github: NadavElgrabli.
 
 To run the project, use "npm start".\
 The root file is index.js.
