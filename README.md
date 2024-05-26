@@ -4,7 +4,7 @@ This project was done as part of the Advanced Programming course, Bar-Ilan Unive
 
 # `Submitters`:
 Yuval Uner, Github: YuvalUner.\
-Nadav Elgrabli, Github: NadavElgrabli.\
+Nadav Elgrabli, Github: NadavElgrabli.
 
 # `Dependencies`:
 ### `Frontend`
