@@ -1,6 +1,8 @@
 # `Brief`:
 A web server for our Whatsapp-like application, serving the web and android clients.\
-This project was done as part of the Advanced Programming course, Bar-Ilan University, 2022.
+This project was done as part of the Advanced Programming course, Bar-Ilan University, 2022.\
+The Android app for this can be found here: https://github.com/YuvalUner/Whatsapp_like_app_android_client \
+The web client can be found here: https://github.com/YuvalUner/Whatsapp_like_app_web_client
 
 # `Submitters`:
 Yuval Uner, Github: YuvalUner.\
