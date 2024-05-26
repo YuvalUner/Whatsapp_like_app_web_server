@@ -1,17 +1,10 @@
-## `Note about updates:`
-We pushed to master branch from the 10/6/2022 (the pushes were to this branch and not a seperate, unrelated branch by mistake).
-These updates had nothing to do with the 2nd assignment, and were updates regarding the 3rd assignment, that is, 
-mobile integration.\
-These changes were mostly just firebase integration, as well as changes for the additional options in the mobile
-options screen - only things that were not implemented or did not exist in the web version.
-These affect nothing that regards the API defined in assignment 2 or the web client.\
-For the version before these changes, refer to the last update made regarding assignment 2, done on 22/05/2022, commit hash 6afbd253e326418973d2b9a01b94a4b11231f9a8
+# `Brief`:
+A web server for our Whatsapp-like application, serving the web and android clients.\
+This project was done as part of the Advanced Programming course, Bar-Ilan University, 2022.
 
 # `Submitters`:
-Yuval Uner, Github: OddPanda.\
-Nadav Elgrabli, Github: ZycleXx.\
-As the repository was made public according to the instructions sent on the 19/06/2020,
-our IDs were removed from here and only kept in the submitted txt file.
+Yuval Uner, Github: YuvalUner.\
+Nadav Elgrabli, Github: NadavElgrabli.\
 
 # `Dependencies`:
 ### `Frontend`
