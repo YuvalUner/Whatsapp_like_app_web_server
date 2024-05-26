@@ -27,15 +27,9 @@ To set up the project via visual studio, open the package manager console, set t
 project in it to "Data", then run update-database.
 
 The projects / servers that need to be run are:
-1. AdvancedProgrammingProjectsServer
-2. AdvancedProjectWebApi
+1. AdvancedProjectWebApi
 
-The first is our server that serves out our views and handles the reviews part\
-of the assignment.
-
-The second is the WebAPI we created for running the React app from part 1.
-
-All settings regarding them are stored in their respective appsettings.json\
+All settings regarding the project is stored in its appsettings.json\
 To change the connection string to one matching your database, it is under the\
 ConnectionStrings json object in those files.\
 In addition, it may be necessary to change the AllowedOrigins to whatever
