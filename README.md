@@ -4,9 +4,9 @@ This project was done as part of the Advanced Programming course, Bar-Ilan Unive
 The Android app for this can be found here: https://github.com/YuvalUner/Whatsapp_like_app_android_client \
 The web client can be found here: https://github.com/YuvalUner/Whatsapp_like_app_web_client
 
-# `Submitters`:
-Yuval Uner, Github: YuvalUner.\
-Nadav Elgrabli, Github: NadavElgrabli.
+# `Authors`:
+Yuval Uner, Github: [https://github.com/YuvalUner](YuvalUner).\
+Nadav Elgrabli, Github: [https://github.com/NadavElgrabli](NadavElgrabli).
 
 # `Dependencies`:
 ### `Frontend`
