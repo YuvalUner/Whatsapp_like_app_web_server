@@ -5,8 +5,8 @@ The Android app for this can be found here: https://github.com/YuvalUner/Whatsap
 The web client can be found here: https://github.com/YuvalUner/Whatsapp_like_app_web_client
 
 # `Authors`:
-Yuval Uner, Github: [https://github.com/YuvalUner](YuvalUner).\
-Nadav Elgrabli, Github: [https://github.com/NadavElgrabli](NadavElgrabli).
+Yuval Uner, Github: [YuvalUner](https://github.com/YuvalUner).\
+Nadav Elgrabli, Github: [NadavElgrabli](https://github.com/NadavElgrabli).
 
 # `Dependencies`:
 ### `Frontend`
