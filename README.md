@@ -37,11 +37,6 @@ ConnectionStrings json object in those files.\
 In addition, it may be necessary to change the AllowedOrigins to whatever
 ports your machine uses when running the servers.
 
-# `Reviews part`
-
-The reviews part holds up to the all the requirements.\
-In addition, it has a link to our React app at its bottom.
-
 # `WebAPI and React app`
 ## `Testing`
 To create users not via the front end, follow these steps:
